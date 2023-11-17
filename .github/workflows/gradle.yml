@@ -47,10 +47,11 @@ jobs:
           chmod +x ./gradlew
           ./gradlew clean build -x test
 
-    ## 도커 이미지 빌드 후 도커허브에 push하기
+     ## 도커 이미지 빌드 후 도커허브에 push하기
+    - name: Docker Login
+      run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
     - name: web docker build and push
       run: |
-        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker build -t ${{ secrets.DOCKER_REPO }} .
         docker push ${{ secrets.DOCKER_REPO }}
          
@@ -63,6 +64,6 @@ jobs:
         key: ${{ secrets.KEY }}
         port: 22
         script: |
-          sudo docker image rm ${{ secrets.DOCKER_REPO }}
+          sudo docker image rm ${{ secrets.DOCKER_REPO }} || true # If the image does not exist, ignore the error
           sudo docker pull ${{ secrets.DOCKER_REPO }}
           sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_REPO }}
