@@ -1,21 +1,25 @@
 package com.connectCo.domain.group;
 
-import com.connectCo.domain.BaseEntity.baseEntity;
+import com.connectCo.domain.baseentity.BaseEntity;
+import com.connectCo.domain.enums.GroupType;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 import java.util.UUID;
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
-public class Group extends baseEntity{
+@Where(clause = "deleted_at is null")
+public class Group extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "group_id")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Column(nullable = false)
@@ -24,7 +28,14 @@ public class Group extends baseEntity{
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false)
-    private String group_type;
+    @Enumerated(EnumType.STRING)
+    private GroupType group_type;
 
+    @Builder
+    public Group(UUID id, String groupName, String address, GroupType group_type) {
+        this.id = id;
+        this.groupName = groupName;
+        this.address = address;
+        this.group_type = group_type;
+    }
 }

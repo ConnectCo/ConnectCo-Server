@@ -1,5 +1,5 @@
 package com.connectCo.domain.enums;
 
-public enum loginType {
+public enum LoginType {
     KAKAO, GOOGLE, NAVER
 }
