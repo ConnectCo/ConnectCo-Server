@@ -1,4 +1,4 @@
-package com.connectCo.domain.baseentity;
+package com.connectCo.global.utils;
 
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.connectCo.domain.enums;
+package com.connectCo.domain.Member.entity;
 
 public enum LoginType {
     KAKAO, GOOGLE, NAVER
