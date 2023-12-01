@@ -25,6 +25,9 @@ public class Member extends BaseEntity
     private UUID id;
 
     @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable =false)
@@ -39,5 +42,9 @@ public class Member extends BaseEntity
     @JoinColumn
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<Role> role = new ArrayList<>(List.of(Role.USER));
+    private List<Role> role;
+
+    public void saveRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }
