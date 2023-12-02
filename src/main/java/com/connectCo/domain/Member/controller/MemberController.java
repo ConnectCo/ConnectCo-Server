@@ -28,8 +28,7 @@ public class MemberController {
 
 
     @PostMapping("/naver")
-    public MemberLoginResponse saveMemberByNaver(@RequestParam(name = "code") String code,
-                                                 @RequestParam(name = "state") String state) {
-        return memberService.
+    public MemberLoginResponse saveMemberByNaver(@RequestParam(name = "accessToken") String accessToken) {
+        return memberService.saveMemberByNaver(accessToken);
     }
 }

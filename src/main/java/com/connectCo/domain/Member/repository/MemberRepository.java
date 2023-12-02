@@ -9,5 +9,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface MemberRepository extends JpaRepository<Member, UUID> {
-    Optional<Member> findByEmailAndLoginType(String email, LoginType loginType);
+
+    Optional<Member> findByClientIdAndLoginType(String clientId, LoginType loginType);
 }

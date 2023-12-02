@@ -15,5 +15,4 @@ public class MemberLoginResponse {
     private UUID memberId;
     private String accessToken;
     private String refreshToken;
-
 }

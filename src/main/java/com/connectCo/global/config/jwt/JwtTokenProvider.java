@@ -33,13 +33,13 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(secretByteKey);
     }
 
-    public JwtToken generateToken(String email) {
+    public JwtToken generateToken(String clientId) {
 
         long now = new Date().getTime();
 
         // Access Token 생성
         String accessToken = Jwts.builder()
-                .setSubject(email) // payload "sub" : name"
+                .setSubject(clientId) // payload "sub" : name"
                 .claim(AUTHORITIES_KEY, Role.USER) // payload "auth" : "USER"
                 .setExpiration(new Date(now + ACCESS_TOKEN_EXPIRE_LENGTH))
                 .signWith(key, SignatureAlgorithm.HS512) // header "alg" : 해싱 알고리즘 HS512

@@ -20,23 +20,20 @@ public class Member extends BaseEntity
 {
     @Id
     @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2")
+    @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable =false)
     private String phoneNumber;
+
+    @Column(nullable = false)
+    private String clientId;
 
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
-    @Column(nullable = false)
     private String refreshToken;
 
     @JoinColumn

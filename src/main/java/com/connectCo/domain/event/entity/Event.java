@@ -1,7 +1,7 @@
 package com.connectCo.domain.event.entity;
 
 import com.connectCo.global.utils.BaseEntity;
-import com.connectCo.domain.group.entity.Group;
+import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.Member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,7 +22,7 @@ import java.util.UUID;
 public class Event extends BaseEntity {
     @Id
     @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2")
+    @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
@@ -32,7 +32,7 @@ public class Event extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private Group group;
+    private Organization group;
 
     @Column(nullable = false)
     private String name;
