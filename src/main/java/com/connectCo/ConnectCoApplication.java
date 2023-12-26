@@ -10,7 +10,6 @@ public class ConnectCoApplication {
 
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(ConnectCoApplication.class, args);
 	}
 
