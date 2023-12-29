@@ -1,7 +1,6 @@
-package com.connectCo.domain.couponimage.entity;
+package com.connectCo.domain.coupon.entity;
 
-import com.connectCo.domain.coupon.entity.Coupon;
-import com.connectCo.domain.image.entity.Image;
+import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.global.utils.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,19 +15,22 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
-public class CouponImage extends BaseEntity {
+public class CouponLike extends BaseEntity {
+
     @Id
     @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
+
+    @Column(nullable = false)
+    private boolean isChecked;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Coupon coupon;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Image image;
-
 }

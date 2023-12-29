@@ -1,5 +1,6 @@
-package com.connectCo.domain.organization.entity;
+package com.connectCo.domain.event.entity;
 
+import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.global.utils.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,8 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
-public class Organization extends BaseEntity {
-
+public class EventCoupon extends BaseEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -24,18 +24,19 @@ public class Organization extends BaseEntity {
     private UUID id;
 
     @Column(nullable = false)
-    private String name;
+    private String accessUrl;
 
     @Column(nullable = false)
-    private String address;
+    private String authorizeCode;
 
-    @Enumerated(EnumType.STRING)
-    private OrganizationType organizationType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Event event;
 
-    @Column(nullable = false)
-    private String homepageUrl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Coupon coupon;
 
-    @Column(nullable = false)
-    private String academicDayUrl;
-
+//    private int validCount;
+//    private LocalDate validDate;
 }

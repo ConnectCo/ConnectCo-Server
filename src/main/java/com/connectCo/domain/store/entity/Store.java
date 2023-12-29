@@ -1,12 +1,13 @@
 package com.connectCo.domain.store.entity;
 
-import com.connectCo.global.utils.BaseEntity;
 import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.global.utils.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -16,20 +17,18 @@ import java.util.UUID;
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
 public class Store extends BaseEntity {
+
+
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Member member;
-
     @Column(nullable = false)
-    private String storeName;
+    private String name;
 
-    private String storeDescription;
+    private String description;
 
     @Column(nullable = false)
     private String storeNumber;
@@ -37,4 +36,13 @@ public class Store extends BaseEntity {
     @Column(nullable = false)
     private String address;
 
+    @Column(nullable = false)
+    private String operatingTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Member member;
+
+    @OneToMany(mappedBy = "store")
+    private List<StoreImage> images;
 }

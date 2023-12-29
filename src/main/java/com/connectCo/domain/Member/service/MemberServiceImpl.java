@@ -1,7 +1,6 @@
 package com.connectCo.domain.Member.service;
 
 import com.connectCo.domain.Member.client.NaverMemberClient;
-import com.connectCo.domain.Member.dto.client.NaverMemberResponse;
 import com.connectCo.domain.Member.dto.response.MemberLoginResponse;
 import com.connectCo.domain.Member.entity.LoginType;
 import com.connectCo.domain.Member.entity.Member;
