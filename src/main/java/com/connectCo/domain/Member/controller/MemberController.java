@@ -21,9 +21,8 @@ public class MemberController {
     }
 
     @PostMapping("/kakao")
-    public MemberLoginResponse saveMemberByKakao() {
-        // TODO 카카오 로그인 구현
-        return null;
+    public MemberLoginResponse saveMemberByKakao(@RequestParam(name = "accessToken") String accessToken) {
+        return memberService.saveMemberByKakao(accessToken);
     }
 
 
