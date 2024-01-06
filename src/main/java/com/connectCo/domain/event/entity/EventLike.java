@@ -1,7 +1,6 @@
-package com.connectCo.domain.storeimage.entity;
+package com.connectCo.domain.event.entity;
 
-import com.connectCo.domain.image.entity.Image;
-import com.connectCo.domain.store.entity.Store;
+import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.global.utils.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,19 +15,22 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
-public class StoreImage extends BaseEntity {
+public class EventLike extends BaseEntity {
+
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Store store;
+    @Column(nullable = false)
+    private boolean isChecked;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private Image image;
+    private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Event event;
 }

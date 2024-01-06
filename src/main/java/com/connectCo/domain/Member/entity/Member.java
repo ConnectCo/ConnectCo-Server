@@ -6,7 +6,6 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,16 +15,18 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
-public class Member extends BaseEntity
-{
+public class Member extends BaseEntity {
+
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name="uuid2", strategy = "uuid2")
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
+//    @Column(nullable = false)
     private String name;
 
+//    @Column(nullable = false)
     private String phoneNumber;
 
     @Column(nullable = false)
@@ -34,6 +35,7 @@ public class Member extends BaseEntity
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
+    @Column(nullable = false)
     private String refreshToken;
 
     @JoinColumn

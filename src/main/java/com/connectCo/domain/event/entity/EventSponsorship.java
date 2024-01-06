@@ -1,5 +1,7 @@
-package com.connectCo.domain.organization.entity;
+package com.connectCo.domain.event.entity;
 
+import com.connectCo.domain.coupon.entity.Coupon;
+import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.utils.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,8 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
-public class Organization extends BaseEntity {
-
+public class EventSponsorship extends BaseEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -24,18 +25,17 @@ public class Organization extends BaseEntity {
     private UUID id;
 
     @Column(nullable = false)
-    private String name;
+    private boolean isComplete;
 
-    @Column(nullable = false)
-    private String address;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Store store;
 
-    @Enumerated(EnumType.STRING)
-    private OrganizationType organizationType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Event event;
 
-    @Column(nullable = false)
-    private String homepageUrl;
-
-    @Column(nullable = false)
-    private String academicDayUrl;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Coupon coupon;
 }
