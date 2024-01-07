@@ -11,7 +11,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberLoginResponse {
+public class    MemberLoginResponse {
     private UUID memberId;
     private String accessToken;
     private String refreshToken;

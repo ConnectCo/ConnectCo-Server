@@ -35,7 +35,6 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
-    @Column(nullable = false)
     private String refreshToken;
 
     @JoinColumn
