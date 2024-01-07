@@ -15,9 +15,8 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/google")
-    public MemberLoginResponse saveMemberByGoogle() {
-        // TODO 구글 로그인 구현
-        return null;
+    public MemberLoginResponse saveMemberByGoogle(@RequestParam(name = "accessToken") String accessToken) {
+        return memberService.saveMemberByGoogle(accessToken);
     }
 
     @PostMapping("/kakao")

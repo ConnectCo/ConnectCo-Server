@@ -1,5 +1,6 @@
 package com.connectCo.domain.Member.service;
 
+import com.connectCo.domain.Member.client.GoogleMemberClient;
 import com.connectCo.domain.Member.client.KakaoMemberClient;
 import com.connectCo.domain.Member.client.NaverMemberClient;
 import com.connectCo.domain.Member.dto.response.MemberLoginResponse;
@@ -24,6 +25,7 @@ public class MemberServiceImpl implements MemberService {
     private final AuthService authService;
     private final NaverMemberClient naverMemberClient;
     private final KakaoMemberClient kakaoMemberClient;
+    private final GoogleMemberClient googleMemberClient;
 
 
     @Override
@@ -41,12 +43,22 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public MemberLoginResponse saveMemberByKakao(String accessToken) {
         String clientId = getKakaoClientId(accessToken);
-        System.out.println("${clientId}" + clientId);
         Optional<Member> member = memberRepository.findByClientIdAndLoginType(clientId, LoginType.KAKAO);
         if(member.isPresent()) {
             return getMemberLoginResponse(member.get());
         }
         return getNewMemberLoginResponse(clientId, LoginType.KAKAO);
+    }
+
+    @Override
+    @Transactional
+    public MemberLoginResponse saveMemberByGoogle(String accessToken) {
+        String clientId = getGoogleClientId(accessToken);
+        Optional<Member> member = memberRepository.findByClientIdAndLoginType(clientId, LoginType.GOOGLE);
+        if(member.isPresent()) {
+            return getMemberLoginResponse(member.get());
+        }
+        return getNewMemberLoginResponse(clientId, LoginType.GOOGLE);
     }
 
     private String getNaverClientId(final String accessToken) {
@@ -55,6 +67,10 @@ public class MemberServiceImpl implements MemberService {
 
     private String getKakaoClientId(final String accessToken) {
         return kakaoMemberClient.getKakaoUserId(accessToken);
+    }
+
+    private String getGoogleClientId(final String accessToken) {
+        return googleMemberClient.getGoogleUserId(accessToken);
     }
 
     private MemberLoginResponse getMemberLoginResponse(final Member member) {
