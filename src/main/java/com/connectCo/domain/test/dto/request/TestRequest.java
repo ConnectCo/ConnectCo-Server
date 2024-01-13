@@ -9,15 +9,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class TestRequest {
-    public class TestDto {
-        @NotNull
-        private String id;
+    @NotNull(message = "아이디는 필수 입력값입니다.")
+    private String id;
 
-        @NotBlank
-        private String name;
+    @NotBlank(message = "이름은 필수 입력값입니다.")
+    private String name;
 
-        @Min(0)
-        private int age;
-
-    }
+    @Min(value = 1, message = "나이는 0보다 커야합니다.")
+    private int age;
 }
