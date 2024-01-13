@@ -24,4 +24,16 @@ public class CustomRestControllerAdvice extends ResponseEntityExceptionHandler {
                 .body(BaseResponse.onFailure(errorCode.getCode(), errorCode.getMessage(), null));
     }
 
+    /*
+     * 일반적인 서버 에러에 대한 예외 처리
+     */
+    @ExceptionHandler
+    public ResponseEntity<?> handleException(Exception e) {
+        e.printStackTrace(); //예외 정보 출력
+
+        ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(BaseResponse.onFailure(errorCode.getCode(), errorCode.getMessage(), null));
+    }
 }
