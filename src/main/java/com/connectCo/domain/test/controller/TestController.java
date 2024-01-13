@@ -4,6 +4,7 @@ import com.connectCo.domain.test.dto.request.TestRequest;
 import com.connectCo.global.common.BaseResponse;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
+import com.connectCo.global.validation.annotation.TestAnnotation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ConstraintViolationException;
@@ -22,15 +23,8 @@ public class TestController {
         throw new CustomApiException(ErrorCode.USER_NOT_FOUND);
     }
 
-    @Operation(summary = "에러 핸들러 테스트 API", description = "ConstraintViolationException에 대한 예외 처리 테스트 API")
 
-    @GetMapping("/constraintViolation")
-    public BaseResponse<String> throwConstraintViolationException(@RequestParam(value = "name") String name) {
-
-        return BaseResponse.onSuccess("테스트 API");
-    }
-
-    @Operation(summary = "에러 핸들러 테스트 API", description = "MethodArgumentNotValidException에 대한 예외 처리 테스트 API")
+    @Operation(summary = "에러 핸들러 테스트 API", description = "ConstraintViolationException 및 MethodArgumentNotValidException에 대한 예외 처리 테스트 API")
 
     @PostMapping("/methodArgumentNotValid")
     public BaseResponse<String> throwMethodArgumentNotValidException(@Valid @RequestBody TestRequest request) {
