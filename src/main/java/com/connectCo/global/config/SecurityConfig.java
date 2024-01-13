@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .formLogin().disable()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v3/**", "/swagger-ui/**", "/members/**").permitAll()
+                        .requestMatchers("/v3/**", "/swagger-ui/**", "/members/**", "/test/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
