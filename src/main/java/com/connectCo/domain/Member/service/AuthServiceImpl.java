@@ -1,8 +1,8 @@
 package com.connectCo.domain.Member.service;
 
 import com.connectCo.domain.Member.entity.Member;
-import com.connectCo.global.config.jwt.JwtToken;
-import com.connectCo.global.config.jwt.JwtTokenProvider;
+import com.connectCo.config.jwt.JwtToken;
+import com.connectCo.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

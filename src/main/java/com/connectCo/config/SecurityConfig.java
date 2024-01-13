@@ -1,9 +1,9 @@
-package com.connectCo.global.config;
+package com.connectCo.config;
 
-import com.connectCo.global.config.jwt.JwtAccessDeniedHandler;
-import com.connectCo.global.config.jwt.JwtAuthenticationEntryPoint;
-import com.connectCo.global.config.jwt.JwtAuthenticationFilter;
-import com.connectCo.global.config.jwt.JwtTokenProvider;
+import com.connectCo.config.jwt.JwtAccessDeniedHandler;
+import com.connectCo.config.jwt.JwtAuthenticationEntryPoint;
+import com.connectCo.config.jwt.JwtAuthenticationFilter;
+import com.connectCo.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

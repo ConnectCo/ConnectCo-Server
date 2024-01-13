@@ -1,4 +1,4 @@
-package com.connectCo.global.config.jwt;
+package com.connectCo.config.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

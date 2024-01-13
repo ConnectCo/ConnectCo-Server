@@ -1,4 +1,4 @@
-package com.connectCo.global.config.jwt;
+package com.connectCo.config.jwt;
 
 import com.connectCo.domain.Member.entity.Role;
 import io.jsonwebtoken.*;

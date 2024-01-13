@@ -1,4 +1,4 @@
-package com.connectCo.global.config;
+package com.connectCo.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

@@ -1,4 +1,4 @@
-package com.connectCo.global.config.jwt;
+package com.connectCo.config.jwt;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
