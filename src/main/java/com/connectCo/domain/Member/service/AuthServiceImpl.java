@@ -17,7 +17,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     @Transactional
     public JwtToken getToken(Member member) {
-        JwtToken jwtToken = jwtTokenProvider.generateToken(member.getClientId());
+        JwtToken jwtToken = jwtTokenProvider.generateToken(member.getId().toString());
         member.saveRefreshToken(jwtToken.getRefreshToken());
         return jwtToken;
     }

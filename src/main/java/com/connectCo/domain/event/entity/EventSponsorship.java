@@ -2,7 +2,7 @@ package com.connectCo.domain.event.entity;
 
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.store.entity.Store;
-import com.connectCo.global.utils.BaseEntity;
+import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
