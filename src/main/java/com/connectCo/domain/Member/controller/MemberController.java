@@ -20,27 +20,18 @@ public class MemberController {
     private final MemberService memberService;
 
     @Operation(summary = "구글 로그인 API")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "API 요청 성공 시")
-    })
     @PostMapping("/google")
     public BaseResponse<MemberLoginResponse> saveMemberByGoogle(@RequestParam(name = "accessToken") String accessToken) {
         return BaseResponse.onSuccess(memberService.saveMemberByGoogle(accessToken));
     }
 
     @Operation(summary = "카카오 로그인 API")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "API 요청 성공 시")
-    })
     @PostMapping("/kakao")
     public BaseResponse<MemberLoginResponse> saveMemberByKakao(@RequestParam(name = "accessToken") String accessToken) {
         return BaseResponse.onSuccess(memberService.saveMemberByKakao(accessToken));
     }
 
     @Operation(summary = "네이버 로그인 API")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "API 요청 성공 시")
-    })
     @PostMapping("/naver")
     public BaseResponse<MemberLoginResponse> saveMemberByNaver(@RequestParam(name = "accessToken") String accessToken) {
         return BaseResponse.onSuccess(memberService.saveMemberByNaver(accessToken));
@@ -48,9 +39,6 @@ public class MemberController {
 
 
     @Operation(summary = "홈화면 유저 정보 조회 API")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "API 요청 성공 시")
-    })
     @GetMapping
     public BaseResponse<MemberInfoResponse> getMemberInfo() {
         return BaseResponse.onSuccess(memberService.getMemberInfo());

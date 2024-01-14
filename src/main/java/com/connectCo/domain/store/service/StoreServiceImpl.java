@@ -1,7 +1,9 @@
 package com.connectCo.domain.store.service;
 
+import com.connectCo.domain.Member.dto.response.MemberInfoResponse;
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.store.entity.Store;
+import com.connectCo.domain.store.mapper.StoreMapper;
 import com.connectCo.domain.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,11 +17,12 @@ import java.util.List;
 public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
+    private final StoreMapper storeMapper;
 
     @Override
-    public List<String> getStoresByMember(Member member) {
+    public List<MemberInfoResponse.MyStores> getStoresByMember(Member member) {
         return storeRepository.findAllByMember(member).stream()
-                .map(Store::getName)
+                .map(storeMapper::toMyStores)
                 .toList();
     }
 }

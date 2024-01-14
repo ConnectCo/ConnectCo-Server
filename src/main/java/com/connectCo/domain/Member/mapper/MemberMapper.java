@@ -30,11 +30,11 @@ public class MemberMapper {
                 .build();
     }
 
-    public MemberInfoResponse toMemberInfoResponse(Member member, List<String> storeNames) {
+    public MemberInfoResponse toMemberInfoResponse(Member member, List<MemberInfoResponse.MyStores> myStores) {
         return MemberInfoResponse.builder()
                 .name(member.getName())
                 .profileImage(member.getProfileImage())
-                .myStores(storeNames)
+                .myStores(myStores)
                 .build();
     }
 }
