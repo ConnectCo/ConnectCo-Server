@@ -1,4 +1,4 @@
-package com.connectCo.global.config.jwt;
+package com.connectCo.config.jwt;
 
 import com.connectCo.domain.Member.entity.Role;
 import io.jsonwebtoken.*;
@@ -33,13 +33,13 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(secretByteKey);
     }
 
-    public JwtToken generateToken(String clientId) {
+    public JwtToken generateToken(String memberId) {
 
         long now = new Date().getTime();
 
         // Access Token 생성
         String accessToken = Jwts.builder()
-                .setSubject(clientId) // payload "sub" : name"
+                .setSubject(memberId) // payload "sub" : name"
                 .claim(AUTHORITIES_KEY, Role.USER) // payload "auth" : "USER"
                 .setExpiration(new Date(now + ACCESS_TOKEN_EXPIRE_LENGTH))
                 .signWith(key, SignatureAlgorithm.HS512) // header "alg" : 해싱 알고리즘 HS512

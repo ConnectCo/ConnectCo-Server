@@ -4,7 +4,7 @@ import com.connectCo.domain.Member.dto.response.MemberLoginResponse;
 import com.connectCo.domain.Member.entity.LoginType;
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.entity.Role;
-import com.connectCo.global.config.jwt.JwtToken;
+import com.connectCo.config.jwt.JwtToken;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

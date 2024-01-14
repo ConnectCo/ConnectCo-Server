@@ -1,4 +1,4 @@
-package com.connectCo.global.utils;
+package com.connectCo.global.common;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
