@@ -1,6 +1,8 @@
 package com.connectCo.config.jwt;
 
 import com.connectCo.domain.Member.entity.Role;
+import com.connectCo.global.exception.CustomApiException;
+import com.connectCo.global.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -63,7 +65,7 @@ public class JwtTokenProvider {
         Claims claims = parseClaims(accessToken);
 
         if(claims.get("auth") == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new CustomApiException(ErrorCode.UNAUTHORIZED_JWT_TOKEN);
         }
 
         Collection<? extends GrantedAuthority> authorities =
@@ -85,14 +87,17 @@ public class JwtTokenProvider {
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
+            throw new CustomApiException(ErrorCode.INVALID_JWT_TOKEN);
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT Token", e);
+            throw new CustomApiException(ErrorCode.EXPIRED_JWT_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token", e);
+            throw new CustomApiException(ErrorCode.UNSUPPORTED_JWT_TOKEN);
         } catch (IllegalArgumentException e) {
             log.info("JWT claims string is empty", e);
+            throw new CustomApiException(ErrorCode.EMPTY_JWT_CLAIMS);
         }
-        return false;
     }
 
     private Claims parseClaims(String accessToken) {
@@ -104,6 +109,12 @@ public class JwtTokenProvider {
                     .getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            throw new CustomApiException(ErrorCode.INVALID_JWT_TOKEN);
+        } catch (UnsupportedJwtException e) {
+            throw new CustomApiException(ErrorCode.UNSUPPORTED_JWT_TOKEN);
+        } catch (IllegalArgumentException e) {
+            throw new CustomApiException(ErrorCode.EMPTY_JWT_CLAIMS);
         }
     }
 }
