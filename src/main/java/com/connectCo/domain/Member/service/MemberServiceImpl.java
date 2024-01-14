@@ -3,16 +3,19 @@ package com.connectCo.domain.Member.service;
 import com.connectCo.domain.Member.client.GoogleMemberClient;
 import com.connectCo.domain.Member.client.KakaoMemberClient;
 import com.connectCo.domain.Member.client.NaverMemberClient;
+import com.connectCo.domain.Member.dto.response.MemberInfoResponse;
 import com.connectCo.domain.Member.dto.response.MemberLoginResponse;
 import com.connectCo.domain.Member.entity.LoginType;
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.mapper.MemberMapper;
 import com.connectCo.domain.Member.repository.MemberRepository;
 import com.connectCo.config.jwt.JwtToken;
+import com.connectCo.domain.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,10 +25,12 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
-    private final AuthService authService;
     private final NaverMemberClient naverMemberClient;
     private final KakaoMemberClient kakaoMemberClient;
     private final GoogleMemberClient googleMemberClient;
+
+    private final AuthService authService;
+    private final StoreService storeService;
 
 
     @Override
@@ -59,6 +64,13 @@ public class MemberServiceImpl implements MemberService {
             return getMemberLoginResponse(member.get());
         }
         return getNewMemberLoginResponse(clientId, LoginType.GOOGLE);
+    }
+
+    @Override
+    @Transactional
+    public MemberInfoResponse getMemberInfo() {
+        Member member =  authService.getLoginMember();
+        return memberMapper.toMemberInfoResponse(member, storeService.getStoresByMember(member));
     }
 
     private String getNaverClientId(final String accessToken) {

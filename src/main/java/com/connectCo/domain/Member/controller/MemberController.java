@@ -47,12 +47,12 @@ public class MemberController {
     }
 
 
-    @Operation(summary = "유저 정보 조회 API")
+    @Operation(summary = "홈화면 유저 정보 조회 API")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "API 요청 성공 시")
     })
     @GetMapping
     public BaseResponse<MemberInfoResponse> getMemberInfo() {
-        return null;
+        return BaseResponse.onSuccess(memberService.getMemberInfo());
     }
 }

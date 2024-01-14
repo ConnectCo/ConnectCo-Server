@@ -1,5 +1,6 @@
 package com.connectCo.domain.Member.mapper;
 
+import com.connectCo.domain.Member.dto.response.MemberInfoResponse;
 import com.connectCo.domain.Member.dto.response.MemberLoginResponse;
 import com.connectCo.domain.Member.entity.LoginType;
 import com.connectCo.domain.Member.entity.Member;
@@ -26,6 +27,14 @@ public class MemberMapper {
                 .memberId(memberId)
                 .accessToken(jwtToken.getAccessToken())
                 .refreshToken(jwtToken.getRefreshToken())
+                .build();
+    }
+
+    public MemberInfoResponse toMemberInfoResponse(Member member, List<String> storeNames) {
+        return MemberInfoResponse.builder()
+                .name(member.getName())
+                .profileImage(member.getProfileImage())
+                .myStores(storeNames)
                 .build();
     }
 }

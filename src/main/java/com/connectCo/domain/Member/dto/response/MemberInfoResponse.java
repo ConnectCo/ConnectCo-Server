@@ -1,14 +1,12 @@
 package com.connectCo.domain.Member.dto.response;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class MemberInfoResponse {
     private String name;
     private String profileImage;
