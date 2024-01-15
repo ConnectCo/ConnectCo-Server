@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class StoreExistValidator implements ConstraintValidator<ExistStore, String> {
+public class    StoreExistValidator implements ConstraintValidator<ExistStore, String> {
 
     private String errorMessage;
     private final StoreRepository storeRepository;
@@ -22,7 +22,7 @@ public class StoreExistValidator implements ConstraintValidator<ExistStore, Stri
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        boolean isValid = storeRepository.existsStoreByName(value);
+        boolean isValid = !storeRepository.existsStoreByName(value);
 
         if (!isValid) {
             context.disableDefaultConstraintViolation();
