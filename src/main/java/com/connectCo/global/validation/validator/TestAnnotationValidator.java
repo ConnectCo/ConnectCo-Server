@@ -19,7 +19,7 @@ public class TestAnnotationValidator implements ConstraintValidator<TestAnnotati
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext context) {
-        boolean isValid = s.equals("error");
+        boolean isValid = !("error".equals(s));
 
         if (!isValid) {
             context.disableDefaultConstraintViolation();
