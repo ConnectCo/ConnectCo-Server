@@ -23,7 +23,7 @@ public class CouponController {
     @Operation(summary = "나의 쿠폰 조회 API")
     @GetMapping("/member")
     public BaseResponse<List<CouponInquiryByMemberResponse>> inquiryCouponByMember() {
-        return null;
+        return BaseResponse.onSuccess(couponService.inquiryCouponByMember());
     }
 
 }
