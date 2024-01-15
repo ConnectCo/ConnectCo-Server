@@ -2,9 +2,13 @@ package com.connectCo.domain.store.dto.request;
 
 import com.connectCo.global.validation.annotation.ExistStore;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class StoreCreateRequest {
     @NotBlank(message = "가게 이름은 필수 입력값입니다.")
     @ExistStore

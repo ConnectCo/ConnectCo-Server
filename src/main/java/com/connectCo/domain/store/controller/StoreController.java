@@ -27,8 +27,8 @@ public class StoreController {
 
     @Operation(summary = "가게 등록 API")
     @PostMapping
-    public BaseResponse<StoreIdResponse> createStore(@RequestPart(required = false) List<MultipartFile> storeImages,
-                                                     @Valid @RequestPart StoreCreateRequest request) {
-        return null;
+    public BaseResponse<StoreIdResponse> createStore(@RequestPart(value = "storeImages", required = false) List<MultipartFile> storeImages,
+                                                     @Valid @RequestPart("request") StoreCreateRequest request) {
+        return BaseResponse.onSuccess(storeService.createStore(storeImages, request));
     }
 }
