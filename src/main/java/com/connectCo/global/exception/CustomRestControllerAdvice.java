@@ -1,8 +1,10 @@
 package com.connectCo.global.exception;
 
 import com.connectCo.global.common.BaseResponse;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.ErrorMessage;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @RestControllerAdvice(annotations = {RestController.class})
@@ -36,7 +43,7 @@ public class CustomRestControllerAdvice extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e) {
         ErrorCode errorCode = ErrorCode.BAD_REQUEST;
         String errorMessage = e.getConstraintViolations().stream()
-                .map(constraintViolation -> constraintViolation.getMessage())
+                .map(ConstraintViolation::getMessage)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("ConstraintViolationException 추출 도중 에러 발생"));
 
@@ -55,9 +62,13 @@ public class CustomRestControllerAdvice extends ResponseEntityExceptionHandler {
 
         ErrorCode errorCode = ErrorCode.BAD_REQUEST;
 
+        String errorMessage =  Optional.ofNullable(e.getBindingResult()
+                        .getFieldError()
+                        .getDefaultMessage()).orElse("");
+
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(BaseResponse.onFailure(errorCode.getCode(), e.getMessage(), null));
+                .body(BaseResponse.onFailure(errorCode.getCode(), errorMessage, null));
     }
 
     /*
