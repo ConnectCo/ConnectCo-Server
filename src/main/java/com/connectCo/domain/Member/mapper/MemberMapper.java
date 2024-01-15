@@ -6,6 +6,7 @@ import com.connectCo.domain.Member.entity.LoginType;
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.entity.Role;
 import com.connectCo.config.jwt.JwtToken;
+import com.connectCo.domain.store.entity.Store;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -35,6 +36,13 @@ public class MemberMapper {
                 .name(member.getName())
                 .profileImage(member.getProfileImage())
                 .myStores(myStores)
+                .build();
+    }
+
+    public MemberInfoResponse.MyStores toMyStores(Store store) {
+        return MemberInfoResponse.MyStores.builder()
+                .storeId(store.getId())
+                .name(store.getName())
                 .build();
     }
 }

@@ -20,7 +20,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
@@ -70,7 +69,12 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public MemberInfoResponse getMemberInfo() {
         Member member =  authService.getLoginMember();
-        return memberMapper.toMemberInfoResponse(member, storeService.getStoresByMember(member));
+
+        List<MemberInfoResponse.MyStores> storeList = storeService.getStoresByMember(member).stream()
+                .map(memberMapper::toMyStores)
+                .toList();
+
+        return memberMapper.toMemberInfoResponse(member, storeList);
     }
 
     private String getNaverClientId(final String accessToken) {

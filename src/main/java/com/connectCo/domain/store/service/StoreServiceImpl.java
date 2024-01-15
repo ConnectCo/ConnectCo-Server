@@ -48,10 +48,8 @@ public class StoreServiceImpl implements StoreService {
 
 
     @Override
-    public List<MemberInfoResponse.MyStores> getStoresByMember(Member member) {
-        return storeRepository.findAllByMember(member).stream()
-                .map(storeMapper::toMyStores)
-                .toList();
+    public List<Store> getStoresByMember(Member member) {
+        return storeRepository.findAllByMember(member);
     }
 
     /*

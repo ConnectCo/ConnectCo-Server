@@ -29,11 +29,4 @@ public class StoreMapper {
                 .url(url)
                 .build();
     }
-
-    public MemberInfoResponse.MyStores toMyStores(Store store) {
-        return MemberInfoResponse.MyStores.builder()
-                .storeId(store.getId())
-                .name(store.getName())
-                .build();
-    }
 }
