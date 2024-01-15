@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,5 +45,17 @@ public class Store extends BaseEntity {
     private Member member;
 
     @OneToMany(mappedBy = "store")
-    private List<StoreImage> images;
+    private List<StoreImage> images = new ArrayList<>();
+
+    public void changeImages(List<StoreImage> storeImages) {
+        // 기존 이미지가 있다면 삭제
+        if(this.images != null) removeImages();
+
+        // 새로운 이미지로 변경
+        this.images = storeImages;
+    }
+
+    private void removeImages() {
+        this.images.forEach(BaseEntity::delete);
+    }
 }
