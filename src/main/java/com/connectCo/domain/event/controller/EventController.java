@@ -1,6 +1,7 @@
 package com.connectCo.domain.event.controller;
 
-import com.connectCo.domain.coupon.dto.response.CouponInquiryByMemberResponse;
+import com.connectCo.domain.event.dto.response.EventInquiryByMemberResponse;
+import com.connectCo.domain.event.service.EventService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,9 +18,11 @@ import java.util.List;
 @RequestMapping("/events")
 public class EventController {
 
+    private final EventService eventService;
+
     @Operation(summary = "나의 이벤트 조회 API")
     @GetMapping("/member")
-    public BaseResponse<List<CouponInquiryByMemberResponse>> inquiryEventByMember() {
-        return null;
+    public BaseResponse<List<EventInquiryByMemberResponse>> inquiryEventByMember() {
+        return BaseResponse.onSuccess(eventService.inquiryEventByMember());
     }
 }
