@@ -14,4 +14,5 @@ public class EventSummaryInquiryResponse {
     private String name;
     private LocalDate startAt;
     private LocalDate endAt;
+    private String thumbnail;
 }

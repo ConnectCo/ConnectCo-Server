@@ -13,4 +13,5 @@ public class CouponSummaryInquiryResponse {
     private String name;
     private String description;
     private LocalDate expiredAt;
+    private String thumbnail;
 }
