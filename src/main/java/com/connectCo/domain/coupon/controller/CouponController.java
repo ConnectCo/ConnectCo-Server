@@ -29,7 +29,7 @@ public class CouponController {
     @Operation(summary = "내가 찜한 쿠폰 조회 API")
     @GetMapping("/like")
     public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByLike() {
-        return null;
+        return BaseResponse.onSuccess(couponService.inquiryCouponByLike());
     }
 
 }

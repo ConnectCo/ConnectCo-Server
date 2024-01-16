@@ -29,7 +29,7 @@ public class EventServiceImpl implements EventService{
         List<Event> eventList = eventRepository.findAllByMember(member);
 
         return eventList.stream()
-                .map(eventMapper::toEventInquiryByMemberResponse)
+                .map(eventMapper::toEventSummaryInquiryResponse)
                 .toList();
     }
 
@@ -43,7 +43,7 @@ public class EventServiceImpl implements EventService{
                         .toList();
 
         return eventList.stream()
-                .map(eventMapper::toEventInquiryByMemberResponse)
+                .map(eventMapper::toEventSummaryInquiryResponse)
                 .toList();
     }
 }

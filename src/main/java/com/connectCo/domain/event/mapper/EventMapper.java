@@ -10,7 +10,7 @@ import java.util.Optional;
 @Component
 public class EventMapper {
 
-    public EventSummaryInquiryResponse toEventInquiryByMemberResponse(Event event) {
+    public EventSummaryInquiryResponse toEventSummaryInquiryResponse(Event event) {
         String organizationName = Optional.ofNullable(event.getOrganization())
                 .map(Organization::getName)
                 .orElse(null);

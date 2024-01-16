@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CouponMapper {
 
-    public CouponSummaryInquiryResponse toCouponInquiryByMemberResponse(Coupon coupon) {
+    public CouponSummaryInquiryResponse toCouponSummaryInquiryResponse(Coupon coupon) {
         return CouponSummaryInquiryResponse.builder()
                 .couponId(coupon.getId())
                 .name(coupon.getName())

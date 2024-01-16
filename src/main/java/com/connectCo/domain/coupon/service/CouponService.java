@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface CouponService {
     List<CouponSummaryInquiryResponse> inquiryCouponByMember();
+    List<CouponSummaryInquiryResponse> inquiryCouponByLike();
 }
