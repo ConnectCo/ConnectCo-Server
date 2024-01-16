@@ -21,9 +21,15 @@ public class CouponController {
     private final CouponService couponService;
 
     @Operation(summary = "나의 쿠폰 조회 API")
-    @GetMapping("/member")
+    @GetMapping("/mine")
     public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByMember() {
         return BaseResponse.onSuccess(couponService.inquiryCouponByMember());
+    }
+
+    @Operation(summary = "내가 찜한 쿠폰 조회 API")
+    @GetMapping("/like")
+    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByLike() {
+        return null;
     }
 
 }
