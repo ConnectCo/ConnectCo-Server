@@ -1,6 +1,6 @@
 package com.connectCo.domain.event.mapper;
 
-import com.connectCo.domain.event.dto.response.EventInquiryByMemberResponse;
+import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
 import com.connectCo.domain.event.entity.Event;
 import com.connectCo.domain.organization.entity.Organization;
 import org.springframework.stereotype.Component;
@@ -10,12 +10,12 @@ import java.util.Optional;
 @Component
 public class EventMapper {
 
-    public EventInquiryByMemberResponse toEventInquiryByMemberResponse(Event event) {
+    public EventSummaryInquiryResponse toEventInquiryByMemberResponse(Event event) {
         String organizationName = Optional.ofNullable(event.getOrganization())
                 .map(Organization::getName)
                 .orElse(null);
 
-        return EventInquiryByMemberResponse.builder()
+        return EventSummaryInquiryResponse.builder()
                 .eventId(event.getId())
                 .organizationName(organizationName)
                 .name(event.getName())
