@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Getter
 @Builder
-public class CouponInquiryByMemberResponse {
+public class CouponSummaryInquiryResponse {
     private UUID couponId;
     private String name;
     private String description;

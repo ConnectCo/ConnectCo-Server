@@ -2,7 +2,7 @@ package com.connectCo.domain.coupon.service;
 
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.service.AuthService;
-import com.connectCo.domain.coupon.dto.response.CouponInquiryByMemberResponse;
+import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.coupon.mapper.CouponMapper;
 import com.connectCo.domain.coupon.repository.CouponRepository;
@@ -22,7 +22,7 @@ public class CouponeServiceImpl implements CouponService {
     private final CouponMapper couponMapper;
 
     @Override
-    public List<CouponInquiryByMemberResponse> inquiryCouponByMember() {
+    public List<CouponSummaryInquiryResponse> inquiryCouponByMember() {
         Member member = authService.getLoginMember();
 
         List<Coupon> couponList = storeService.getStoresByMember(member).stream()

@@ -1,6 +1,6 @@
 package com.connectCo.domain.coupon.controller;
 
-import com.connectCo.domain.coupon.dto.response.CouponInquiryByMemberResponse;
+import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.service.CouponService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +22,7 @@ public class CouponController {
 
     @Operation(summary = "나의 쿠폰 조회 API")
     @GetMapping("/member")
-    public BaseResponse<List<CouponInquiryByMemberResponse>> inquiryCouponByMember() {
+    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByMember() {
         return BaseResponse.onSuccess(couponService.inquiryCouponByMember());
     }
 
