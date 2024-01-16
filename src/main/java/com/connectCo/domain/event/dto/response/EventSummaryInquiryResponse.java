@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Getter
 @Builder
-public class EventInquiryByMemberResponse {
+public class EventSummaryInquiryResponse {
     private UUID eventId;
     private String organizationName;
     private String name;
