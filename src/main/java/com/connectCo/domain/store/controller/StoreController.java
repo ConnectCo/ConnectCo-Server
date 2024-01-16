@@ -33,6 +33,6 @@ public class StoreController {
     @Operation(summary = "내가 찜한 가게 조회 API")
     @GetMapping("/like")
     public BaseResponse<List<StoreSummaryInquiryResponse>> inquiryStoreByLike() {
-        return null;
+        return BaseResponse.onSuccess(storeService.inquiryStoreByLike());
     }
 }

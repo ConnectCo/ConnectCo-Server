@@ -5,10 +5,13 @@ import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.service.AuthService;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.response.StoreIdResponse;
+import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.entity.StoreImage;
+import com.connectCo.domain.store.entity.StoreLike;
 import com.connectCo.domain.store.mapper.StoreMapper;
 import com.connectCo.domain.store.repository.StoreImageRepository;
+import com.connectCo.domain.store.repository.StoreLikeRepository;
 import com.connectCo.domain.store.repository.StoreRepository;
 import com.connectCo.utils.S3FileComponent;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,7 @@ public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private final StoreImageRepository storeImageRepository;
+    private final StoreLikeRepository storeLikeRepository;
     private final StoreMapper storeMapper;
     private final AuthService authService;
     private final S3FileComponent s3FileComponent;
@@ -44,6 +48,19 @@ public class StoreServiceImpl implements StoreService {
         newStore.changeImages(newStoreImages);
 
         return new StoreIdResponse(newStore.getId());
+    }
+
+    @Override
+    public List<StoreSummaryInquiryResponse> inquiryStoreByLike() {
+        Member member = authService.getLoginMember();
+
+        List<Store> storeList = storeLikeRepository.findAllByMemberAndIsChecked(member, true).stream()
+                .map(StoreLike::getStore)
+                .toList();
+
+        return storeList.stream()
+                .map(storeMapper::toStoreSummaryInquiryResponse)
+                .toList();
     }
 
 
