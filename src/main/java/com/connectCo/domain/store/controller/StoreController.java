@@ -2,6 +2,7 @@ package com.connectCo.domain.store.controller;
 
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.response.StoreIdResponse;
+import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.common.BaseResponse;
 import com.connectCo.global.exception.CustomApiException;
@@ -9,10 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -30,5 +28,11 @@ public class StoreController {
     public BaseResponse<StoreIdResponse> createStore(@RequestPart(value = "storeImages", required = false) List<MultipartFile> storeImages,
                                                      @Valid @RequestPart("request") StoreCreateRequest request) {
         return BaseResponse.onSuccess(storeService.createStore(storeImages, request));
+    }
+
+    @Operation(summary = "내가 찜한 가게 조회 API")
+    @GetMapping("/like")
+    public BaseResponse<List<StoreSummaryInquiryResponse>> inquiryStoreByLike() {
+        return null;
     }
 }
