@@ -29,6 +29,8 @@ public class Member extends BaseEntity {
 //    @Column(nullable = false)
     private String phoneNumber;
 
+    private String profileImage;
+
     @Column(nullable = false)
     private String clientId;
 

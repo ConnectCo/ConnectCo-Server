@@ -31,7 +31,8 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .formLogin().disable()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v3/**", "/swagger-ui/**", "/members/**", "/test/**").permitAll()
+                        .requestMatchers("/v3/**", "/swagger-ui/**",
+                                "/members/google", "/members/kakao", "/members/naver", "/test/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -43,7 +44,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-
-
 }
