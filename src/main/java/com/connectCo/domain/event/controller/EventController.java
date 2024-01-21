@@ -6,9 +6,7 @@ import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,6 +17,18 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
+
+    @Operation(summary = "이벤트 검색 API")
+    @GetMapping("/?name=keyword")
+    public BaseResponse<List<EventSummaryInquiryResponse>> inquiryEventByName(@RequestParam String name) {
+        return BaseResponse.onSuccess(eventService.inquiryEventByName(name));
+    }
+    @Operation(summary = "이벤트 세부사항 조회 API")
+    @GetMapping("/{event-id}")
+    public BaseResponse<List<EventSummaryInquiryResponse>> inquiryEventByEventId (@PathVariable("event-id") String eventId) {
+        return BaseResponse.onSuccess(eventService.inquiryEventByEventId(eventId));
+    }
+
 
     @Operation(summary = "나의 이벤트 조회 API")
     @GetMapping("/mine")
