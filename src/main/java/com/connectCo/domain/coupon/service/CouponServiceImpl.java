@@ -40,7 +40,6 @@ public class CouponServiceImpl implements CouponService {
     private final CouponRepository couponRepository;
     private final CouponLikeRepository couponLikeRepository;
     private final CouponMapper couponMapper;
-    private final StoreRepository storeRepository;
     private final S3FileComponent s3FileComponent;
     private final CouponImageRepository couponImageRepository;
 
@@ -87,10 +86,8 @@ public class CouponServiceImpl implements CouponService {
     @Transactional
     public CouponIdResponse createCoupon(List<MultipartFile> couponImages, CouponCreateRequest request) {
 
-        Store store = storeRepository.findById(request.getStoreId())
-                .orElseThrow(() -> new EntityNotFoundException("Store not found with id: " + request.getStoreId()));
+        Store store = storeService.findById(request.getStoreId());
         //storeRepository에 접근해서 클라이언트에서 받은 storeid를 가지고 jpa를 통해 store객체 찾기
-
 
         Coupon newCoupon = createAndSaveCoupon(store, request);
 

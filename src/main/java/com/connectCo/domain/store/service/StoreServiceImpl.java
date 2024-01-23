@@ -14,12 +14,14 @@ import com.connectCo.domain.store.repository.StoreImageRepository;
 import com.connectCo.domain.store.repository.StoreLikeRepository;
 import com.connectCo.domain.store.repository.StoreRepository;
 import com.connectCo.utils.S3FileComponent;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +69,16 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public List<Store> getStoresByMember(Member member) {
         return storeRepository.findAllByMember(member);
+    }
+
+    /*
+     * StoreId를 기반으로 Store객체를 반환하는 함수
+     */
+    @Override
+    public Store findById(UUID storeId) {
+        return storeRepository.findById(storeId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Store not found with id: " + storeId));
     }
 
     /*
