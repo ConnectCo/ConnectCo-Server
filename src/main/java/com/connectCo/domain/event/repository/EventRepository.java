@@ -15,7 +15,7 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
     List<Event> findAllByMember(Member member);
 
     @Query("SELECT DISTINCT e FROM Event e JOIN e.organization o WHERE (e.name LIKE%:keyword% OR o.name LIKE%:keyword%) AND e.expiredAt >= :currentTime")
-    List<Event> findAllBySearch(String Name, @Param("currentTime")LocalDateTime currentTime);
+    List<Event> findAllBySearch(String keyword, @Param("currentTime")LocalDateTime currentTime);
     List<Event> findAllByOrderByCreatedAtDesc();
 
     @Query("SELECT DISTINCT e FROM Event e  WHERE e.expiredAt >= :currentTime GROUP BY e ORDER BY e.likeCount DESC")

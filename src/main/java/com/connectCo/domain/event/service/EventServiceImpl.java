@@ -79,9 +79,9 @@ public class EventServiceImpl implements EventService{
         return deletedEventId;
     }
     @Override//이벤트 검색하기 우선 학교 이름과 이벤트 제목 둘다에서 검색 되게 해놨습니다.
-    public List<EventSummaryInquiryResponse> inquiryEventByName(String name){
+    public List<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword){
         LocalDateTime currentTime = LocalDateTime.now();
-        List<Event> eventList = eventRepository.findAllBySearch(name, currentTime);
+        List<Event> eventList = eventRepository.findAllBySearch(keyword, currentTime);
         return eventList.stream()
                 .map(eventMapper::toEventSummaryInquiryResponse)
                 .toList();

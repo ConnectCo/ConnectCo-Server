@@ -22,7 +22,7 @@ public interface EventService {
     EventLikeResponse likeEvent(UUID eventId);
     List<EventSummaryInquiryResponse> inquiryEventByRecent();
     List<EventSummaryInquiryResponse> inquiryEventByRecommends();
-    List<EventSummaryInquiryResponse> inquiryEventByName(String name);
+    List<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword);
     List<EventSummaryInquiryResponse> inquiryEventByMember();
     List<EventSummaryInquiryResponse> inquiryEventByLike();
 

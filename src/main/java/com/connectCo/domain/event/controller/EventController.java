@@ -26,7 +26,7 @@ public class EventController {
 
 
     @Operation(summary = "이벤트 생성 API")
-    @PostMapping("/")
+    @PostMapping("")
     public BaseResponse<EventIdResponse> createEvent (@RequestPart(value = "eventImages", required = false) List<MultipartFile> eventImages, @RequestBody EventCreateRequest request){
         return BaseResponse.onSuccess(eventService.createEvent(eventImages, request));
     }
@@ -45,8 +45,8 @@ public class EventController {
 
     @Operation(summary = "이벤트 검색 API")
     @GetMapping("")
-    public BaseResponse<List<EventSummaryInquiryResponse>> inquiryEventByName(@RequestParam String name) {
-        return BaseResponse.onSuccess(eventService.inquiryEventByName(name));
+    public BaseResponse<List<EventSummaryInquiryResponse>> inquiryEventByName(@RequestParam String keyword) {
+        return BaseResponse.onSuccess(eventService.inquiryEventByKeyword(keyword));
     }
 
     @Operation(summary = "이벤트 세부사항 조회 API")
@@ -62,15 +62,10 @@ public class EventController {
     }
 
     @Operation(summary = "이벤트 찜하기 API")
-    @PostMapping("/{eventId}/likes")
+    @PostMapping("/{eventId}/like")
     public BaseResponse<EventLikeResponse> likeEvent(@PathVariable("eventId") UUID eventId){
         return BaseResponse.onSuccess(eventService.likeEvent(eventId));
     }
-
-    //Operation(summary = "이벤트 추천 조회 API")
-
-
-
 
 
     @Operation(summary = "나의 이벤트 조회 API")
