@@ -1,5 +1,7 @@
 package com.connectCo.domain.event.mapper;
 
+import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.event.dto.request.EventCreateRequest;
 import com.connectCo.domain.event.dto.response.EventDetailInquiryResponse;
 import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
 import com.connectCo.domain.event.entity.Event;
@@ -11,6 +13,25 @@ import java.util.Optional;
 
 @Component
 public class EventMapper {
+
+    public Event toEvent(Member member, EventCreateRequest request){
+        return Event.builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .priorityTarget(request.getPriorityTarget())
+                .benefitTarget(request.getBenefitTarget())
+                .notification(request.getNotification())
+                .expiredAt(request.getExpiredAt())
+                .member(member)
+                .build();
+    }
+
+    public EventImage toEventImage(Event event, String url) {
+        return EventImage.builder()
+                .event(event)
+                .url(url)
+                .build();
+    }
 
     public EventDetailInquiryResponse toEventDetailInquiryResponse(Event event){
         String organizationName = Optional.ofNullable(event.getOrganization())

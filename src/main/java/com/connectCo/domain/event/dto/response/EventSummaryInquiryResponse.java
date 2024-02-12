@@ -15,4 +15,5 @@ public class EventSummaryInquiryResponse {
     private LocalDate startAt;
     private LocalDate endAt;
     private String thumbnail;
+
 }
