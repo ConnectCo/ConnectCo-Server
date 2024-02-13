@@ -20,6 +20,7 @@ import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.utils.S3FileComponent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -40,6 +41,7 @@ public class EventServiceImpl implements EventService{
     private final S3FileComponent s3FileComponent;
 
     @Override// 이벤트 생성
+    @Transactional
     public EventIdResponse createEvent(List<MultipartFile> eventImages, EventCreateRequest request){
         Member member = authService.getLoginMember();
 
@@ -53,6 +55,7 @@ public class EventServiceImpl implements EventService{
     }
 
     @Override// 이벤트 수정
+    @Transactional
     public EventSummaryInquiryResponse updateEvent(UUID eventId, EventCreateRequest request, List<MultipartFile> eventImages){
 
         Event existingEvent = eventRepository.findById(eventId).orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
@@ -65,6 +68,7 @@ public class EventServiceImpl implements EventService{
         return eventMapper.toEventSummaryInquiryResponse(eventRepository.save(existingEvent));
     }
     @Override//이벤트 삭제
+    @Transactional
     public UUID deleteEvent(UUID eventId){
         Member member = authService.getLoginMember();
 
@@ -79,6 +83,7 @@ public class EventServiceImpl implements EventService{
         return deletedEventId;
     }
     @Override//이벤트 검색하기 우선 학교 이름과 이벤트 제목 둘다에서 검색 되게 해놨습니다.
+    @Transactional
     public List<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword){
         LocalDateTime currentTime = LocalDateTime.now();
         List<Event> eventList = eventRepository.findAllBySearch(keyword, currentTime);
@@ -88,6 +93,7 @@ public class EventServiceImpl implements EventService{
     }
 
     @Override//이벤트 최신순 조회하기
+    @Transactional
     public List<EventSummaryInquiryResponse> inquiryEventByRecent(){
         List<Event> eventList = eventRepository.findAllByOrderByCreatedAtDesc();
 
@@ -96,6 +102,7 @@ public class EventServiceImpl implements EventService{
                 .toList();
     }
     @Override
+    @Transactional
     public List<EventSummaryInquiryResponse> inquiryEventByRecommends(){
         LocalDateTime currentTime = LocalDateTime.now();
         List<Event> eventList = eventRepository.findAllByRecommends(currentTime);
@@ -105,7 +112,8 @@ public class EventServiceImpl implements EventService{
                 .toList();
     }
 
-    @Override//이벤트 상세 조회하기
+    @Override//이벤트 상세
+    @Transactional
     public EventDetailInquiryResponse inquiryEventDetailByEventId(UUID eventId){
         Optional<Event> event = eventRepository.findById(eventId);
         return event
@@ -114,6 +122,7 @@ public class EventServiceImpl implements EventService{
     }
 
     @Override
+    @Transactional
     public EventLikeResponse likeEvent(UUID eventId){
         Member member = authService.getLoginMember();
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
