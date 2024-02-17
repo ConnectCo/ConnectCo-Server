@@ -33,4 +33,9 @@ public class EventLike extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Event event;
+
+    public void changeIsChecked(){
+        this.isChecked = !this.isChecked;
+    }
+
 }
