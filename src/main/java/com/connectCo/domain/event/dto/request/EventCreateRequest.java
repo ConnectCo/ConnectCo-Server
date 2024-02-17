@@ -8,9 +8,10 @@ import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstrguctor
 public class EventCreateRequest {
     private String organizationName;
+    private String address;
     private String name;
     private String description;
     private String priorityTarget;

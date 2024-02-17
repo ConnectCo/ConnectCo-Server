@@ -27,13 +27,18 @@ public class EventController {
 
     @Operation(summary = "이벤트 생성 API")
     @PostMapping("")
-    public BaseResponse<EventIdResponse> createEvent (@RequestPart(value = "eventImages", required = false) List<MultipartFile> eventImages, @RequestBody EventCreateRequest request){
+    public BaseResponse<EventIdResponse> createEvent (
+            @RequestPart(value = "eventImages", required = false) List<MultipartFile> eventImages,
+            @RequestPart EventCreateRequest request){
         return BaseResponse.onSuccess(eventService.createEvent(eventImages, request));
     }
 
     @Operation(summary = "이벤트 수정 API")
     @PutMapping("/{eventId}")
-    public BaseResponse <EventSummaryInquiryResponse> updateEvent (@PathVariable UUID eventId, @RequestBody EventCreateRequest request, @RequestPart(value = "eventImages", required = false) List<MultipartFile> eventImages){
+    public BaseResponse <EventSummaryInquiryResponse> updateEvent (
+            @PathVariable UUID eventId,
+            @RequestPart EventCreateRequest request,
+            @RequestPart(value = "eventImages", required = false) List<MultipartFile> eventImages){
         return BaseResponse.onSuccess(eventService.updateEvent(eventId, request, eventImages));
     }
 
