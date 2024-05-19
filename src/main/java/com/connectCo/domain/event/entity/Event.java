@@ -53,6 +53,10 @@ public class Event extends BaseEntity {
     @Column(nullable = false)
     private String priorityTarget;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer likeCount=0;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Member member;
@@ -66,4 +70,29 @@ public class Event extends BaseEntity {
 
     @OneToMany(mappedBy = "event")
     private List<EventImage> images;
+
+    public void changeImages(List<EventImage> eventImages) {
+        // 기존 이미지가 있다면 삭제
+        if(this.images != null) removeImages();
+
+        // 새로운 이미지로 변경
+        this.images = eventImages;
+    }
+
+    private void removeImages() {
+        this.images.forEach(BaseEntity::delete);
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decreaseLikeCount() {
+        if (this.likeCount > 0) {
+            this.likeCount--;
+        }
+    }
+
+
+
 }

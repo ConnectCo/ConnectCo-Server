@@ -20,6 +20,10 @@ public abstract class BaseEntity {
 
     private LocalDateTime deletedAt;
 
+
+    public void update() {
+        this.updatedAt = LocalDateTime.now();
+    }
     public void delete() {
         this.deletedAt = LocalDateTime.now();
     }
