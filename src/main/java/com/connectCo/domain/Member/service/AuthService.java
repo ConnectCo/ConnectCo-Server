@@ -1,10 +1,8 @@
 package com.connectCo.domain.Member.service;
 
 
-import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.config.jwt.JwtToken;
-
-import java.util.UUID;
+import com.connectCo.domain.Member.entity.Member;
 
 public interface AuthService {
     JwtToken getToken(Member member);

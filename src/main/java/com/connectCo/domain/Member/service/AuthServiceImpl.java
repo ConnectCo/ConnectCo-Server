@@ -1,8 +1,8 @@
 package com.connectCo.domain.Member.service;
 
-import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.config.jwt.JwtToken;
 import com.connectCo.config.jwt.JwtTokenProvider;
+import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.repository.MemberRepository;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

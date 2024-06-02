@@ -3,10 +3,7 @@ package com.connectCo.domain.event.entity;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Where;
-
-import java.util.UUID;
 
 @Getter
 @Entity

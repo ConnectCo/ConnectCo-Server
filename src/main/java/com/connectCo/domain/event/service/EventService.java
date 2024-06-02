@@ -8,7 +8,6 @@ import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface EventService {
 

@@ -1,17 +1,15 @@
 package com.connectCo.domain.Member.mapper;
 
+import com.connectCo.config.jwt.JwtToken;
 import com.connectCo.domain.Member.dto.response.MemberInfoResponse;
 import com.connectCo.domain.Member.dto.response.MemberLoginResponse;
 import com.connectCo.domain.Member.entity.LoginType;
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.entity.Role;
-import com.connectCo.config.jwt.JwtToken;
 import com.connectCo.domain.store.entity.Store;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class MemberMapper {
