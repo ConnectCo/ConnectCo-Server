@@ -18,15 +18,11 @@ import java.util.UUID;
 public class Member extends BaseEntity {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name="uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-//    @Column(nullable = false)
     private String name;
 
-//    @Column(nullable = false)
     private String phoneNumber;
 
     private String profileImage;
@@ -39,10 +35,8 @@ public class Member extends BaseEntity {
 
     private String refreshToken;
 
-    @JoinColumn
     @Enumerated(EnumType.STRING)
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<Role> role;
+    private Role role;
 
     public void saveRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
