@@ -9,7 +9,7 @@ import java.util.UUID;
 @Getter
 @Builder
 public class CouponSummaryInquiryResponse {
-    private UUID couponId;
+    private Long couponId;
     private String name;
     private String description;
     private LocalDate expiredAt;

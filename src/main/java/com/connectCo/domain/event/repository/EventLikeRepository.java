@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface EventLikeRepository extends JpaRepository<EventLike, UUID> {
+public interface EventLikeRepository extends JpaRepository<EventLike, Long> {
     List<EventLike> findAllByMemberAndIsChecked(Member member, boolean isChecked);
 
     Optional<EventLike> findAllByMemberAndEvent(Member member, Event event);

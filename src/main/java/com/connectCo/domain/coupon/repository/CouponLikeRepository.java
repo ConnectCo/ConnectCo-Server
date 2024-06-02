@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.UUID;
 
-public interface CouponLikeRepository extends JpaRepository<CouponLike, UUID> {
+public interface CouponLikeRepository extends JpaRepository<CouponLike, Long> {
     List<CouponLike> findAllByMemberAndIsChecked(Member member, boolean isChecked);
 }

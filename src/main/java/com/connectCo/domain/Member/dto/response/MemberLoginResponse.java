@@ -8,7 +8,7 @@ import java.util.UUID;
 @Getter
 @Builder
 public class    MemberLoginResponse {
-    private UUID memberId;
+    private Long memberId;
     private String accessToken;
     private String refreshToken;
 }

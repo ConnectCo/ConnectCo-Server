@@ -8,6 +8,6 @@ import java.util.UUID;
 @Getter
 @Builder
 public class EventLikeResponse {
-    private UUID eventId;
-    private UUID memberId;
+    private Long eventId;
+    private Long memberId;
 }

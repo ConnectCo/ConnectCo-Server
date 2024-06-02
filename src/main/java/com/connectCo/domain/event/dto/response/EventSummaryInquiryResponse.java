@@ -9,7 +9,7 @@ import java.util.UUID;
 @Getter
 @Builder
 public class EventSummaryInquiryResponse {
-    private UUID eventId;
+    private Long eventId;
     private String organizationName;
     private String name;
     private LocalDate startAt;

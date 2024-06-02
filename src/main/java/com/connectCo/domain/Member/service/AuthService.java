@@ -9,6 +9,6 @@ import java.util.UUID;
 public interface AuthService {
     JwtToken getToken(Member member);
 
-    UUID getLoginMemberId();
+    Long getLoginMemberId();
     Member getLoginMember();
 }

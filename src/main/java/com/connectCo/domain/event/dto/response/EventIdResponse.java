@@ -8,5 +8,5 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 public class EventIdResponse {
-    private UUID eventId;
+    private Long eventId;
 }

@@ -30,8 +30,8 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public UUID getLoginMemberId() {
-        return UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName());
+    public Long getLoginMemberId() {
+        return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     @Override

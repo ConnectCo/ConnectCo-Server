@@ -9,5 +9,5 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 public class StoreIdResponse {
-    private UUID storeId;
+    private Long storeId;
 }

@@ -19,11 +19,11 @@ public class MemberMapper {
         return Member.builder()
                 .clientId(clientId)
                 .loginType(loginType)
-                .role(new ArrayList<>(new ArrayList<>(List.of(Role.USER))))
+                .role(Role.USER)
                 .build();
     }
 
-    public MemberLoginResponse toMemberLoginResponse(UUID memberId, JwtToken jwtToken) {
+    public MemberLoginResponse toMemberLoginResponse(Long memberId, JwtToken jwtToken) {
         return MemberLoginResponse.builder()
                 .memberId(memberId)
                 .accessToken(jwtToken.getAccessToken())

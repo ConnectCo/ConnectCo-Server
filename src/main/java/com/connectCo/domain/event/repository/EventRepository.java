@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public interface EventRepository extends JpaRepository<Event, UUID> {
+public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findAllByMember(Member member);
 

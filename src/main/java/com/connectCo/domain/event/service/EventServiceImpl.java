@@ -56,7 +56,7 @@ public class EventServiceImpl implements EventService{
 
     @Override// 이벤트 수정
     @Transactional
-    public EventSummaryInquiryResponse updateEvent(UUID eventId, EventCreateRequest request, List<MultipartFile> eventImages){
+    public EventSummaryInquiryResponse updateEvent(Long eventId, EventCreateRequest request, List<MultipartFile> eventImages){
 
         Event existingEvent = eventRepository.findById(eventId).orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
 
@@ -69,7 +69,7 @@ public class EventServiceImpl implements EventService{
     }
     @Override//이벤트 삭제
     @Transactional
-    public UUID deleteEvent(UUID eventId){
+    public Long deleteEvent(Long eventId){
         Member member = authService.getLoginMember();
 
         Event event= eventRepository.findById(eventId).orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
@@ -78,7 +78,7 @@ public class EventServiceImpl implements EventService{
             throw new CustomApiException(ErrorCode.INVALID_PERMISSION);
         }
 
-        UUID deletedEventId = event.getId();
+        Long deletedEventId = event.getId();
         eventRepository.deleteById(deletedEventId);
         return deletedEventId;
     }
@@ -114,7 +114,7 @@ public class EventServiceImpl implements EventService{
 
     @Override//이벤트 상세
     @Transactional
-    public EventDetailInquiryResponse inquiryEventDetailByEventId(UUID eventId){
+    public EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId){
         Optional<Event> event = eventRepository.findById(eventId);
         return event
                 .map(eventMapper::toEventDetailInquiryResponse)
@@ -123,7 +123,7 @@ public class EventServiceImpl implements EventService{
 
     @Override
     @Transactional
-    public EventLikeResponse likeEvent(UUID eventId){
+    public EventLikeResponse likeEvent(Long eventId){
         Member member = authService.getLoginMember();
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
 
