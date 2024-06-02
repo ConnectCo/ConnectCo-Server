@@ -1,10 +1,9 @@
 package com.connectCo.domain.sponsorship.entity;
 
+import com.connectCo.domain.event.entity.Event;
+import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,5 +21,16 @@ public class Sponsorship extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Boolean isComplete;
 
+    @Enumerated(EnumType.STRING)
+    private Sponsor sponsor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Event event;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Store store;
 }
