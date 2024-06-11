@@ -26,7 +26,7 @@ jobs:
 
       # 체크아웃
       - name: Checkout
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
 
       # application.yml 생성
       - name: Create application.yml
