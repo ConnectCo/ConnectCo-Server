@@ -28,15 +28,15 @@ jobs:
       - name: Checkout
       - uses: actions/checkout@v3
 
-      # applicaiton.yml 생성
+      # application.yml 생성
       - name: Create application.yml
         run: |
-          cd ./src/main
-          mkdir resources
-          cd ./resources
-          touch ./application.yml
-          echo "${{ secrets.YML }}" >> ./application.yml
-          cd 
+          pushd ./src/main
+          mkdir -p resources
+          cd resources
+          touch application.yml
+          echo "${{ secrets.YML }}" >> application.yml
+          popd
 
       # 빌드 (test 제외)
       - name: Build with Gradle
