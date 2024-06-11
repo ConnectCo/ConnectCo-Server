@@ -1,5 +1,6 @@
 package com.connectCo.domain.Member.service;
 
+import com.connectCo.config.jwt.JwtToken;
 import com.connectCo.domain.Member.client.GoogleMemberClient;
 import com.connectCo.domain.Member.client.KakaoMemberClient;
 import com.connectCo.domain.Member.client.NaverMemberClient;
@@ -9,7 +10,6 @@ import com.connectCo.domain.Member.entity.LoginType;
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.mapper.MemberMapper;
 import com.connectCo.domain.Member.repository.MemberRepository;
-import com.connectCo.config.jwt.JwtToken;
 import com.connectCo.domain.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -8,18 +8,17 @@ import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface EventService {
 
     EventIdResponse createEvent(List<MultipartFile> eventImages, EventCreateRequest request);
 
 
-    EventSummaryInquiryResponse updateEvent(UUID eventId, EventCreateRequest request, List<MultipartFile> eventImages);
-    EventDetailInquiryResponse inquiryEventDetailByEventId(UUID eventId);
-    UUID deleteEvent(UUID eventId);
+    EventSummaryInquiryResponse updateEvent(Long eventId, EventCreateRequest request, List<MultipartFile> eventImages);
+    EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId);
+    Long deleteEvent(Long eventId);
 
-    EventLikeResponse likeEvent(UUID eventId);
+    EventLikeResponse likeEvent(Long eventId);
     List<EventSummaryInquiryResponse> inquiryEventByRecent();
     List<EventSummaryInquiryResponse> inquiryEventByRecommends();
     List<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword);

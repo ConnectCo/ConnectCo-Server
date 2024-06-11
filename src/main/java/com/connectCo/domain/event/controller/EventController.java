@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.UUID;
 
 @Tag(name = "이벤트 API", description = "이벤트 관련 API")
 @RestController
@@ -36,7 +35,7 @@ public class EventController {
     @Operation(summary = "이벤트 수정 API")
     @PutMapping("/{eventId}")
     public BaseResponse <EventSummaryInquiryResponse> updateEvent (
-            @PathVariable UUID eventId,
+            @PathVariable Long eventId,
             @RequestPart EventCreateRequest request,
             @RequestPart(value = "eventImages", required = false) List<MultipartFile> eventImages){
         return BaseResponse.onSuccess(eventService.updateEvent(eventId, request, eventImages));
@@ -44,7 +43,7 @@ public class EventController {
 
     @Operation(summary = "이벤트 삭제 API")
     @DeleteMapping("/{eventId}")
-    public BaseResponse<UUID> deleteEvent(@PathVariable UUID eventId){
+    public BaseResponse<Long> deleteEvent(@PathVariable Long eventId){
         return BaseResponse.onSuccess(eventService.deleteEvent(eventId));
     }
 
@@ -56,7 +55,7 @@ public class EventController {
 
     @Operation(summary = "이벤트 세부사항 조회 API")
     @GetMapping("/{eventId}")
-    public BaseResponse<EventDetailInquiryResponse> inquiryEventByEventId (@PathVariable("eventId") UUID eventId) {
+    public BaseResponse<EventDetailInquiryResponse> inquiryEventByEventId (@PathVariable("eventId") Long eventId) {
         return BaseResponse.onSuccess(eventService.inquiryEventDetailByEventId(eventId));
     }
 
@@ -68,7 +67,7 @@ public class EventController {
 
     @Operation(summary = "이벤트 찜하기 API")
     @PostMapping("/{eventId}/like")
-    public BaseResponse<EventLikeResponse> likeEvent(@PathVariable("eventId") UUID eventId){
+    public BaseResponse<EventLikeResponse> likeEvent(@PathVariable("eventId") Long eventId){
         return BaseResponse.onSuccess(eventService.likeEvent(eventId));
     }
 

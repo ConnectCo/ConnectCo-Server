@@ -1,17 +1,15 @@
 package com.connectCo.domain.Member.mapper;
 
+import com.connectCo.config.jwt.JwtToken;
 import com.connectCo.domain.Member.dto.response.MemberInfoResponse;
 import com.connectCo.domain.Member.dto.response.MemberLoginResponse;
 import com.connectCo.domain.Member.entity.LoginType;
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.entity.Role;
-import com.connectCo.config.jwt.JwtToken;
 import com.connectCo.domain.store.entity.Store;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class MemberMapper {
@@ -19,11 +17,11 @@ public class MemberMapper {
         return Member.builder()
                 .clientId(clientId)
                 .loginType(loginType)
-                .role(new ArrayList<>(new ArrayList<>(List.of(Role.USER))))
+                .role(Role.USER)
                 .build();
     }
 
-    public MemberLoginResponse toMemberLoginResponse(UUID memberId, JwtToken jwtToken) {
+    public MemberLoginResponse toMemberLoginResponse(Long memberId, JwtToken jwtToken) {
         return MemberLoginResponse.builder()
                 .memberId(memberId)
                 .accessToken(jwtToken.getAccessToken())

@@ -4,12 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Getter
 @Builder
 public class EventDetailInquiryResponse {
-    private UUID eventId;
+    private Long eventId;
     private String organizationName;
     private String name;
     private String description;

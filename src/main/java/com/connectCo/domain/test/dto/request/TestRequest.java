@@ -3,7 +3,6 @@ package com.connectCo.domain.test.dto.request;
 import com.connectCo.global.validation.annotation.TestAnnotation;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -1,6 +1,5 @@
 package com.connectCo.domain.store.service;
 
-import com.connectCo.domain.Member.dto.response.MemberInfoResponse;
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.service.AuthService;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
