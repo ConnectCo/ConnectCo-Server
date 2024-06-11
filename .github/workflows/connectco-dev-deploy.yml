@@ -68,7 +68,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.KEY }}
           script: |
-            sudo docker stop $(docker ps -a -q --filter "name=connectco-dev") || true
-            sudo docker rm $(docker ps -a -q --filter "name=connectco-dev") || true
+            sudo docker stop $(sudo docker ps -a -q --filter "name=connectco-dev") || true
+            sudo docker rm $(sudo docker ps -a -q --filter "name=connectco-dev") || true
+            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest || true
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
-            docker run -d --name connectco-dev -p 8080:8080 -e TZ=Asia/Seoul ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
+            sudo docker run -d --name connectco-dev -p 8080:8080 -e TZ=Asia/Seoul ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
