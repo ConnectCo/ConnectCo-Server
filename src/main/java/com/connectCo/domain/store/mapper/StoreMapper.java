@@ -1,6 +1,7 @@
 package com.connectCo.domain.store.mapper;
 
 import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.entity.Store;
@@ -10,13 +11,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class StoreMapper {
 
-    public Store toStore(Member member, StoreCreateRequest request) {
+    public Store toStore(Member member, StoreCreateRequest request, Address address) {
         return Store.builder()
                 .name(request.getName())
-                .address(request.getAddress())
+                .address(address)
                 .storeNumber(request.getStoreNumber())
                 .operatingTime(request.getOperatingTime())
                 .description(request.getDescription())
+                .couponCount(0)
                 .member(member)
                 .build();
     }
@@ -39,6 +41,7 @@ public class StoreMapper {
                 .name(store.getName())
                 .description(store.getDescription())
                 .thumbnail(thumbnail)
+                .couponCount(store.getCouponCount())
                 .build();
     }
 }

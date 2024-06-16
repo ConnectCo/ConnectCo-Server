@@ -2,6 +2,8 @@ package com.connectCo.domain.store.service;
 
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.service.AuthService;
+import com.connectCo.domain.address.entity.Address;
+import com.connectCo.domain.address.service.AddressService;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.response.StoreIdResponse;
 import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
@@ -22,14 +24,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private final StoreImageRepository storeImageRepository;
     private final StoreLikeRepository storeLikeRepository;
     private final StoreMapper storeMapper;
+
     private final AuthService authService;
+    private final AddressService addressService;
     private final S3FileComponent s3FileComponent;
 
     /*
@@ -40,7 +43,10 @@ public class StoreServiceImpl implements StoreService {
     public StoreIdResponse createStore(List<MultipartFile> storeImages, StoreCreateRequest request) {
         Member member = authService.getLoginMember();
 
-        Store newStore = createAndSaveStore(member, request);
+        Address newAddress = addressService.createAddress(
+                request.getDetailAddress(), request.getLatitude(), request.getLongitude());
+
+        Store newStore = createAndSaveStore(member, request, newAddress);
 
         List<StoreImage> newStoreImages = createAndSaveStoreImages(newStore, storeImages);
 
@@ -71,8 +77,8 @@ public class StoreServiceImpl implements StoreService {
     /*
      * Store 객체를 생성하고 DB에 저장하는 함수
      */
-    private Store createAndSaveStore(Member member, StoreCreateRequest request) {
-        Store store = storeMapper.toStore(member, request);
+    private Store createAndSaveStore(Member member, StoreCreateRequest request, Address address) {
+        Store store = storeMapper.toStore(member, request, address);
         return storeRepository.save(store);
     }
 

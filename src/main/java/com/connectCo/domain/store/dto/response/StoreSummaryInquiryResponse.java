@@ -10,4 +10,5 @@ public class StoreSummaryInquiryResponse {
     private String name;
     private String description;
     private String thumbnail;
+    private int couponCount;
 }

@@ -14,7 +14,9 @@ public class StoreCreateRequest {
     @ExistStore
     private String name;
     @NotBlank(message = "가게 주소는 필수 입력값입니다.")
-    private String address;
+    private String detailAddress;
+    private double latitude;
+    private double longitude;
     private String storeNumber;
     private String operatingTime;
     private String description;
