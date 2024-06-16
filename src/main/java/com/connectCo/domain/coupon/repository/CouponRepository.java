@@ -14,4 +14,5 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     List<Coupon> findAllByStore(Store store);
 
     Page<Coupon> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
 }

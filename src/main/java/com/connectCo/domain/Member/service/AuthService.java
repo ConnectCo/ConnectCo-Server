@@ -8,5 +8,6 @@ public interface AuthService {
     JwtToken getToken(Member member);
 
     Long getLoginMemberId();
+
     Member getLoginMember();
 }

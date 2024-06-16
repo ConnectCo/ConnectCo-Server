@@ -29,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -117,4 +116,7 @@ public class CouponServiceImpl implements CouponService {
                 .toList();
     }
 
+    public List<Coupon> inquiryCouponByStore(Store store) {
+        return couponRepository.findAllByStore(store);
+    }
 }

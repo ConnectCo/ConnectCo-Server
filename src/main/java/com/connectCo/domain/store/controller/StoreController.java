@@ -1,6 +1,7 @@
 package com.connectCo.domain.store.controller;
 
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
+import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
 import com.connectCo.domain.store.dto.response.StoreIdResponse;
 import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.service.StoreService;
@@ -33,5 +34,11 @@ public class StoreController {
     @GetMapping("/like")
     public BaseResponse<List<StoreSummaryInquiryResponse>> inquiryStoreByLike() {
         return BaseResponse.onSuccess(storeService.inquiryStoreByLike());
+    }
+
+    @Operation(summary = "가게 상세조회 API")
+    @GetMapping
+    public BaseResponse<StoreDetailInquiryResponse> inquiryStoreDetail(@PathVariable("storeId") Long storeId) {
+        return BaseResponse.onSuccess(storeService.inquiryStoreDetail(storeId));
     }
 }
