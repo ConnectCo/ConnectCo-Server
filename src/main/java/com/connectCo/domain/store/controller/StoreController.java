@@ -52,6 +52,13 @@ public class StoreController {
         return BaseResponse.onSuccess(storeService.deleteStore(storeId));
     }
 
+    @Operation(summary = "가게 찜하기 API")
+    @PostMapping("/like")
+    public BaseResponse<Boolean> likeStore(
+            @Parameter(description = "찜할 가게 id") @PathVariable Long storeId) {
+        return BaseResponse.onSuccess(storeService.likeStore(storeId));
+    }
+
     @Operation(summary = "가게 상세조회 API")
     @GetMapping
     public BaseResponse<StoreDetailInquiryResponse> inquiryStoreDetail(

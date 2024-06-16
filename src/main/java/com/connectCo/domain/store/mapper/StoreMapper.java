@@ -9,6 +9,7 @@ import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
 import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.entity.StoreImage;
+import com.connectCo.domain.store.entity.StoreLike;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -32,6 +33,14 @@ public class StoreMapper {
         return StoreImage.builder()
                 .store(store)
                 .url(url)
+                .build();
+    }
+
+    public StoreLike toStoreLike(Store store, Member member) {
+        return StoreLike.builder()
+                .store(store)
+                .member(member)
+                .isChecked(true)
                 .build();
     }
 

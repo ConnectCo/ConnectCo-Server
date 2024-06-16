@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.IllegalFormatCodePointException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -86,6 +87,7 @@ public class StoreServiceImpl implements StoreService {
      * 특정 가게 삭제
      */
     @Override
+    @Transactional
     public StoreIdResponse deleteStore(Long storeId) {
         Member member = authService.getLoginMember();
         Store store = loadStore(storeId);
@@ -101,6 +103,22 @@ public class StoreServiceImpl implements StoreService {
         store.delete();
 
         return new StoreIdResponse(storeId);
+    }
+
+    /*
+     * 특정 가게 찜하기
+     */
+    @Override
+    @Transactional
+    public Boolean likeStore(Long storeId) {
+        Member member = authService.getLoginMember();
+        Store store = loadStore(storeId);
+
+        Optional<StoreLike> storeLike = storeLikeRepository.findByMemberAndStore(member, store);
+
+        return storeLike.map(StoreLike::changeLike)
+                .orElseGet(() -> storeLikeRepository.save(storeMapper.toStoreLike(store, member)).isChecked());
+
     }
 
     /*
