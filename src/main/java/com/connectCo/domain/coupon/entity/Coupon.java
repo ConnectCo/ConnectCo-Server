@@ -1,12 +1,14 @@
 package com.connectCo.domain.coupon.entity;
 
 import com.connectCo.domain.store.entity.Store;
+import com.connectCo.domain.store.entity.StoreImage;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -48,7 +50,19 @@ public class Coupon extends BaseEntity {
     private Store store;
 
     @OneToMany(mappedBy = "coupon")
-    private List<CouponImage> images;
+    private List<CouponImage> images=new ArrayList<>();
+
+    public void changeImages(List<CouponImage> couponImages) {
+        // 기존 이미지가 있다면 삭제
+        if(this.images != null) removeImages();
+
+        // 새로운 이미지로 변경
+        this.images = couponImages;
+    }
+
+    private void removeImages() {
+        this.images.forEach(BaseEntity::delete);
+    }
 
 }
 
