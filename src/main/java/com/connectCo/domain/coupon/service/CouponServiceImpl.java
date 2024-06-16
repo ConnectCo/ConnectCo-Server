@@ -85,7 +85,7 @@ public class CouponServiceImpl implements CouponService {
     @Transactional
     public CouponIdResponse createCoupon(List<MultipartFile> couponImages, CouponCreateRequest request) {
 
-        Store store = storeService.findById(request.getStoreId());
+        Store store = storeService.loadStore(request.getStoreId());
         //storeRepository에 접근해서 클라이언트에서 받은 storeid를 가지고 jpa를 통해 store객체 찾기
 
         Coupon newCoupon = createAndSaveCoupon(store, request);

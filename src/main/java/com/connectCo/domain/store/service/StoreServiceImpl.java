@@ -7,6 +7,7 @@ import com.connectCo.domain.address.service.AddressService;
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.coupon.service.CouponService;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
+import com.connectCo.domain.store.dto.request.StoreUpdateRequest;
 import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
 import com.connectCo.domain.store.dto.response.StoreIdResponse;
 import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
@@ -20,6 +21,7 @@ import com.connectCo.domain.store.repository.StoreLikeRepository;
 import com.connectCo.domain.store.repository.StoreRepository;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
+import com.connectCo.global.validation.ParamValidator;
 import com.connectCo.utils.S3FileComponent;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,29 +41,47 @@ public class StoreServiceImpl implements StoreService {
     private final StoreImageRepository storeImageRepository;
     private final StoreLikeRepository storeLikeRepository;
     private final StoreMapper storeMapper;
+    private final StoreImageService storeImageService;
 
     private final AuthService authService;
     private final AddressService addressService;
     private final S3FileComponent s3FileComponent;
 
     /*
-     * 새로운 가게를 등록하는 서비스 함수
+     * 새로운 가게를 등록
      */
     @Override
     @Transactional
     public StoreIdResponse createStore(List<MultipartFile> storeImages, StoreCreateRequest request) {
         Member member = authService.getLoginMember();
-
-        Address newAddress = addressService.createAddress(
-                request.getDetailAddress(), request.getLatitude(), request.getLongitude());
-
+        Address newAddress = getAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
         Store newStore = createAndSaveStore(member, request, newAddress);
 
-        List<StoreImage> newStoreImages = createAndSaveStoreImages(newStore, storeImages);
-
+        List<StoreImage> newStoreImages = (storeImages != null) ?
+                storeImageService.createAndSaveStoreImages(newStore, storeImages) : List.of();
         newStore.changeImages(newStoreImages);
-
         return new StoreIdResponse(newStore.getId());
+    }
+
+    /*
+     * 특정 가게 정보 업데이트
+     */
+    @Override
+    @Transactional
+    public StoreIdResponse updateStore(Long storeId, List<MultipartFile> newImages, StoreUpdateRequest request) {
+        Member member = authService.getLoginMember();
+        Store store = loadStore(storeId);
+
+        // 수정 권한 유효성 검사
+        ParamValidator.validModify(member.getId(), store.getMember().getId());
+
+        Address newAddress = getAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
+        store.updateStoreInfo(request, newAddress);
+
+        // 이미지 업데이트
+        storeImageService.updateStoreImages(store, request.getExistingImages(), newImages);
+
+        return new StoreIdResponse(store.getId());
     }
 
     /*
@@ -71,10 +92,8 @@ public class StoreServiceImpl implements StoreService {
         Store store = loadStore(storeId);
 
         return storeMapper.toStoreDetailInquiryResponse(store,
-                store.getImages().stream()
-                        .map(StoreImage::getUrl).toList(),
-                store.getCoupons().stream()
-                        .map(storeMapper::toStoreCoupon).toList());
+                store.getImages().stream().map(StoreImage::getUrl).toList(),
+                store.getCoupons().stream().map(storeMapper::toStoreCoupon).toList());
     }
 
     /*
@@ -87,10 +106,7 @@ public class StoreServiceImpl implements StoreService {
         List<Store> storeList = storeLikeRepository.findAllByMemberAndIsChecked(member, true).stream()
                 .map(StoreLike::getStore)
                 .toList();
-
-        return storeList.stream()
-                .map(storeMapper::toStoreSummaryInquiryResponse)
-                .toList();
+        return storeList.stream().map(storeMapper::toStoreSummaryInquiryResponse).toList();
     }
 
     /*
@@ -99,10 +115,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public List<StoreSummaryInquiryResponse> inquiryStoreMine() {
         Member member = authService.getLoginMember();
-
-        return getStoresByMember(member).stream()
-                .map(storeMapper::toStoreSummaryInquiryResponse)
-                .toList();
+        return getStoresByMember(member).stream().map(storeMapper::toStoreSummaryInquiryResponse).toList();
     }
 
     /*
@@ -110,6 +123,10 @@ public class StoreServiceImpl implements StoreService {
      */
     @Override
     public List<StoreLocationInquiryResponse> inquiryStoreByLocation(double latitude, double longitude, int radius) {
+        // 위도, 경도, 반경 값 유효성 검사
+        ParamValidator.validLocation(latitude, longitude);
+        ParamValidator.validRadius(radius);
+
         List<Object[]> results = storeRepository.findStoresByLocationWithDistance(latitude, longitude, radius);
         return results.stream()
                 .map(result -> storeMapper.toStoreLocationInquiryResponse(
@@ -125,14 +142,10 @@ public class StoreServiceImpl implements StoreService {
         return storeRepository.findAllByMember(member);
     }
 
-    /*
-     * StoreId를 기반으로 Store객체를 반환
-     */
-    @Override
-    public Store findById(Long storeId) {
-        return storeRepository.findById(storeId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Store not found with id: " + storeId));
+    private Address getAddress(String detailAddress, double latitude, double longitude) {
+        // 위도, 경도 값 유효성 검사
+        ParamValidator.validLocation(latitude, longitude);
+        return addressService.createAddress(detailAddress, latitude, longitude);
     }
 
     /*
@@ -141,17 +154,6 @@ public class StoreServiceImpl implements StoreService {
     private Store createAndSaveStore(Member member, StoreCreateRequest request, Address address) {
         Store store = storeMapper.toStore(member, request, address);
         return storeRepository.save(store);
-    }
-
-    /*
-     * 가게 이미지 객체를 생성하고 DB에 저장
-     */
-    private List<StoreImage> createAndSaveStoreImages(Store newStore, List<MultipartFile> storeImages) {
-        return storeImages.stream()
-                .map(storeImage -> s3FileComponent.uploadFile("store", storeImage))
-                .map(storeUrl -> storeMapper.toStoreImage(newStore, storeUrl))
-                .map(storeImageRepository::save)
-                .toList();
     }
 
     /*

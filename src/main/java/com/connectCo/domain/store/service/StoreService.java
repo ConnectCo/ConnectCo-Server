@@ -3,6 +3,7 @@ package com.connectCo.domain.store.service;
 
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
+import com.connectCo.domain.store.dto.request.StoreUpdateRequest;
 import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
 import com.connectCo.domain.store.dto.response.StoreIdResponse;
 import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
@@ -16,14 +17,13 @@ import java.util.UUID;
 public interface StoreService {
 
     StoreIdResponse createStore(List<MultipartFile> storeImages, StoreCreateRequest request);
+    StoreIdResponse updateStore(Long storeId, List<MultipartFile> newImages, StoreUpdateRequest request);
     StoreDetailInquiryResponse inquiryStoreDetail(Long storeId);
     List<StoreSummaryInquiryResponse> inquiryStoreByLike();
     List<StoreSummaryInquiryResponse> inquiryStoreMine();
     List<StoreLocationInquiryResponse> inquiryStoreByLocation(double latitude, double longitude, int radius);
-
     List<Store> getStoresByMember(Member member);
-
-    Store findById(Long storeId);
+    Store loadStore(Long storeId);
 
     
 }

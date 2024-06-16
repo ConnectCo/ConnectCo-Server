@@ -1,6 +1,7 @@
 package com.connectCo.domain.store.controller;
 
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
+import com.connectCo.domain.store.dto.request.StoreUpdateRequest;
 import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
 import com.connectCo.domain.store.dto.response.StoreIdResponse;
 import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
@@ -8,6 +9,8 @@ import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +29,25 @@ public class StoreController {
 
     @Operation(summary = "가게 등록 API")
     @PostMapping
-    public BaseResponse<StoreIdResponse> createStore(@RequestPart(value = "storeImages", required = false) List<MultipartFile> storeImages,
-                                                     @Valid @RequestPart("request") StoreCreateRequest request) {
+    public BaseResponse<StoreIdResponse> createStore(
+            @RequestPart(value = "storeImages", required = false) List<MultipartFile> storeImages,
+            @Valid @RequestPart("request") StoreCreateRequest request) {
         return BaseResponse.onSuccess(storeService.createStore(storeImages, request));
+    }
+
+    @Operation(summary = "가게 수정 API")
+    @PatchMapping
+    public BaseResponse<StoreIdResponse> updateStore(
+            @Parameter(description = "수정할 가게 id") @PathVariable Long storeId,
+            @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages,
+            @Valid @RequestPart("request") StoreUpdateRequest request) {
+        return BaseResponse.onSuccess(storeService.updateStore(storeId, newImages, request));
     }
 
     @Operation(summary = "가게 상세조회 API")
     @GetMapping
-    public BaseResponse<StoreDetailInquiryResponse> inquiryStoreDetail(@PathVariable("storeId") Long storeId) {
+    public BaseResponse<StoreDetailInquiryResponse> inquiryStoreDetail(
+            @Parameter(description = "특정 가게 id") @PathVariable Long storeId) {
         return BaseResponse.onSuccess(storeService.inquiryStoreDetail(storeId));
     }
 
@@ -50,6 +64,11 @@ public class StoreController {
     }
 
     @Operation(summary = "내 주변 가게 조회 API")
+    @Parameters(value = {
+            @Parameter(name = "latitude", description = "현재 유저 위도 위치입니다. (-90 ~ 90)"),
+            @Parameter(name = "longitude", description = "현재 유저의 경도 위치입니다. (-180 ~ 180)"),
+            @Parameter(name = "radius", description = "조회할 위치 반경입니다. (0보다 큰 정수)")
+    })
     @GetMapping("/location")
     public BaseResponse<List<StoreLocationInquiryResponse>> inquiryStoreByLocation(
             @RequestParam(value = "latitude") double latitude,
