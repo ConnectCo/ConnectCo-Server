@@ -30,15 +30,21 @@ public class StoreController {
         return BaseResponse.onSuccess(storeService.createStore(storeImages, request));
     }
 
+    @Operation(summary = "가게 상세조회 API")
+    @GetMapping
+    public BaseResponse<StoreDetailInquiryResponse> inquiryStoreDetail(@PathVariable("storeId") Long storeId) {
+        return BaseResponse.onSuccess(storeService.inquiryStoreDetail(storeId));
+    }
+
     @Operation(summary = "내가 찜한 가게 조회 API")
     @GetMapping("/like")
     public BaseResponse<List<StoreSummaryInquiryResponse>> inquiryStoreByLike() {
         return BaseResponse.onSuccess(storeService.inquiryStoreByLike());
     }
 
-    @Operation(summary = "가게 상세조회 API")
-    @GetMapping
-    public BaseResponse<StoreDetailInquiryResponse> inquiryStoreDetail(@PathVariable("storeId") Long storeId) {
-        return BaseResponse.onSuccess(storeService.inquiryStoreDetail(storeId));
+    @Operation(summary = "내 가게 조회 API")
+    @GetMapping("/mine")
+    public BaseResponse<List<StoreSummaryInquiryResponse>> inquiryStoreMine() {
+        return BaseResponse.onSuccess(storeService.inquiryStoreMine());
     }
 }

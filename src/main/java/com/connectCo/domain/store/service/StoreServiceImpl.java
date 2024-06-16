@@ -62,6 +62,23 @@ public class StoreServiceImpl implements StoreService {
         return new StoreIdResponse(newStore.getId());
     }
 
+    /*
+     * 특정 가게 상세 조회
+     */
+    @Override
+    public StoreDetailInquiryResponse inquiryStoreDetail(Long storeId) {
+        Store store = loadStore(storeId);
+
+        return storeMapper.toStoreDetailInquiryResponse(store,
+                store.getImages().stream()
+                        .map(StoreImage::getUrl).toList(),
+                store.getCoupons().stream()
+                        .map(storeMapper::toStoreCoupon).toList());
+    }
+
+    /*
+     * 내가 찜한 가게 조회
+     */
     @Override
     public List<StoreSummaryInquiryResponse> inquiryStoreByLike() {
         Member member = authService.getLoginMember();
@@ -75,25 +92,28 @@ public class StoreServiceImpl implements StoreService {
                 .toList();
     }
 
+    /*
+     * 나의 가게 조회
+     */
     @Override
-    public StoreDetailInquiryResponse inquiryStoreDetail(Long storeId) {
-        Store store = loadStore(storeId);
+    public List<StoreSummaryInquiryResponse> inquiryStoreMine() {
+        Member member = authService.getLoginMember();
 
-        return storeMapper.toStoreDetailInquiryResponse(store,
-                store.getImages().stream()
-                        .map(StoreImage::getUrl).toList(),
-                store.getCoupons().stream()
-                        .map(storeMapper::toStoreCoupon).toList());
+        return getStoresByMember(member).stream()
+                .map(storeMapper::toStoreSummaryInquiryResponse)
+                .toList();
     }
 
-
+    /*
+     * 특정 member의 가게 목록을 조회
+     */
     @Override
     public List<Store> getStoresByMember(Member member) {
         return storeRepository.findAllByMember(member);
     }
 
     /*
-     * StoreId를 기반으로 Store객체를 반환하는 함수
+     * StoreId를 기반으로 Store객체를 반환
      */
     @Override
     public Store findById(Long storeId) {
@@ -103,7 +123,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     /*
-     * Store 객체를 생성하고 DB에 저장하는 함수
+     * Store 객체를 생성하고 DB에 저장
      */
     private Store createAndSaveStore(Member member, StoreCreateRequest request, Address address) {
         Store store = storeMapper.toStore(member, request, address);
@@ -111,7 +131,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     /*
-     * 가게 이미지 객체를 생성하고 DB에 저장하는 함수
+     * 가게 이미지 객체를 생성하고 DB에 저장
      */
     private List<StoreImage> createAndSaveStoreImages(Store newStore, List<MultipartFile> storeImages) {
         return storeImages.stream()
@@ -121,6 +141,9 @@ public class StoreServiceImpl implements StoreService {
                 .toList();
     }
 
+    /*
+     * 가게 id로 가게 엔티티를 반환
+     */
     public Store loadStore(Long storeId) {
         return storeRepository.findById(storeId)
                 .orElseThrow(() -> new CustomApiException(ErrorCode.STORE_NOT_FOUND));

@@ -15,8 +15,10 @@ import java.util.UUID;
 public interface StoreService {
 
     StoreIdResponse createStore(List<MultipartFile> storeImages, StoreCreateRequest request);
-    List<StoreSummaryInquiryResponse> inquiryStoreByLike();
     StoreDetailInquiryResponse inquiryStoreDetail(Long storeId);
+    List<StoreSummaryInquiryResponse> inquiryStoreByLike();
+    List<StoreSummaryInquiryResponse> inquiryStoreMine();
+
     List<Store> getStoresByMember(Member member);
 
     Store findById(Long storeId);
