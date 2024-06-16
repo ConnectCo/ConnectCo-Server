@@ -4,8 +4,6 @@ import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.service.AuthService;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.address.service.AddressService;
-import com.connectCo.domain.coupon.entity.Coupon;
-import com.connectCo.domain.coupon.service.CouponService;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.request.StoreUpdateRequest;
 import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
@@ -16,23 +14,18 @@ import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.entity.StoreImage;
 import com.connectCo.domain.store.entity.StoreLike;
 import com.connectCo.domain.store.mapper.StoreMapper;
-import com.connectCo.domain.store.repository.StoreImageRepository;
 import com.connectCo.domain.store.repository.StoreLikeRepository;
 import com.connectCo.domain.store.repository.StoreRepository;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.global.validation.ParamValidator;
-import com.connectCo.utils.S3FileComponent;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

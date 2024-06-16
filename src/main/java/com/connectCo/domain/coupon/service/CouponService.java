@@ -4,8 +4,8 @@ import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.response.CouponIdResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.entity.Coupon;
-import org.springframework.web.multipart.MultipartFile;
 import com.connectCo.domain.store.entity.Store;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

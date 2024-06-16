@@ -7,11 +7,8 @@ import com.connectCo.domain.store.dto.request.StoreUpdateRequest;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
-import java.lang.reflect.Array;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

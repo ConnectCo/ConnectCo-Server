@@ -12,7 +12,6 @@ import com.connectCo.domain.store.entity.Store;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface StoreService {
 

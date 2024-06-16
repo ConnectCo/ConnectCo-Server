@@ -1,12 +1,10 @@
 package com.connectCo.domain.coupon.mapper;
 
-import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.coupon.entity.CouponImage;
 import com.connectCo.domain.store.entity.Store;
-import com.connectCo.domain.store.entity.StoreImage;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
