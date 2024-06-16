@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Builder
@@ -16,7 +15,7 @@ public class MemberInfoResponse {
     @Getter
     @Builder
     public static class MyStores {
-        private UUID storeId;
+        private Long storeId;
         private String name;
     }
 }

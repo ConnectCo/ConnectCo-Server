@@ -5,7 +5,6 @@ import com.connectCo.domain.store.dto.response.StoreIdResponse;
 import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.common.BaseResponse;
-import com.connectCo.global.exception.CustomApiException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

@@ -1,28 +1,30 @@
-package com.connectCo.domain.event.entity;
+package com.connectCo.domain.sponsorship.entity;
 
-import com.connectCo.domain.coupon.entity.Coupon;
+import com.connectCo.domain.event.entity.Event;
+import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 @Getter
 @Entity
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
-public class EventCoupon extends BaseEntity {
+public class Sponsorship extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String accessUrl;
+    private Boolean isComplete;
 
-    @Column(nullable = false)
-    private String authorizeCode;
+    @Enumerated(EnumType.STRING)
+    private Sponsor sponsor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
@@ -30,8 +32,5 @@ public class EventCoupon extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private Coupon coupon;
-
-//    private int validCount;
-//    private LocalDate validDate;
+    private Store store;
 }
