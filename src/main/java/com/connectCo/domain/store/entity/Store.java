@@ -1,9 +1,11 @@
 package com.connectCo.domain.store.entity;
 
 import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.address.entity.Address;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
@@ -30,10 +32,14 @@ public class Store extends BaseEntity {
     private String storeNumber;
 
     @Column(nullable = false)
-    private String address;
+    private String operatingTime;
 
     @Column(nullable = false)
-    private String operatingTime;
+    private int couponCount;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Address address;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
@@ -41,6 +47,10 @@ public class Store extends BaseEntity {
 
     @OneToMany(mappedBy = "store")
     private List<StoreImage> images = new ArrayList<>();
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
     public void changeImages(List<StoreImage> storeImages) {
         // 기존 이미지가 있다면 삭제
