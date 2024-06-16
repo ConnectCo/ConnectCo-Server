@@ -24,6 +24,9 @@ public enum  ErrorCode {
     DUPLICATED_USER_NAME(HttpStatus.CONFLICT, "MEMBER402", "이미 존재하는 사용자입니다."),
     INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "MEMBER403", "권한이 존재하지 않습니다."),
 
+    // Store
+    STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE401", "가게를 찾을 수 없습니다."),
+
     //Event
     EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "EVENT401", "이벤트를 찾을 수 업습니다."),
     ;

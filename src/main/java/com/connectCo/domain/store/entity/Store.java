@@ -2,6 +2,7 @@ package com.connectCo.domain.store.entity;
 
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
+import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -48,6 +49,9 @@ public class Store extends BaseEntity {
     @OneToMany(mappedBy = "store")
     private List<StoreImage> images = new ArrayList<>();
 
+    @OneToMany(mappedBy = "store")
+    private List<Coupon> coupons = new ArrayList<>();
+
     public void setAddress(Address address) {
         this.address = address;
     }
@@ -62,5 +66,9 @@ public class Store extends BaseEntity {
 
     private void removeImages() {
         this.images.forEach(BaseEntity::delete);
+    }
+
+    private void updateCoupon(List<Coupon> coupons) {
+        this.coupons = coupons;
     }
 }

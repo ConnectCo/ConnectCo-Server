@@ -4,7 +4,10 @@ import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.service.AuthService;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.address.service.AddressService;
+import com.connectCo.domain.coupon.entity.Coupon;
+import com.connectCo.domain.coupon.service.CouponService;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
+import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
 import com.connectCo.domain.store.dto.response.StoreIdResponse;
 import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.entity.Store;
@@ -14,6 +17,8 @@ import com.connectCo.domain.store.mapper.StoreMapper;
 import com.connectCo.domain.store.repository.StoreImageRepository;
 import com.connectCo.domain.store.repository.StoreLikeRepository;
 import com.connectCo.domain.store.repository.StoreRepository;
+import com.connectCo.global.exception.CustomApiException;
+import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.utils.S3FileComponent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -68,6 +73,17 @@ public class StoreServiceImpl implements StoreService {
                 .toList();
     }
 
+    @Override
+    public StoreDetailInquiryResponse inquiryStoreDetail(Long storeId) {
+        Store store = loadStore(storeId);
+
+        return storeMapper.toStoreDetailInquiryResponse(store,
+                store.getImages().stream()
+                        .map(StoreImage::getUrl).toList(),
+                store.getCoupons().stream()
+                        .map(storeMapper::toStoreCoupon).toList());
+    }
+
 
     @Override
     public List<Store> getStoresByMember(Member member) {
@@ -91,5 +107,10 @@ public class StoreServiceImpl implements StoreService {
                 .map(storeUrl -> storeMapper.toStoreImage(newStore, storeUrl))
                 .map(storeImageRepository::save)
                 .toList();
+    }
+
+    public Store loadStore(Long storeId) {
+        return storeRepository.findById(storeId)
+                .orElseThrow(() -> new CustomApiException(ErrorCode.STORE_NOT_FOUND));
     }
 }

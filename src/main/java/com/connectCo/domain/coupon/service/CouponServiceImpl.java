@@ -8,6 +8,7 @@ import com.connectCo.domain.coupon.entity.CouponLike;
 import com.connectCo.domain.coupon.mapper.CouponMapper;
 import com.connectCo.domain.coupon.repository.CouponLikeRepository;
 import com.connectCo.domain.coupon.repository.CouponRepository;
+import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CouponeServiceImpl implements CouponService {
+public class CouponServiceImpl implements CouponService {
 
     private final StoreService storeService;
     private final AuthService authService;
@@ -48,5 +49,10 @@ public class CouponeServiceImpl implements CouponService {
         return couponList.stream()
                 .map(couponMapper::toCouponSummaryInquiryResponse)
                 .toList();
+    }
+
+    @Override
+    public List<Coupon> inquiryCouponByStore(Store store) {
+        return couponRepository.findAllByStore(store);
     }
 }
