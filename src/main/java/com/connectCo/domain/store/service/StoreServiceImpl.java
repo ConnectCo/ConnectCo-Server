@@ -74,7 +74,7 @@ public class StoreServiceImpl implements StoreService {
      * StoreId를 기반으로 Store객체를 반환하는 함수
      */
     @Override
-    public Store findById(UUID storeId) {
+    public Store findById(Long storeId) {
         return storeRepository.findById(storeId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Store not found with id: " + storeId));

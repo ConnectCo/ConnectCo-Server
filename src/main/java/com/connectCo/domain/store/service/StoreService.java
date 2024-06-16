@@ -17,7 +17,7 @@ public interface StoreService {
     List<StoreSummaryInquiryResponse> inquiryStoreByLike();
     List<Store> getStoresByMember(Member member);
 
-    Store findById(UUID storeId);
+    Store findById(Long storeId);
 
     
 }

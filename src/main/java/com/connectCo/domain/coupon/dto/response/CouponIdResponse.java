@@ -8,5 +8,5 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 public class CouponIdResponse {
-    private UUID couponId;
+    private Long couponId;
 }
