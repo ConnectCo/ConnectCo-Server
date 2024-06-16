@@ -9,6 +9,7 @@ import com.connectCo.domain.coupon.service.CouponService;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
 import com.connectCo.domain.store.dto.response.StoreIdResponse;
+import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
 import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.entity.StoreImage;
@@ -101,6 +102,18 @@ public class StoreServiceImpl implements StoreService {
 
         return getStoresByMember(member).stream()
                 .map(storeMapper::toStoreSummaryInquiryResponse)
+                .toList();
+    }
+
+    /*
+     * 내 주변 가게 목록 조회
+     */
+    @Override
+    public List<StoreLocationInquiryResponse> inquiryStoreByLocation(double latitude, double longitude, int radius) {
+        List<Object[]> results = storeRepository.findStoresByLocationWithDistance(latitude, longitude, radius);
+        return results.stream()
+                .map(result -> storeMapper.toStoreLocationInquiryResponse(
+                        (Store) result[0], ((Number) result[1]).doubleValue()))
                 .toList();
     }
 

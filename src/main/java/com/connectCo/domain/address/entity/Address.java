@@ -1,10 +1,7 @@
 package com.connectCo.domain.address.entity;
 
 import com.connectCo.global.common.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Where;
 
@@ -25,4 +22,13 @@ public class Address extends BaseEntity {
     private double latitude;
 
     private double longitude;
+
+    @Column(name = "location", columnDefinition = "POINT")
+    private String location;
+
+    @PrePersist
+    @PreUpdate
+    public void updateLocation() {
+        this.location = String.format("POINT(%f %f)", this.longitude, this.latitude);
+    }
 }

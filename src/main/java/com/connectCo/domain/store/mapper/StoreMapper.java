@@ -5,6 +5,7 @@ import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
+import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
 import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.entity.StoreImage;
@@ -35,16 +36,12 @@ public class StoreMapper {
     }
 
     public StoreSummaryInquiryResponse toStoreSummaryInquiryResponse(Store store) {
-        String thumbnail = store.getImages().stream()
-                .findFirst()
-                .map(StoreImage::getUrl)
-                .orElse(null);
 
         return StoreSummaryInquiryResponse.builder()
                 .storeId(store.getId())
                 .name(store.getName())
                 .description(store.getDescription())
-                .thumbnail(thumbnail)
+                .thumbnail(store.getThumbnail())
                 .couponCount(store.getCouponCount())
                 .build();
     }
@@ -60,6 +57,20 @@ public class StoreMapper {
                 .operatingTime(store.getOperatingTime())
                 .images(images)
                 .coupons(coupons)
+                .build();
+    }
+
+    public StoreLocationInquiryResponse toStoreLocationInquiryResponse(Store store, double distance) {
+
+        return StoreLocationInquiryResponse.builder()
+                .storeId(store.getId())
+                .name(store.getName())
+                .description(store.getDescription())
+                .thumbnail(store.getThumbnail())
+                .latitude(store.getAddress().getLatitude())
+                .longitude(store.getAddress().getLongitude())
+                .couponCount(store.getCouponCount())
+                .distance(distance)
                 .build();
     }
 

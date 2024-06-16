@@ -68,7 +68,14 @@ public class Store extends BaseEntity {
         this.images.forEach(BaseEntity::delete);
     }
 
-    private void updateCoupon(List<Coupon> coupons) {
+    public void updateCoupon(List<Coupon> coupons) {
         this.coupons = coupons;
+    }
+
+    public String getThumbnail() {
+        return this.images.stream()
+                .findFirst()
+                .map(StoreImage::getUrl)
+                .orElse(null);
     }
 }

@@ -3,6 +3,7 @@ package com.connectCo.domain.store.controller;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
 import com.connectCo.domain.store.dto.response.StoreIdResponse;
+import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
 import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.common.BaseResponse;
@@ -46,5 +47,14 @@ public class StoreController {
     @GetMapping("/mine")
     public BaseResponse<List<StoreSummaryInquiryResponse>> inquiryStoreMine() {
         return BaseResponse.onSuccess(storeService.inquiryStoreMine());
+    }
+
+    @Operation(summary = "내 주변 가게 조회 API")
+    @GetMapping("/location")
+    public BaseResponse<List<StoreLocationInquiryResponse>> inquiryStoreByLocation(
+            @RequestParam(value = "latitude") double latitude,
+            @RequestParam(value = "longitude") double longitude,
+            @RequestParam(value = "radius") int radius) {
+        return BaseResponse.onSuccess(storeService.inquiryStoreByLocation(latitude, longitude, radius));
     }
 }
