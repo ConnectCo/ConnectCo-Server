@@ -1,7 +1,6 @@
 package com.connectCo.domain.coupon.entity;
 
 import com.connectCo.domain.store.entity.Store;
-import com.connectCo.domain.store.entity.StoreImage;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;

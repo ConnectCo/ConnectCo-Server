@@ -28,4 +28,9 @@ public class StoreLike extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Store store;
+
+    public boolean changeLike() {
+        isChecked = !isChecked;
+        return isChecked;
+    }
 }
