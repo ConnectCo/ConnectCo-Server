@@ -10,6 +10,8 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
+import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +41,7 @@ public class Store extends BaseEntity {
     @Column(nullable = false)
     private int couponCount;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn
     private Address address;
 
@@ -62,6 +64,7 @@ public class Store extends BaseEntity {
         this.description = request.getDescription();
         this.storeNumber = request.getStoreNumber();
         this.operatingTime = request.getOperatingTime();
+        this.address.delete();
         this.address = address;
     }
 
@@ -79,5 +82,9 @@ public class Store extends BaseEntity {
                 .findFirst()
                 .map(StoreImage::getUrl)
                 .orElse(null);
+    }
+
+    public void deleteImage() {
+        this.images = List.of();
     }
 }

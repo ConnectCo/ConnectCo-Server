@@ -38,14 +38,12 @@ import java.util.UUID;
 public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
-    private final StoreImageRepository storeImageRepository;
     private final StoreLikeRepository storeLikeRepository;
     private final StoreMapper storeMapper;
     private final StoreImageService storeImageService;
 
     private final AuthService authService;
     private final AddressService addressService;
-    private final S3FileComponent s3FileComponent;
 
     /*
      * 새로운 가게를 등록
@@ -82,6 +80,27 @@ public class StoreServiceImpl implements StoreService {
         storeImageService.updateStoreImages(store, request.getExistingImages(), newImages);
 
         return new StoreIdResponse(store.getId());
+    }
+
+    /*
+     * 특정 가게 삭제
+     */
+    @Override
+    public StoreIdResponse deleteStore(Long storeId) {
+        Member member = authService.getLoginMember();
+        Store store = loadStore(storeId);
+
+        // 삭제 권한 유효성 검사
+        ParamValidator.validModify(member.getId(), store.getMember().getId());
+
+        // 가게 이미지 삭제
+        store.deleteImage();
+        storeImageService.deleteExistingImages(store.getImages());
+
+        // 가게 soft 삭제
+        store.delete();
+
+        return new StoreIdResponse(storeId);
     }
 
     /*

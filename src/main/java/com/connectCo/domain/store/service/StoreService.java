@@ -18,6 +18,7 @@ public interface StoreService {
 
     StoreIdResponse createStore(List<MultipartFile> storeImages, StoreCreateRequest request);
     StoreIdResponse updateStore(Long storeId, List<MultipartFile> newImages, StoreUpdateRequest request);
+    StoreIdResponse deleteStore(Long storeId);
     StoreDetailInquiryResponse inquiryStoreDetail(Long storeId);
     List<StoreSummaryInquiryResponse> inquiryStoreByLike();
     List<StoreSummaryInquiryResponse> inquiryStoreMine();

@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,7 +36,7 @@ public class StoreController {
         return BaseResponse.onSuccess(storeService.createStore(storeImages, request));
     }
 
-    @Operation(summary = "가게 수정 API")
+    @Operation(summary = "가게 수정 API", description = "본인만 가능")
     @PatchMapping
     public BaseResponse<StoreIdResponse> updateStore(
             @Parameter(description = "수정할 가게 id") @PathVariable Long storeId,
@@ -44,10 +45,17 @@ public class StoreController {
         return BaseResponse.onSuccess(storeService.updateStore(storeId, newImages, request));
     }
 
+    @Operation(summary = "가게 삭제 API", description = "본인만 가능")
+    @DeleteMapping
+    public BaseResponse<StoreIdResponse> deleteStore(
+            @Parameter(description = "삭제할 가게 id") @PathVariable Long storeId) {
+        return BaseResponse.onSuccess(storeService.deleteStore(storeId));
+    }
+
     @Operation(summary = "가게 상세조회 API")
     @GetMapping
     public BaseResponse<StoreDetailInquiryResponse> inquiryStoreDetail(
-            @Parameter(description = "특정 가게 id") @PathVariable Long storeId) {
+            @Parameter(description = "조회할 가게 id") @PathVariable Long storeId) {
         return BaseResponse.onSuccess(storeService.inquiryStoreDetail(storeId));
     }
 

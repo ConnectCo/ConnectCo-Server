@@ -31,4 +31,10 @@ public class Address extends BaseEntity {
     public void updateLocation() {
         this.location = String.format("POINT(%f %f)", this.longitude, this.latitude);
     }
+
+    public void updateAddress(String detailAddress, double latitude, double longitude) {
+        this.detailAddress = detailAddress;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }
