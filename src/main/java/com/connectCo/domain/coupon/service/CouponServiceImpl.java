@@ -12,19 +12,16 @@ import com.connectCo.domain.coupon.mapper.CouponMapper;
 import com.connectCo.domain.coupon.repository.CouponImageRepository;
 import com.connectCo.domain.coupon.repository.CouponLikeRepository;
 import com.connectCo.domain.coupon.repository.CouponRepository;
-import com.connectCo.domain.store.dto.request.StoreCreateRequest;
-import com.connectCo.domain.store.dto.response.StoreIdResponse;
 import com.connectCo.domain.store.entity.Store;
-import com.connectCo.domain.store.entity.StoreImage;
-import com.connectCo.domain.store.repository.StoreRepository;
 import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.utils.S3FileComponent;
+
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityNotFoundException;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -89,7 +85,7 @@ public class CouponServiceImpl implements CouponService {
     @Transactional
     public CouponIdResponse createCoupon(List<MultipartFile> couponImages, CouponCreateRequest request) {
 
-        Store store = storeService.findById(request.getStoreId());
+        Store store = storeService.loadStore(request.getStoreId());
         //storeRepository에 접근해서 클라이언트에서 받은 storeid를 가지고 jpa를 통해 store객체 찾기
 
         Coupon newCoupon = createAndSaveCoupon(store, request);
@@ -119,6 +115,7 @@ public class CouponServiceImpl implements CouponService {
                 .map(couponImageRepository::save)
                 .toList();
     }
+
 
     @Override
     @Transactional
@@ -169,6 +166,10 @@ public class CouponServiceImpl implements CouponService {
         couponRepository.save(coupon);
 
         return new CouponIdResponse(coupon.getId());
+    }
+
+    public List<Coupon> inquiryCouponByStore(Store store) {
+        return couponRepository.findAllByStore(store);
     }
 
 }

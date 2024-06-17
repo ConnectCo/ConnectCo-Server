@@ -1,6 +1,10 @@
 package com.connectCo.domain.coupon.entity;
 
+
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
+
+import com.connectCo.domain.sponsorship.entity.Sponsorship;
+
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -45,6 +49,9 @@ public class Coupon extends BaseEntity {
 
     @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CouponImage> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "coupon")
+    private List<Sponsorship> sponsorshipList=new ArrayList<>();
 
     public void changeImages(List<CouponImage> couponImages) {
         // 기존 이미지가 있다면 삭제
