@@ -79,12 +79,7 @@ public class Coupon extends BaseEntity {
         this.priorityTarget = request.getPriorityTarget();
         this.notification = request.getNotification();
         this.expiredAt = LocalDate.parse(request.getExpiredAt());
-        setUpdatedAt(LocalDateTime.now()); // 업데이트 시각 갱신
-    }
 
-    private void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
-
 
 }
