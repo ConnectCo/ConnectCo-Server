@@ -66,6 +66,7 @@ public class EventServiceImpl implements EventService{
 
         return eventMapper.toEventSummaryInquiryResponse(eventRepository.save(existingEvent));
     }
+
     @Override//이벤트 삭제
     @Transactional
     public Long deleteEvent(Long eventId){

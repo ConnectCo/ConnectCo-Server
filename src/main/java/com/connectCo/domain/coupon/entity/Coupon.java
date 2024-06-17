@@ -1,6 +1,10 @@
 package com.connectCo.domain.coupon.entity;
 
+
+import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
+
 import com.connectCo.domain.sponsorship.entity.Sponsorship;
+
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -8,6 +12,7 @@ import lombok.*;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,26 +43,26 @@ public class Coupon extends BaseEntity {
     @Column(nullable = false)
     private LocalDate expiredAt;
 
-//    @Enumerated(EnumType.STRING)
-//    private CouponType couponType;
-//
-//    private int validCount;
-//    private int validPeriod;
-//    private LocalDate validDate;
+    //    @Enumerated(EnumType.STRING)
+    //    private CouponType couponType;
+    //
+    //    private int validCount;
+    //    private int validPeriod;
+    //    private LocalDate validDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Store store;
 
     @OneToMany(mappedBy = "coupon")
-    private List<CouponImage> images=new ArrayList<>();
+    private List<CouponImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "coupon")
     private List<Sponsorship> sponsorshipList=new ArrayList<>();
 
     public void changeImages(List<CouponImage> couponImages) {
         // 기존 이미지가 있다면 삭제
-        if(this.images != null) removeImages();
+        if (this.images != null) removeImages();
 
         // 새로운 이미지로 변경
         this.images = couponImages;
@@ -65,7 +70,16 @@ public class Coupon extends BaseEntity {
 
     private void removeImages() {
         this.images.forEach(BaseEntity::delete);
+        this.images.clear();
+    }
+
+    public void updateDetails(CouponCreateRequest request) {
+        this.name = request.getName();
+        this.description = request.getDescription();
+        this.priorityTarget = request.getPriorityTarget();
+        this.notification = request.getNotification();
+        this.expiredAt = LocalDate.parse(request.getExpiredAt());
+
     }
 
 }
-
