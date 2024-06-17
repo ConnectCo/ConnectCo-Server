@@ -4,14 +4,20 @@ import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
 import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationIdResponse;
 import com.connectCo.domain.organization.dto.response.OrganizationInquiryResponse;
+import com.connectCo.domain.organization.dto.response.OrganizationSearchResponse;
 import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.global.common.BaseResponse;
 import com.connectCo.global.common.dto.AddressRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "조직 API", description = "조직 관련 API")
 @RestController
@@ -57,5 +63,15 @@ public class OrganizationController {
     public BaseResponse<OrganizationInquiryResponse> inquiryOrganization(
             @Parameter(description = "조회할 조직 id") @PathVariable Long organizationId) {
         return BaseResponse.onSuccess(organizationService.inquiryOrganization(organizationId));
+    }
+
+    @Operation(summary = "조직 검색 API", description = "이름 오름차순으로 정렬")
+    @Parameters(value = {
+            @Parameter(name = "keyword", description = "이름에 포함되는 키워드로 한글자 이상 입력"),
+    })
+    @GetMapping("/search")
+    public BaseResponse<List<OrganizationSearchResponse>> searchOrganization(
+            @RequestParam(name = "keyword") String keyword) {
+        return BaseResponse.onSuccess(organizationService.searchOrganization(keyword));
     }
 }

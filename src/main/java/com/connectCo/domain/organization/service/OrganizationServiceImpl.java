@@ -9,6 +9,7 @@ import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
 import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationIdResponse;
 import com.connectCo.domain.organization.dto.response.OrganizationInquiryResponse;
+import com.connectCo.domain.organization.dto.response.OrganizationSearchResponse;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.mapper.OrganizationMapper;
 import com.connectCo.domain.organization.repository.OrganizationRepository;
@@ -18,6 +19,8 @@ import com.connectCo.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -86,6 +89,14 @@ public class OrganizationServiceImpl implements OrganizationService {
         Organization organization = loadOrganization(organizationId);
 
         return organizationMapper.toOrganizationInquiryResponse(organization);
+    }
+
+    @Override
+    public List<OrganizationSearchResponse> searchOrganization(String keyword) {
+
+        List<Organization> organizations = organizationRepository.findAllByNameContainingIgnoreCaseOrderByNameAsc(keyword);
+
+        return organizations.stream().map(organizationMapper::toOrganizationSearchResponse).toList();
     }
 
     @Override
