@@ -32,5 +32,5 @@ public class Sponsorship extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private Store store;
+    private Store coupon;
 }
