@@ -1,5 +1,6 @@
 package com.connectCo.domain.organization.entity;
 
+import com.connectCo.domain.address.entity.Address;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,8 +21,9 @@ public class Organization extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String address;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn
+    private Address address;
 
     @Enumerated(EnumType.STRING)
     private OrganizationType organizationType;
