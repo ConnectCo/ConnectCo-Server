@@ -39,11 +39,18 @@ public class Coupon extends BaseEntity {
     @Column(nullable = false)
     private LocalDate expiredAt;
 
+    //    @Enumerated(EnumType.STRING)
+    //    private CouponType couponType;
+    //
+    //    private int validCount;
+    //    private int validPeriod;
+    //    private LocalDate validDate;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Store store;
 
-    @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "coupon")
     private List<CouponImage> images = new ArrayList<>();
 
     public void changeImages(List<CouponImage> couponImages) {
