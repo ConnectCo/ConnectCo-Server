@@ -45,10 +45,21 @@ public class CouponController {
     @Operation(summary = "쿠폰 등록 API")
     @PostMapping
     public BaseResponse<CouponIdResponse> createCoupon(@RequestPart(value = "couponImages", required = false) List<MultipartFile> couponImages,
-                                                       @RequestPart("request") CouponCreateRequest request) {
+                                                       @RequestPart("request") @Valid CouponCreateRequest request) {
         return BaseResponse.onSuccess(couponService.createCoupon(couponImages, request));
     }
 
+    @Operation(summary = "쿠폰 삭제 API")
+    @DeleteMapping("/{couponId}")
+    public BaseResponse<CouponIdResponse> deleteCoupon(@PathVariable Long couponId) {
+        return BaseResponse.onSuccess(couponService.deleteCoupon(couponId));
+    }
 
-
+    @Operation(summary = "쿠폰 수정 API")
+    @PutMapping("/{couponId}")
+    public BaseResponse<CouponIdResponse> updateCoupon(@PathVariable Long couponId,
+                                                       @RequestPart(value = "couponImages", required = false) List<MultipartFile> couponImages,
+                                                       @RequestPart("request") @Valid CouponCreateRequest request) {
+        return BaseResponse.onSuccess(couponService.updateCoupon(couponId, couponImages, request));
+    }
 }

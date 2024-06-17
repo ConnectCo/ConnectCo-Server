@@ -18,7 +18,10 @@ import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.entity.StoreImage;
 import com.connectCo.domain.store.repository.StoreRepository;
 import com.connectCo.domain.store.service.StoreService;
+import com.connectCo.global.exception.CustomApiException;
+import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.utils.S3FileComponent;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -115,6 +118,57 @@ public class CouponServiceImpl implements CouponService {
                 .map(couponUrl -> couponMapper.toCouponImage(newCoupon, couponUrl))
                 .map(couponImageRepository::save)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public CouponIdResponse deleteCoupon(Long couponId) {
+        Member member= authService.getLoginMember();
+
+        Coupon coupon=couponRepository.findById(couponId).orElseThrow(() -> new CustomApiException(ErrorCode.COUPON_NOT_FOUND));
+        if(!coupon.getStore().getMember().equals(member)){
+            throw new CustomApiException(ErrorCode.INVALID_PERMISSION);
+        }
+
+        Long deletedCouponId= coupon.getId();
+        couponRepository.deleteById(deletedCouponId);
+        return new CouponIdResponse(deletedCouponId);
+    }
+
+
+
+    @Override
+    @Transactional
+    public CouponIdResponse updateCoupon(Long couponId, @Nullable List<MultipartFile> couponImages, CouponCreateRequest request) {
+        Member member = authService.getLoginMember();
+
+        // 쿠폰을 찾아서 권한 확인
+        Coupon coupon = couponRepository.findById(couponId).orElseThrow(() -> new CustomApiException(ErrorCode.COUPON_NOT_FOUND));
+        if (!coupon.getStore().getMember().equals(member)) {
+            throw new CustomApiException(ErrorCode.INVALID_PERMISSION);
+        }
+
+        // 쿠폰의 정보를 업데이트
+        coupon.updateDetails(request);
+
+        // 새로운 이미지가 제공되었을 경우
+        if (couponImages != null && !couponImages.isEmpty()) {
+            // 기존 이미지 삭제
+            List<CouponImage> existingImages = couponImageRepository.findAllByCoupon(coupon);
+            for (CouponImage image : existingImages) {
+                couponImageRepository.delete(image);
+                s3FileComponent.deleteFile(image.getUrl());
+            }
+
+            // 새로운 이미지 업로드 및 저장
+            List<CouponImage> newCouponImages = createAndSaveCouponImages(coupon, couponImages);
+            coupon.changeImages(newCouponImages);
+        }
+
+        // 쿠폰 저장
+        couponRepository.save(coupon);
+
+        return new CouponIdResponse(coupon.getId());
     }
 
 }

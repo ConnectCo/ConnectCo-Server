@@ -26,6 +26,12 @@ public enum  ErrorCode {
 
     //Event
     EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "EVENT401", "이벤트를 찾을 수 업습니다."),
+
+
+    //Coupon
+    COUPON_NOT_FOUND(HttpStatus.NOT_FOUND,"COUPON401","해당 쿠폰을 찾을 수 없습니다."),
+
+
     ;
 
     private final HttpStatus httpStatus;
