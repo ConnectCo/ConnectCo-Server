@@ -1,6 +1,7 @@
 package com.connectCo.domain.organization.entity;
 
 import com.connectCo.domain.address.entity.Address;
+import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,4 +35,15 @@ public class Organization extends BaseEntity {
     @Column(nullable = false)
     private String academicDayUrl;
 
+
+    public void updateOrganizationInfo(OrganizationUpdateRequest request) {
+        this.name = request.getName();
+        this.homepageUrl = request.getHomepageUrl();
+        this.academicDayUrl = request.getAcademicDayUrl();
+    }
+
+    public void updateOrganizationAddress(Address address) {
+        this.address.delete();
+        this.address = address;
+    }
 }

@@ -1,16 +1,16 @@
 package com.connectCo.domain.organization.controller;
 
 import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
+import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationIdResponse;
 import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.global.common.BaseResponse;
+import com.connectCo.global.common.dto.AddressRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "조직 API", description = "조직 관련 API")
 @RestController
@@ -25,6 +25,23 @@ public class OrganizationController {
     public BaseResponse<OrganizationIdResponse> createOrganization(
             @RequestBody OrganizationCreateRequest request) {
         return BaseResponse.onSuccess(organizationService.createOrganization(request));
+    }
+
+    @Operation(summary = "조직 기본 정보 수정 API", description = "이름, url 정보만 수정 가능(관리자 계정만 가능)")
+    @PatchMapping("/{organizationId}")
+    public BaseResponse<OrganizationIdResponse> updateOrganizationInfo(
+            @Parameter(description = "수정할 조직 id") @PathVariable Long organizationId,
+            @RequestBody OrganizationUpdateRequest request) {
+        return BaseResponse.onSuccess(organizationService.updateOrganizationInfo(organizationId, request));
+    }
+
+    @Operation(summary = "조직 주소 정보 수정 API", description = "주소 정보만 수정 가능(관리자 계정만 가능)")
+    @PatchMapping("/{organizationId}/address")
+    public BaseResponse<OrganizationIdResponse> updateOrganizationAddress(
+            @Parameter(description = "수정할 조직 id") @PathVariable Long organizationId,
+            @RequestBody AddressRequest request ) {
+        return BaseResponse.onSuccess(organizationService.updateOrganizationAddress(organizationId, request));
+
     }
 
 }

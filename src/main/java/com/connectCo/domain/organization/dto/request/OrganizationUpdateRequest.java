@@ -10,12 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrganizationCreateRequest {
+public class OrganizationUpdateRequest {
     private String name;
-    private OrganizationType type;
-    private String detailAddress;
-    private double latitude;
-    private double longitude;
     private String homepageUrl;
     private String academicDayUrl;
 }

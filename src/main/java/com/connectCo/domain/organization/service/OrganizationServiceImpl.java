@@ -6,14 +6,17 @@ import com.connectCo.domain.Member.service.AuthService;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.address.service.AddressService;
 import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
+import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationIdResponse;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.mapper.OrganizationMapper;
 import com.connectCo.domain.organization.repository.OrganizationRepository;
+import com.connectCo.global.common.dto.AddressRequest;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +38,39 @@ public class OrganizationServiceImpl implements OrganizationService {
         Organization newOrganization = organizationRepository.save(organizationMapper.toOrganization(request, address));
 
         return new OrganizationIdResponse(newOrganization.getId());
+    }
+
+    @Override
+    @Transactional
+    public OrganizationIdResponse updateOrganizationInfo(Long organizationId, OrganizationUpdateRequest request) {
+
+        Member member = authService.getLoginMember();
+        validateAdmin(member);
+
+        Organization organization = loadOrganization(organizationId);
+        organization.updateOrganizationInfo(request);
+
+        return new OrganizationIdResponse(organization.getId());
+    }
+
+    @Override
+    @Transactional
+    public OrganizationIdResponse updateOrganizationAddress(Long organizationId, AddressRequest request) {
+
+        Member member = authService.getLoginMember();
+        validateAdmin(member);
+
+        Organization organization = loadOrganization(organizationId);
+        Address address = addressService.createAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
+        organization.updateOrganizationAddress(address);
+
+        return new OrganizationIdResponse(organization.getId());
+    }
+
+    @Override
+    public Organization loadOrganization(Long organizationId) {
+        return organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
     }
 
     private void validateAdmin(Member member) {

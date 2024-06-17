@@ -36,6 +36,9 @@ public enum  ErrorCode {
     //Event
     EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "EVENT401", "이벤트를 찾을 수 업습니다."),
 
+    // Organization
+    ORGANIZATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "ORGANIZATION401", "조직을 찾을 수 없습니다."),
+
     ;
 
     private final HttpStatus httpStatus;
