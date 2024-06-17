@@ -3,6 +3,7 @@ package com.connectCo.domain.organization.controller;
 import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
 import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationIdResponse;
+import com.connectCo.domain.organization.dto.response.OrganizationInquiryResponse;
 import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.global.common.BaseResponse;
 import com.connectCo.global.common.dto.AddressRequest;
@@ -51,4 +52,10 @@ public class OrganizationController {
         return BaseResponse.onSuccess(organizationService.deleteOrganization(organizationId));
     }
 
+    @Operation(summary = "조직 상세 조회 API")
+    @GetMapping("/{organizationId}")
+    public BaseResponse<OrganizationInquiryResponse> inquiryOrganization(
+            @Parameter(description = "조회할 조직 id") @PathVariable Long organizationId) {
+        return BaseResponse.onSuccess(organizationService.inquiryOrganization(organizationId));
+    }
 }

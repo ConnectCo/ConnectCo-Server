@@ -8,6 +8,7 @@ import com.connectCo.domain.address.service.AddressService;
 import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
 import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationIdResponse;
+import com.connectCo.domain.organization.dto.response.OrganizationInquiryResponse;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.mapper.OrganizationMapper;
 import com.connectCo.domain.organization.repository.OrganizationRepository;
@@ -65,6 +66,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    @Transactional
     public OrganizationIdResponse deleteOrganization(Long organizationId) {
 
         validateAdmin();
@@ -76,6 +78,14 @@ public class OrganizationServiceImpl implements OrganizationService {
         organization.delete();
 
         return new OrganizationIdResponse(organization.getId());
+    }
+
+    @Override
+    public OrganizationInquiryResponse inquiryOrganization(Long organizationId) {
+
+        Organization organization = loadOrganization(organizationId);
+
+        return organizationMapper.toOrganizationInquiryResponse(organization);
     }
 
     @Override
