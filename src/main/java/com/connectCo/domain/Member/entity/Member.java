@@ -1,9 +1,13 @@
 package com.connectCo.domain.Member.entity;
 
+import com.connectCo.domain.search.entity.Search;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Where;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -33,6 +37,9 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "member")
+    private List<Search> searchList= new ArrayList<>();
 
     public void saveRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
