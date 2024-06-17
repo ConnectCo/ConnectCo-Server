@@ -31,8 +31,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public OrganizationIdResponse createOrganization(OrganizationCreateRequest request) {
 
-        Member member = authService.getLoginMember();
-        validateAdmin(member);
+        validateAdmin();
 
         Address address = addressService.createAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
         Organization newOrganization = organizationRepository.save(organizationMapper.toOrganization(request, address));
@@ -44,8 +43,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional
     public OrganizationIdResponse updateOrganizationInfo(Long organizationId, OrganizationUpdateRequest request) {
 
-        Member member = authService.getLoginMember();
-        validateAdmin(member);
+        validateAdmin();
 
         Organization organization = loadOrganization(organizationId);
         organization.updateOrganizationInfo(request);
@@ -57,12 +55,25 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional
     public OrganizationIdResponse updateOrganizationAddress(Long organizationId, AddressRequest request) {
 
-        Member member = authService.getLoginMember();
-        validateAdmin(member);
+        validateAdmin();
 
         Organization organization = loadOrganization(organizationId);
         Address address = addressService.createAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
         organization.updateOrganizationAddress(address);
+
+        return new OrganizationIdResponse(organization.getId());
+    }
+
+    @Override
+    public OrganizationIdResponse deleteOrganization(Long organizationId) {
+
+        validateAdmin();
+
+        Organization organization = loadOrganization(organizationId);
+
+        //TODO 관련된 Event들 다 삭제 처리되는지 확인 필요
+
+        organization.delete();
 
         return new OrganizationIdResponse(organization.getId());
     }
@@ -73,7 +84,8 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
     }
 
-    private void validateAdmin(Member member) {
+    private void validateAdmin() {
+        Member member = authService.getLoginMember();
         if (!member.getRole().equals(Role.ADMIN))
             throw new CustomApiException(ErrorCode.USER_NOT_ADMIN);
     }

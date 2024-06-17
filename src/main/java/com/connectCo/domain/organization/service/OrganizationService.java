@@ -10,5 +10,6 @@ public interface OrganizationService {
     OrganizationIdResponse createOrganization(OrganizationCreateRequest request);
     OrganizationIdResponse updateOrganizationInfo(Long organizationId, OrganizationUpdateRequest request);
     OrganizationIdResponse updateOrganizationAddress(Long organizationId, AddressRequest request);
+    OrganizationIdResponse deleteOrganization(Long organizationId);
     Organization loadOrganization(Long organizationId);
 }
