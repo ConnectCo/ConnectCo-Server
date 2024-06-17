@@ -1,6 +1,9 @@
 package com.connectCo.domain.store.entity;
 
 import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.address.entity.Address;
+import com.connectCo.domain.coupon.entity.Coupon;
+import com.connectCo.domain.store.dto.request.StoreUpdateRequest;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,10 +33,14 @@ public class Store extends BaseEntity {
     private String storeNumber;
 
     @Column(nullable = false)
-    private String address;
+    private String operatingTime;
 
     @Column(nullable = false)
-    private String operatingTime;
+    private int couponCount;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn
+    private Address address;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
@@ -42,15 +49,39 @@ public class Store extends BaseEntity {
     @OneToMany(mappedBy = "store")
     private List<StoreImage> images = new ArrayList<>();
 
-    public void changeImages(List<StoreImage> storeImages) {
-        // 기존 이미지가 있다면 삭제
-        if(this.images != null) removeImages();
+    @OneToMany(mappedBy = "store")
+    private List<Coupon> coupons = new ArrayList<>();
 
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public void updateStoreInfo(StoreUpdateRequest request, Address address) {
+        this.name = request.getName();
+        this.description = request.getDescription();
+        this.storeNumber = request.getStoreNumber();
+        this.operatingTime = request.getOperatingTime();
+        this.address.delete();
+        this.address = address;
+    }
+
+    public void changeImages(List<StoreImage> storeImages) {
         // 새로운 이미지로 변경
         this.images = storeImages;
     }
 
-    private void removeImages() {
-        this.images.forEach(BaseEntity::delete);
+    public void updateCoupon(List<Coupon> coupons) {
+        this.coupons = coupons;
+    }
+
+    public String getThumbnail() {
+        return this.images.stream()
+                .findFirst()
+                .map(StoreImage::getUrl)
+                .orElse(null);
+    }
+
+    public void deleteImage() {
+        this.images = List.of();
     }
 }

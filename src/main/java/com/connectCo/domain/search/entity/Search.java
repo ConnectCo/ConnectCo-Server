@@ -1,6 +1,8 @@
-package com.connectCo.domain.store.entity;
+package com.connectCo.domain.search.entity;
+
 
 import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,25 +14,15 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
-public class StoreLike extends BaseEntity {
-
+public class Search extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private boolean isChecked;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Store store;
-
-    public boolean changeLike() {
-        isChecked = !isChecked;
-        return isChecked;
-    }
+    @Column(nullable = false)
+    private String content;
 }
