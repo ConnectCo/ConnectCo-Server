@@ -2,12 +2,14 @@ package com.connectCo.domain.event.entity;
 
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.organization.entity.Organization;
+import com.connectCo.domain.sponsorship.entity.Sponsorship;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -66,6 +68,9 @@ public class Event extends BaseEntity {
 
     @OneToMany(mappedBy = "event")
     private List<EventImage> images;
+
+    @OneToMany(mappedBy = "event")
+    private List<Sponsorship> sponsorshipList=new ArrayList<>();
 
     public void changeImages(List<EventImage> eventImages) {
         // 기존 이미지가 있다면 삭제

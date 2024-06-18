@@ -39,6 +39,9 @@ public enum  ErrorCode {
     // Organization
     ORGANIZATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "ORGANIZATION401", "조직을 찾을 수 없습니다."),
 
+    //Coupon
+    COUPON_NOT_FOUND(HttpStatus.NOT_FOUND,"COUPON401","해당 쿠폰을 찾을 수 없습니다."),
+
     ;
 
     private final HttpStatus httpStatus;

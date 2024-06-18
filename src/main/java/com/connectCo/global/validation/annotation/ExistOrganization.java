@@ -1,7 +1,6 @@
 package com.connectCo.global.validation.annotation;
 
 import com.connectCo.global.validation.validator.OrganizationExistValidator;
-import com.connectCo.global.validation.validator.StoreExistValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

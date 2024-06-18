@@ -5,7 +5,6 @@ import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationInquiryResponse;
 import com.connectCo.domain.organization.dto.response.OrganizationSearchResponse;
 import com.connectCo.domain.organization.entity.Organization;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Component;
 
 @Component

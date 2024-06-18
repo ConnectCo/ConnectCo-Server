@@ -1,9 +1,7 @@
 package com.connectCo.global.validation.validator;
 
 import com.connectCo.domain.organization.repository.OrganizationRepository;
-import com.connectCo.domain.store.repository.StoreRepository;
 import com.connectCo.global.validation.annotation.ExistOrganization;
-import com.connectCo.global.validation.annotation.ExistStore;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;

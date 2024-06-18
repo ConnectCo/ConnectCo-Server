@@ -1,7 +1,5 @@
 package com.connectCo.domain.organization.dto.request;
 
-import com.connectCo.domain.organization.entity.OrganizationType;
-import com.connectCo.global.validation.annotation.ExistOrganization;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
