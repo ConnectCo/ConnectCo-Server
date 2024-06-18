@@ -18,7 +18,7 @@ public interface EventService {
     EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId);
 
     EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword, int page, int size);
-    EventPagingResponse<EventSummaryInquiryResponse> inquiryEvents(InquiryType type, double latitude, double longitude, int page, int size);
+    EventPagingResponse<EventSummaryInquiryResponse> inquiryEvents(InquiryType type, Long organizationId, double latitude, double longitude, int page, int size);
     EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByMember(int page, int size);
     EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByLike(int page, int size);
     EventPagingResponse<EventLocationInquiryResponse> inquiryEventByLocation(double latitude, double longitude, int radius, int page, int size);

@@ -19,17 +19,34 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("SELECT DISTINCT e FROM Event e JOIN e.organization o WHERE " +
             "(e.name LIKE%:keyword% OR o.name LIKE%:keyword% OR e.description LIKE %:keyword%) AND e.expiredAt >= :currentDate")
     Page<Event> findAllBySearch(@Param("keyword") String keyword, @Param("currentDate") LocalDate currentDate, Pageable pageable);
+
     // 추천순으로 이벤트 조회
     @Query("SELECT e FROM Event e WHERE e.expiredAt >= :currentDate ORDER BY e.likeCount DESC")
     Page<Event> findAllByRecommend(@Param("currentDate") LocalDate currentDate, Pageable pageable);
+    // 조직 내의 추천순으로 이벤트 조회)
+    @Query("SELECT e FROM Event e WHERE e.organization.id = :organizationId AND e.expiredAt >= :currentDate ORDER BY e.likeCount DESC")
+    Page<Event> findAllByRecommendAndOrganization(@Param("organizationId") Long organizationId,
+                                                  @Param("currentDate") LocalDate currentDate, Pageable pageable);
+
     // 생성순으로 이벤트 조회
     @Query("SELECT e FROM Event e WHERE e.expiredAt >= :currentDate  ORDER BY e.createdAt DESC")
     Page<Event> findAllByCreatedAt(@Param("currentDate") LocalDate currentDate, Pageable pageable);
+    // 조직 내의 생성순으로 이벤트 조회
+    @Query("SELECT e FROM Event e WHERE e.organization.id = :organizationId AND e.expiredAt >= :currentDate ORDER BY e.createdAt DESC")
+    Page<Event> findAllByCreatedAtAndOrganization(@Param("organizationId") Long organizationId,
+                                                  @Param("currentDate") LocalDate currentDate, Pageable pageable);
+
     // 거리순으로 이벤트 조회
     @Query("SELECT e FROM Event e JOIN e.address a WHERE e.expiredAt >= :currentDate " +
             "ORDER BY function('ST_Distance_Sphere', point(a.longitude, a.latitude), point(:longitude, :latitude)) ASC")
     Page<Event> findAllByDistance(@Param("latitude") double latitude, @Param("longitude") double longitude,
                                   @Param("currentDate") LocalDate currentDate, Pageable pageable);
+    // 조직 내의 거리순으로 이벤트 조회
+    @Query("SELECT e FROM Event e JOIN e.address a WHERE e.organization.id = :organizationId AND e.expiredAt >= :currentDate " +
+            "ORDER BY function('ST_Distance_Sphere', point(a.longitude, a.latitude), point(:longitude, :latitude)) ASC")
+    Page<Event> findAllByDistanceAndOrganization(@Param("organizationId") Long organizationId, @Param("latitude") double latitude,
+                                                 @Param("longitude") double longitude, @Param("currentDate") LocalDate currentDate, Pageable pageable);
+
     // 주변 이벤트 조회
     @Query(value = "SELECT e.*, " +
             "ST_Distance_Sphere(POINT(:longitude, :latitude), a.location) / 1000 AS distance " +

@@ -166,33 +166,39 @@ public class EventServiceImpl implements EventService{
      * 조건에 따른 이벤트 조회
      */
     @Override
-    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEvents(InquiryType type, double latitude, double longitude, int page, int size){
+    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEvents(InquiryType type, Long organizationId, double latitude, double longitude, int page, int size){
         LocalDate currentDate = LocalDate.now();
         Pageable pageable = PageRequest.of(page, size);
 
         return switch (type) {
-            case RECOMMEND -> inquiryEventByRecommend(currentDate, pageable);
-            case RECENT -> inquiryEventByCreateAt(currentDate, pageable);
+            case RECOMMEND -> inquiryEventByRecommend(organizationId, currentDate, pageable);
+            case RECENT -> inquiryEventByCreateAt(organizationId, currentDate, pageable);
             case DISTANCE -> {
                 // 위도, 경도 데이터 유효성 검사
                 ParamValidator.validLocation(latitude, longitude);
-                yield inquiryEventByDistance(latitude, longitude, currentDate, pageable);
+                yield inquiryEventByDistance(organizationId, latitude, longitude, currentDate, pageable);
             }
             default -> throw new CustomApiException(ErrorCode.UNKNOWN_INQUIRY_TYPE);
         };
     }
-    private EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByRecommend(LocalDate currentDate, Pageable pageable){
-        Page<Event> eventPage = eventRepository.findAllByRecommend(currentDate, pageable);
+    private EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByRecommend(Long organizationId, LocalDate currentDate, Pageable pageable){
+        Page<Event> eventPage = organizationId != null ?
+                eventRepository.findAllByRecommendAndOrganization(organizationId, currentDate, pageable) :
+                eventRepository.findAllByRecommend(currentDate, pageable);
         return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
     }
 
-    private EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByCreateAt(LocalDate currentDate, Pageable pageable){
-        Page<Event> eventPage = eventRepository.findAllByCreatedAt(currentDate, pageable);
+    private EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByCreateAt(Long organizationId, LocalDate currentDate, Pageable pageable){
+        Page<Event> eventPage = organizationId != null ?
+                eventRepository.findAllByCreatedAtAndOrganization(organizationId, currentDate, pageable) :
+                eventRepository.findAllByCreatedAt(currentDate, pageable);
         return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
     }
 
-    private EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByDistance(double latitude, double longitude, LocalDate currentDate, Pageable pageable) {
-        Page<Event> eventPage = eventRepository.findAllByDistance(latitude, longitude, currentDate, pageable);
+    private EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByDistance(Long organizationId, double latitude, double longitude, LocalDate currentDate, Pageable pageable) {
+        Page<Event> eventPage = organizationId != null ?
+                eventRepository.findAllByDistanceAndOrganization(organizationId,latitude, longitude, currentDate, pageable) :
+                eventRepository.findAllByDistance(latitude, longitude, currentDate, pageable);
         return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
     }
 

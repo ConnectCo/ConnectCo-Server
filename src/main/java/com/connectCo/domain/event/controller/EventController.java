@@ -82,6 +82,7 @@ public class EventController {
     @Operation(summary = "이벤트 조회 API(추천순, 거리순, 최근순)")
     @Parameters(value = {
             @Parameter(name = "type", description = "조회 타입 지정(추천순: RECOMMEND, 거리순: DISTANCE, 최근순: RECENT"),
+            @Parameter(name = "organizationId", description = "조직 ID (필터링에 사용)"),
             @Parameter(name = "latitude", description = "거리순일 경우 유저의 현재 위치의 위도(추천순, 최근순의 경우 사용 X)"),
             @Parameter(name = "longitude", description = "거리순일 경우 유저의 현재 위치의 경도(추천순, 최근순의 경우 사용 X)"),
             @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
@@ -90,11 +91,12 @@ public class EventController {
     @GetMapping
     public BaseResponse<EventPagingResponse<EventSummaryInquiryResponse>> inquiryEvents(
             @RequestParam(name = "type") InquiryType type,
+            @RequestParam(name = "organizationId", required = false) Long organizationId,
             @RequestParam(name = "latitude", required = false) double latitude,
             @RequestParam(name = "longitude", required = false) double longitude,
             @RequestParam(name = "page") int page,
             @RequestParam(name = "size") int size) {
-        return BaseResponse.onSuccess(eventService.inquiryEvents(type, latitude, latitude, page, size));
+        return BaseResponse.onSuccess(eventService.inquiryEvents(type, organizationId, latitude, longitude, page, size));
     }
 
 
