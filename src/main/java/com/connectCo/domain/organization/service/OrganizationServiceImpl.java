@@ -84,9 +84,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public OrganizationInquiryResponse inquiryOrganization(Long organizationId) {
+    public OrganizationInquiryResponse inquiryOrganization(String organizationName) {
 
-        Organization organization = loadOrganization(organizationId);
+        Organization organization = loadOrganizationByName(organizationName);
 
         return organizationMapper.toOrganizationInquiryResponse(organization);
     }
@@ -104,6 +104,13 @@ public class OrganizationServiceImpl implements OrganizationService {
         return organizationRepository.findById(organizationId)
                 .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
     }
+
+    @Override
+    public Organization loadOrganizationByName(String name) {
+        return organizationRepository.findOrganizationByName(name)
+                .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
+    }
+
 
     private void validateAdmin() {
         Member member = authService.getLoginMember();
