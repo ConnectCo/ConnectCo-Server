@@ -90,6 +90,12 @@ public class EventServiceImpl implements EventService{
                 request.getDetailAddress(), request.getLatitude(), request.getLongitude());
         event.updateEventInfo(request, newAddress);
 
+        // 조직을 새로 추가했거나 기존 조직 그대로인 경우
+        if (request.getOrganizationId() != null) {
+            Organization organization = organizationService.loadOrganization(request.getOrganizationId());
+            event.setOrganization(organization);
+        }
+
         // 이미지 업데이트
         eventImageService.updateEventImages(event, request.getExistingImages(), newImages);
 
@@ -136,6 +142,16 @@ public class EventServiceImpl implements EventService{
                 .toList();
     }
 
+    /*
+     * 특정 이벤트 상세 조회
+     */
+    @Override
+    @Transactional
+    public EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId){
+        Event event = loadEvent(eventId);
+        return eventMapper.toEventDetailInquiryResponse(event);
+    }
+
     @Override//이벤트 최신순 조회하기
     @Transactional
     public List<EventSummaryInquiryResponse> inquiryEventByRecent(){
@@ -156,14 +172,7 @@ public class EventServiceImpl implements EventService{
                 .toList();
     }
 
-    @Override//이벤트 상세
-    @Transactional
-    public EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId){
-        Optional<Event> event = eventRepository.findById(eventId);
-        return event
-                .map(eventMapper::toEventDetailInquiryResponse)
-                .orElseThrow(null);
-    }
+
 
     @Override
     @Transactional

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Builder
@@ -11,12 +12,13 @@ public class EventDetailInquiryResponse {
     private Long eventId;
     private String organizationName;
     private String name;
-    private String description;
-    private String priorityTarget;
-    private String benefitTarget;
-    private String notification;
     private LocalDate expiredAt;
+    private String description;
     private LocalDate startAt;
     private LocalDate endAt;
-    private String thumbnail;
+    private String benefitTarget;
+    private String priorityTarget;
+    private String detailAddress;
+    private String notification;
+    List<String> images;
 }

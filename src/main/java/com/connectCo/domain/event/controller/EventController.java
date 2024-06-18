@@ -66,9 +66,10 @@ public class EventController {
         return BaseResponse.onSuccess(eventService.inquiryEventByKeyword(keyword, page, size));
     }
 
-    @Operation(summary = "이벤트 세부사항 조회 API")
+    @Operation(summary = "이벤트 상세 조회 API")
     @GetMapping("/{eventId}")
-    public BaseResponse<EventDetailInquiryResponse> inquiryEventByEventId (@PathVariable("eventId") Long eventId) {
+    public BaseResponse<EventDetailInquiryResponse> inquiryEventByEventId (
+            @Parameter(description = "상세 조회할 이벤트 id") @PathVariable("eventId") Long eventId) {
         return BaseResponse.onSuccess(eventService.inquiryEventDetailByEventId(eventId));
     }
 

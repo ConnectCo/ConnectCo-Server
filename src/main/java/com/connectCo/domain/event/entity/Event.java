@@ -13,6 +13,7 @@ import org.hibernate.annotations.Where;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Entity
@@ -93,6 +94,20 @@ public class Event extends BaseEntity {
         // 새로운 이미지로 변경
         this.images = eventImages;
     }
+
+    public String getThumbnail() {
+        return this.images.stream()
+                .findFirst()
+                .map(EventImage::getUrl)
+                .orElse(null);
+    }
+
+    public String getOrganizationName() {
+        return Optional.ofNullable(organization)
+                .map(Organization::getName)
+                .orElse(null);
+    }
+
     public void increaseLikeCount() {
         this.likeCount++;
     }
