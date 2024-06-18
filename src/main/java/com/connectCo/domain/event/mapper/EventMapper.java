@@ -1,6 +1,7 @@
 package com.connectCo.domain.event.mapper;
 
 import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.event.dto.request.EventCreateRequest;
 import com.connectCo.domain.event.dto.response.EventDetailInquiryResponse;
 import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
@@ -14,7 +15,7 @@ import java.util.Optional;
 @Component
 public class EventMapper {
 
-    public Event toEvent(Member member, EventCreateRequest request){
+    public Event toEvent(Member member, EventCreateRequest request, Address address){
         return Event.builder()
                 .name(request.getName())
                 .startAt(request.getStartAt())
@@ -24,6 +25,7 @@ public class EventMapper {
                 .notification(request.getNotification())
                 .description(request.getDescription())
                 .priorityTarget(request.getPriorityTarget())
+                .address(address)
                 .member(member)
                 .build();
     }

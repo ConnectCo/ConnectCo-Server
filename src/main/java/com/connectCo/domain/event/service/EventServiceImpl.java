@@ -2,7 +2,10 @@ package com.connectCo.domain.event.service;
 
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.service.AuthService;
+import com.connectCo.domain.address.entity.Address;
+import com.connectCo.domain.address.service.AddressService;
 import com.connectCo.domain.event.dto.request.EventCreateRequest;
+import com.connectCo.domain.event.dto.request.EventUpdateRequest;
 import com.connectCo.domain.event.dto.response.EventDetailInquiryResponse;
 import com.connectCo.domain.event.dto.response.EventIdResponse;
 import com.connectCo.domain.event.dto.response.EventLikeResponse;
@@ -20,6 +23,7 @@ import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.domain.store.entity.StoreImage;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
+import com.connectCo.global.validation.ParamValidator;
 import com.connectCo.utils.S3FileComponent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,24 +38,26 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService{
 
-    private final AuthService authService;
     private final EventLikeRepository eventLikeRepository;
     private final EventRepository eventRepository;
-    private final EventImageRepository eventImageRepository;
     private final EventMapper eventMapper;
     private final EventLikeMapper eventLikeMapper;
 
+    private final EventImageService eventImageService;
+    private final AuthService authService;
+    private final AddressService addressService;
     private final OrganizationService organizationService;
-    private final S3FileComponent s3FileComponent;
 
     /*
      * 이벤트 생성
      */
     @Override
     @Transactional
-    public EventIdResponse createEvent(List<MultipartFile> eventImages, EventCreateRequest request){
+    public EventIdResponse createEvent(List<MultipartFile> eventImages, EventCreateRequest request) {
         Member member = authService.getLoginMember();
-        Event newEvent = createAndSaveEvent(member, request);
+        Address newAddress = addressService.createAddress(
+                request.getDetailAddress(), request.getLatitude(), request.getLongitude());
+        Event newEvent = createAndSaveEvent(member, request, newAddress);
 
         // 조직을 선택했다면, 조직 넣어주기
         if (request.getOrganizationId() != null) {
@@ -61,7 +67,7 @@ public class EventServiceImpl implements EventService{
 
         // 이미지가 존재한다면, 이미지 넣어주기
         if (eventImages != null) {
-            List<EventImage> newEventImages = createAndSaveEventImages(newEvent, eventImages);
+            List<EventImage> newEventImages = eventImageService.createAndSaveEventImage(newEvent, eventImages);
             newEvent.changeImages(newEventImages);
         }
 
@@ -70,16 +76,21 @@ public class EventServiceImpl implements EventService{
 
     @Override// 이벤트 수정
     @Transactional
-    public EventSummaryInquiryResponse updateEvent(Long eventId, EventCreateRequest request, List<MultipartFile> eventImages){
+    public EventIdResponse updateEvent(Long eventId, List<MultipartFile> newImages, EventUpdateRequest request) {
+        Member member = authService.getLoginMember();
+        Event event = loadEvent(eventId);
 
-        Event existingEvent = eventRepository.findById(eventId).orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
+        // 수정 권한 유효성 검사(본인이 아닌 경우 수정 불가)
+        ParamValidator.validModify(member.getId(), event.getMember().getId());
 
-        List<EventImage> updateEventImages = updateAndSaveEventImages(existingEvent, eventImages);
+        Address newAddress = addressService.createAddress(
+                request.getDetailAddress(), request.getLatitude(), request.getLongitude());
+        event.updateEventInfo(request, newAddress);
 
-        existingEvent.changeImages(updateEventImages);
+        // 이미지 업데이트
+        eventImageService.updateEventImages(event, request.getExistingImages(), newImages);
 
-
-        return eventMapper.toEventSummaryInquiryResponse(eventRepository.save(existingEvent));
+        return new EventIdResponse(event.getId());
     }
 
     @Override//이벤트 삭제
@@ -188,25 +199,14 @@ public class EventServiceImpl implements EventService{
                 .toList();
     }
 
-    private Event createAndSaveEvent(Member member, EventCreateRequest request) {
-        Event event = eventMapper.toEvent(member, request);
+    private Event createAndSaveEvent(Member member, EventCreateRequest request, Address address) {
+        Event event = eventMapper.toEvent(member, request, address);
         return eventRepository.save(event);
     }
 
-
-    private List<EventImage> createAndSaveEventImages(Event newEvent, List<MultipartFile> eventImages) {
-        return eventImages.stream()
-                .map(eventImage -> s3FileComponent.uploadFile("event", eventImage))
-                .map(eventUrl -> eventMapper.toEventImage(newEvent, eventUrl))
-                .map(eventImageRepository::save)
-                .toList();
-    }
-
-    private List<EventImage> updateAndSaveEventImages(Event updateEvent, List<MultipartFile> eventImages) {
-        return eventImages.stream()
-                .map(eventImage -> s3FileComponent.uploadFile("event", eventImage))
-                .map(eventUrl -> eventMapper.toEventImage(updateEvent, eventUrl))
-                .map(eventImageRepository::save)
-                .toList();
+    @Override
+    public Event loadEvent(Long eventId) {
+        return eventRepository.findById(eventId)
+                .orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
     }
 }

@@ -19,6 +19,4 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT DISTINCT e FROM Event e  WHERE e.expiredAt >= :currentTime GROUP BY e ORDER BY e.likeCount DESC")
     List<Event> findAllByRecommends(@Param("currentTime")LocalDateTime currentTime);
-
-    //Event findById(UUID eventId);
 }

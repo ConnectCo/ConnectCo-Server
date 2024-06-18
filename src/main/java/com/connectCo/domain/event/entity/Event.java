@@ -1,6 +1,8 @@
 package com.connectCo.domain.event.entity;
 
 import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.address.entity.Address;
+import com.connectCo.domain.event.dto.request.EventUpdateRequest;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.sponsorship.entity.Sponsorship;
 import com.connectCo.global.common.BaseEntity;
@@ -52,6 +54,10 @@ public class Event extends BaseEntity {
     @Builder.Default
     private Integer likeCount = 0;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn
+    private Address address;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Member member;
@@ -65,6 +71,23 @@ public class Event extends BaseEntity {
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private List<EventImage> images = new ArrayList<>();
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
+    }
+
+    public void updateEventInfo(EventUpdateRequest request, Address newAddress) {
+        this.name = request.getName();
+        this.startAt = request.getStartAt();
+        this.endAt = request.getEndAt();
+        this.expiredAt = request.getExpiredAt();
+        this.benefitTarget = request.getBenefitTarget();
+        this.notification = request.getNotification();
+        this.description = request.getDescription();
+        this.priorityTarget = request.getPriorityTarget();
+        this.address.delete();
+        this.address = address;
+    }
 
     public void changeImages(List<EventImage> eventImages) {
         // 새로운 이미지로 변경
@@ -80,8 +103,7 @@ public class Event extends BaseEntity {
         }
     }
 
-    public void setOrganization(Organization organization) {
-        this.organization = organization;
+    public void deleteImage() {
+        this.images = List.of();
     }
-
 }

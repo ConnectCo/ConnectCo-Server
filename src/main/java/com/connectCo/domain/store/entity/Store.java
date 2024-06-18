@@ -52,10 +52,6 @@ public class Store extends BaseEntity {
     @OneToMany(mappedBy = "store")
     private List<Coupon> coupons = new ArrayList<>();
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
     public void updateStoreInfo(StoreUpdateRequest request, Address address) {
         this.name = request.getName();
         this.description = request.getDescription();

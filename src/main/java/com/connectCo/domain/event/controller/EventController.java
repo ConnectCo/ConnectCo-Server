@@ -1,6 +1,7 @@
 package com.connectCo.domain.event.controller;
 
 import com.connectCo.domain.event.dto.request.EventCreateRequest;
+import com.connectCo.domain.event.dto.request.EventUpdateRequest;
 import com.connectCo.domain.event.dto.response.EventDetailInquiryResponse;
 import com.connectCo.domain.event.dto.response.EventIdResponse;
 import com.connectCo.domain.event.dto.response.EventLikeResponse;
@@ -8,7 +9,9 @@ import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
 import com.connectCo.domain.event.service.EventService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,17 +31,17 @@ public class EventController {
     @PostMapping("")
     public BaseResponse<EventIdResponse> createEvent (
             @RequestPart(value = "eventImages", required = false) List<MultipartFile> eventImages,
-            @RequestPart EventCreateRequest request){
+            @Valid @RequestPart("request") EventCreateRequest request){
         return BaseResponse.onSuccess(eventService.createEvent(eventImages, request));
     }
 
     @Operation(summary = "이벤트 수정 API")
-    @PutMapping("/{eventId}")
-    public BaseResponse <EventSummaryInquiryResponse> updateEvent (
-            @PathVariable Long eventId,
-            @RequestPart EventCreateRequest request,
-            @RequestPart(value = "eventImages", required = false) List<MultipartFile> eventImages){
-        return BaseResponse.onSuccess(eventService.updateEvent(eventId, request, eventImages));
+    @PatchMapping("/{eventId}")
+    public BaseResponse <EventIdResponse> updateEvent (
+            @Parameter(description = "수정할 이벤트 id") @PathVariable Long eventId,
+            @RequestPart(value = "eventImages", required = false) List<MultipartFile> newImages,
+            @Valid @RequestPart("request") EventUpdateRequest request){
+        return BaseResponse.onSuccess(eventService.updateEvent(eventId, newImages, request));
     }
 
     @Operation(summary = "이벤트 삭제 API")

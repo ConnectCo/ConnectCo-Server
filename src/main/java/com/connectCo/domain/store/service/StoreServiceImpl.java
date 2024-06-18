@@ -46,7 +46,8 @@ public class StoreServiceImpl implements StoreService {
     @Transactional
     public StoreIdResponse createStore(List<MultipartFile> storeImages, StoreCreateRequest request) {
         Member member = authService.getLoginMember();
-        Address newAddress = getAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
+        Address newAddress = addressService.createAddress(
+                request.getDetailAddress(), request.getLatitude(), request.getLongitude());
         Store newStore = createAndSaveStore(member, request, newAddress);
 
         List<StoreImage> newStoreImages = (storeImages != null) ?
@@ -64,10 +65,11 @@ public class StoreServiceImpl implements StoreService {
         Member member = authService.getLoginMember();
         Store store = loadStore(storeId);
 
-        // 수정 권한 유효성 검사
+        // 수정 권한 유효성 검사(본인이 아닌 경우 수정 불가)
         ParamValidator.validModify(member.getId(), store.getMember().getId());
 
-        Address newAddress = getAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
+        Address newAddress = addressService.createAddress(
+                request.getDetailAddress(), request.getLatitude(), request.getLongitude());
         store.updateStoreInfo(request, newAddress);
 
         // 이미지 업데이트
@@ -170,12 +172,6 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public List<Store> getStoresByMember(Member member) {
         return storeRepository.findAllByMember(member);
-    }
-
-    private Address getAddress(String detailAddress, double latitude, double longitude) {
-        // 위도, 경도 값 유효성 검사
-        ParamValidator.validLocation(latitude, longitude);
-        return addressService.createAddress(detailAddress, latitude, longitude);
     }
 
     /*

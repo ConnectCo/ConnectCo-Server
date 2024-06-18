@@ -1,10 +1,12 @@
 package com.connectCo.domain.event.service;
 
 import com.connectCo.domain.event.dto.request.EventCreateRequest;
+import com.connectCo.domain.event.dto.request.EventUpdateRequest;
 import com.connectCo.domain.event.dto.response.EventDetailInquiryResponse;
 import com.connectCo.domain.event.dto.response.EventIdResponse;
 import com.connectCo.domain.event.dto.response.EventLikeResponse;
 import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
+import com.connectCo.domain.event.entity.Event;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.List;
 public interface EventService {
 
     EventIdResponse createEvent(List<MultipartFile> eventImages, EventCreateRequest request);
-    EventSummaryInquiryResponse updateEvent(Long eventId, EventCreateRequest request, List<MultipartFile> eventImages);
+    EventIdResponse updateEvent(Long eventId, List<MultipartFile> newImages, EventUpdateRequest request);
     EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId);
     Long deleteEvent(Long eventId);
 
@@ -22,6 +24,5 @@ public interface EventService {
     List<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword);
     List<EventSummaryInquiryResponse> inquiryEventByMember();
     List<EventSummaryInquiryResponse> inquiryEventByLike();
-
-
+    Event loadEvent(Long eventId);
 }
