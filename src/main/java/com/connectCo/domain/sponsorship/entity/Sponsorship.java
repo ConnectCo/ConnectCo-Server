@@ -1,7 +1,7 @@
 package com.connectCo.domain.sponsorship.entity;
 
+import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.event.entity.Event;
-import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -32,5 +32,5 @@ public class Sponsorship extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private Store coupon;
+    private Coupon coupon;
 }
