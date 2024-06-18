@@ -15,9 +15,8 @@ public interface EventService {
 
     EventIdResponse createEvent(List<MultipartFile> eventImages, EventCreateRequest request);
     EventIdResponse updateEvent(Long eventId, List<MultipartFile> newImages, EventUpdateRequest request);
+    EventIdResponse deleteEvent(Long eventId);
     EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId);
-    Long deleteEvent(Long eventId);
-
     EventLikeResponse likeEvent(Long eventId);
     List<EventSummaryInquiryResponse> inquiryEventByRecent();
     List<EventSummaryInquiryResponse> inquiryEventByRecommends();

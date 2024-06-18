@@ -74,7 +74,10 @@ public class EventServiceImpl implements EventService{
         return new EventIdResponse(newEvent.getId());
     }
 
-    @Override// 이벤트 수정
+    /*
+     * 이벤트 정보 수정
+     */
+    @Override
     @Transactional
     public EventIdResponse updateEvent(Long eventId, List<MultipartFile> newImages, EventUpdateRequest request) {
         Member member = authService.getLoginMember();
@@ -93,21 +96,29 @@ public class EventServiceImpl implements EventService{
         return new EventIdResponse(event.getId());
     }
 
-    @Override//이벤트 삭제
+    /*
+     * 특정 이벤트 삭제
+     */
+    @Override
     @Transactional
-    public Long deleteEvent(Long eventId){
+    public EventIdResponse deleteEvent(Long eventId){
         Member member = authService.getLoginMember();
+        Event event = loadEvent(eventId);
 
-        Event event= eventRepository.findById(eventId).orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
+        // 삭제 권한 유효성 검사(본인이 아닌 경우 삭제 불가)
+        ParamValidator.validModify(member.getId(), event.getMember().getId());
 
-        if(!event.getMember().equals(member)){
-            throw new CustomApiException(ErrorCode.INVALID_PERMISSION);
-        }
+        // 이벤트 이미지 삭제
+        eventImageService.deleteExistingImages(event.getImages());
+        event.changeImages(List.of());
 
         Long deletedEventId = event.getId();
-        eventRepository.deleteById(deletedEventId);
-        return deletedEventId;
+        // 이벤트 soft 삭제
+        event.delete();
+
+        return new EventIdResponse(deletedEventId);
     }
+
     @Override//이벤트 검색하기 우선 학교 이름과 이벤트 제목 둘다에서 검색 되게 해놨습니다.
     @Transactional
     public List<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword){

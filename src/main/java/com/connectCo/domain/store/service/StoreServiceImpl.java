@@ -91,8 +91,8 @@ public class StoreServiceImpl implements StoreService {
         ParamValidator.validModify(member.getId(), store.getMember().getId());
 
         // 가게 이미지 삭제
-        store.deleteImage();
         storeImageService.deleteExistingImages(store.getImages());
+        store.changeImages(List.of());
 
         // 가게 soft 삭제
         store.delete();

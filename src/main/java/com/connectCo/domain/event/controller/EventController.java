@@ -46,7 +46,8 @@ public class EventController {
 
     @Operation(summary = "이벤트 삭제 API")
     @DeleteMapping("/{eventId}")
-    public BaseResponse<Long> deleteEvent(@PathVariable Long eventId){
+    public BaseResponse<EventIdResponse> deleteEvent(
+            @Parameter(description = "삭제할 이벤트 id") @PathVariable Long eventId) {
         return BaseResponse.onSuccess(eventService.deleteEvent(eventId));
     }
 

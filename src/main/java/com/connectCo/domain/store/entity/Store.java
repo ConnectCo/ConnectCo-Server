@@ -76,8 +76,4 @@ public class Store extends BaseEntity {
                 .map(StoreImage::getUrl)
                 .orElse(null);
     }
-
-    public void deleteImage() {
-        this.images = List.of();
-    }
 }

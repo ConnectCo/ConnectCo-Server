@@ -102,8 +102,4 @@ public class Event extends BaseEntity {
             this.likeCount--;
         }
     }
-
-    public void deleteImage() {
-        this.images = List.of();
-    }
 }
