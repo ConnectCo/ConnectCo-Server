@@ -7,6 +7,7 @@ import com.connectCo.domain.store.dto.request.StoreUpdateRequest;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class Store extends BaseEntity {
     @Column(nullable = false)
     private int couponCount;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn
     private Address address;
 

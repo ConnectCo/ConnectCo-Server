@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +29,7 @@ public class EventController {
 
 
     @Operation(summary = "이벤트 생성 API")
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<EventIdResponse> createEvent (
             @RequestPart(value = "eventImages", required = false) List<MultipartFile> eventImages,
             @Valid @RequestPart("request") EventCreateRequest request){
@@ -36,7 +37,7 @@ public class EventController {
     }
 
     @Operation(summary = "이벤트 수정 API")
-    @PatchMapping("/{eventId}")
+    @PatchMapping(value = "/{eventId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse <EventIdResponse> updateEvent (
             @Parameter(description = "수정할 이벤트 id") @PathVariable Long eventId,
             @RequestPart(value = "eventImages", required = false) List<MultipartFile> newImages,
