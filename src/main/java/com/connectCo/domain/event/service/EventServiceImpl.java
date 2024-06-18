@@ -16,6 +16,7 @@ import com.connectCo.domain.event.repository.EventLikeRepository;
 import com.connectCo.domain.event.repository.EventRepository;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.service.OrganizationService;
+import com.connectCo.global.common.enums.InquiryType;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.global.validation.ParamValidator;
@@ -27,7 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,12 +128,9 @@ public class EventServiceImpl implements EventService{
     @Override
     @Transactional
     public EventPagingResponse inquiryEventByKeyword(String keyword, int page, int size){
-        LocalDateTime currentTime = LocalDateTime.now();
-
+        LocalDate currentDate = LocalDate.now();
         Pageable pageable = PageRequest.of(page, size);
-
-        Page<Event> eventPage = eventRepository.findAllBySearch(keyword,currentTime, pageable);
-
+        Page<Event> eventPage = eventRepository.findAllBySearch(keyword, currentDate, pageable);
         return eventMapper.toEventPagingResponse(eventPage);
     }
 
@@ -146,22 +144,41 @@ public class EventServiceImpl implements EventService{
         return eventMapper.toEventDetailInquiryResponse(event);
     }
 
-    @Override//이벤트 최신순 조회하기
-    @Transactional
-    public EventPagingResponse inquiryEventByRecent(){
-        List<Event> eventList = eventRepository.findAllByOrderByCreatedAtDesc();
-
-        return null;
-    }
+    /*
+     * 조건에 따른 이벤트 조회
+     */
     @Override
     @Transactional
-    public List<EventSummaryInquiryResponse> inquiryEventByRecommends(){
-        LocalDateTime currentTime = LocalDateTime.now();
-        List<Event> eventList = eventRepository.findAllByRecommends(currentTime);
+    public EventPagingResponse inquiryEvents(InquiryType type, double latitude, double longitude, int page, int size){
+        LocalDate currentDate = LocalDate.now();
+        Pageable pageable = PageRequest.of(page, size);
 
-        return eventList.stream()
-                .map(eventMapper::toEventSummaryInquiryResponse)
-                .toList();
+        switch (type) {
+            case RECOMMEND:
+                return inquiryEventByRecommend(currentDate, pageable);
+            case RECENT:
+                return inquiryEventByCreateAt(currentDate, pageable);
+            case DISTANCE:
+                // 위도, 경도 데이터 유효성 검사
+                ParamValidator.validLocation(latitude, longitude);
+                return inquiryEventByDistance(latitude, longitude, currentDate, pageable);
+            default:
+                throw new CustomApiException(ErrorCode.UNKNOWN_INQUIRY_TYPE);
+        }
+    }
+    private EventPagingResponse inquiryEventByRecommend(LocalDate currentDate, Pageable pageable){
+        Page<Event> eventPage = eventRepository.findAllByRecommend(currentDate, pageable);
+        return eventMapper.toEventPagingResponse(eventPage);
+    }
+
+    private EventPagingResponse inquiryEventByCreateAt(LocalDate currentDate, Pageable pageable){
+        Page<Event> eventPage = eventRepository.findAllByCreatedAt(currentDate, pageable);
+        return eventMapper.toEventPagingResponse(eventPage);
+    }
+
+    private EventPagingResponse inquiryEventByDistance(double latitude, double longitude, LocalDate currentDate, Pageable pageable) {
+        Page<Event> eventPage = eventRepository.findAllByDistance(latitude, longitude, currentDate, pageable);
+        return eventMapper.toEventPagingResponse(eventPage);
     }
 
     @Override
