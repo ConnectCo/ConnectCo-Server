@@ -17,11 +17,13 @@ public class EventMapper {
     public Event toEvent(Member member, EventCreateRequest request){
         return Event.builder()
                 .name(request.getName())
-                .description(request.getDescription())
-                .priorityTarget(request.getPriorityTarget())
+                .startAt(request.getStartAt())
+                .endAt(request.getEndAt())
+                .expiredAt(request.getExpiredAt())
                 .benefitTarget(request.getBenefitTarget())
                 .notification(request.getNotification())
-                .expiredAt(request.getExpiredAt())
+                .description(request.getDescription())
+                .priorityTarget(request.getPriorityTarget())
                 .member(member)
                 .build();
     }

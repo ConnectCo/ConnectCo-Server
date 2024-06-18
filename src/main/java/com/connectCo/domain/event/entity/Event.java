@@ -28,9 +28,6 @@ public class Event extends BaseEntity {
     private String name;
 
     @Column(nullable = false)
-    private String address;
-
-    @Column(nullable = false)
     private LocalDate startAt;
 
     @Column(nullable = false)
@@ -53,7 +50,7 @@ public class Event extends BaseEntity {
 
     @Column(nullable = false)
     @Builder.Default
-    private Integer likeCount=0;
+    private Integer likeCount = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
@@ -63,27 +60,16 @@ public class Event extends BaseEntity {
     @JoinColumn
     private Organization organization;
 
-    @OneToMany(mappedBy = "event")
-    private List<EventCoupon> coupons;
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private List<EventCoupon> coupons = new ArrayList<>();
 
-    @OneToMany(mappedBy = "event")
-    private List<EventImage> images;
-
-    @OneToMany(mappedBy = "event")
-    private List<Sponsorship> sponsorshipList=new ArrayList<>();
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private List<EventImage> images = new ArrayList<>();
 
     public void changeImages(List<EventImage> eventImages) {
-        // 기존 이미지가 있다면 삭제
-        if(this.images != null) removeImages();
-
         // 새로운 이미지로 변경
         this.images = eventImages;
     }
-
-    private void removeImages() {
-        this.images.forEach(BaseEntity::delete);
-    }
-
     public void increaseLikeCount() {
         this.likeCount++;
     }
@@ -94,6 +80,8 @@ public class Event extends BaseEntity {
         }
     }
 
-
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
+    }
 
 }

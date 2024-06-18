@@ -15,6 +15,9 @@ import com.connectCo.domain.event.mapper.EventMapper;
 import com.connectCo.domain.event.repository.EventImageRepository;
 import com.connectCo.domain.event.repository.EventLikeRepository;
 import com.connectCo.domain.event.repository.EventRepository;
+import com.connectCo.domain.organization.entity.Organization;
+import com.connectCo.domain.organization.service.OrganizationService;
+import com.connectCo.domain.store.entity.StoreImage;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.utils.S3FileComponent;
@@ -37,18 +40,30 @@ public class EventServiceImpl implements EventService{
     private final EventImageRepository eventImageRepository;
     private final EventMapper eventMapper;
     private final EventLikeMapper eventLikeMapper;
+
+    private final OrganizationService organizationService;
     private final S3FileComponent s3FileComponent;
 
-    @Override// 이벤트 생성
+    /*
+     * 이벤트 생성
+     */
+    @Override
     @Transactional
     public EventIdResponse createEvent(List<MultipartFile> eventImages, EventCreateRequest request){
         Member member = authService.getLoginMember();
-
         Event newEvent = createAndSaveEvent(member, request);
 
-        List<EventImage> newEventImages = createAndSaveEventImages(newEvent, eventImages);
+        // 조직을 선택했다면, 조직 넣어주기
+        if (request.getOrganizationId() != null) {
+            Organization organization = organizationService.loadOrganization(request.getOrganizationId());
+            newEvent.setOrganization(organization);
+        }
 
-        newEvent.changeImages(newEventImages);
+        // 이미지가 존재한다면, 이미지 넣어주기
+        if (eventImages != null) {
+            List<EventImage> newEventImages = createAndSaveEventImages(newEvent, eventImages);
+            newEvent.changeImages(newEventImages);
+        }
 
         return new EventIdResponse(newEvent.getId());
     }

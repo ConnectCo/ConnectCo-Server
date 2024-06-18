@@ -12,8 +12,6 @@ import java.util.List;
 public interface EventService {
 
     EventIdResponse createEvent(List<MultipartFile> eventImages, EventCreateRequest request);
-
-
     EventSummaryInquiryResponse updateEvent(Long eventId, EventCreateRequest request, List<MultipartFile> eventImages);
     EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId);
     Long deleteEvent(Long eventId);
