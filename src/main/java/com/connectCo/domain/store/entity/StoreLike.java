@@ -30,7 +30,7 @@ public class StoreLike extends BaseEntity {
     private Store store;
 
     public boolean changeLike() {
-        isChecked = !isChecked;
+        this.isChecked = !this.isChecked;
         return isChecked;
     }
 }

@@ -91,7 +91,8 @@ public class EventController {
 
     @Operation(summary = "이벤트 찜하기 API")
     @PostMapping("/{eventId}/like")
-    public BaseResponse<EventLikeResponse> likeEvent(@PathVariable("eventId") Long eventId){
+    public BaseResponse<Boolean> likeEvent(
+            @Parameter(description = "찜할 이벤트 id") @PathVariable("eventId") Long eventId){
         return BaseResponse.onSuccess(eventService.likeEvent(eventId));
     }
 

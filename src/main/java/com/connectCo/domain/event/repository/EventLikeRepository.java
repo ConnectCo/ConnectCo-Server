@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface EventLikeRepository extends JpaRepository<EventLike, Long> {
     List<EventLike> findAllByMemberAndIsChecked(Member member, boolean isChecked);
 
-    Optional<EventLike> findAllByMemberAndEvent(Member member, Event event);
+    Optional<EventLike> findByMemberAndEvent(Member member, Event event);
 }

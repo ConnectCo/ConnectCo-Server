@@ -52,7 +52,7 @@ public class StoreController {
     }
 
     @Operation(summary = "가게 찜하기 API")
-    @PostMapping("/like/{storeId}")
+    @PostMapping("/{storeId}/like")
     public BaseResponse<Boolean> likeStore(
             @Parameter(description = "찜할 가게 id") @PathVariable Long storeId) {
         return BaseResponse.onSuccess(storeService.likeStore(storeId));

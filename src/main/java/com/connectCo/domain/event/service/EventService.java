@@ -17,7 +17,7 @@ public interface EventService {
     EventPagingResponse inquiryEventByKeyword(String keyword, int page, int size);
     EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId);
     EventPagingResponse inquiryEvents(InquiryType type, double latitude, double longitude, int page, int size);
-    EventLikeResponse likeEvent(Long eventId);
+    Boolean likeEvent(Long eventId);
     List<EventSummaryInquiryResponse> inquiryEventByMember();
     List<EventSummaryInquiryResponse> inquiryEventByLike();
     Event loadEvent(Long eventId);

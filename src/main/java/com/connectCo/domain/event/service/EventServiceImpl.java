@@ -126,7 +126,6 @@ public class EventServiceImpl implements EventService{
      * 이벤트 검색
      */
     @Override
-    @Transactional
     public EventPagingResponse inquiryEventByKeyword(String keyword, int page, int size){
         LocalDate currentDate = LocalDate.now();
         Pageable pageable = PageRequest.of(page, size);
@@ -138,7 +137,6 @@ public class EventServiceImpl implements EventService{
      * 특정 이벤트 상세 조회
      */
     @Override
-    @Transactional
     public EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId){
         Event event = loadEvent(eventId);
         return eventMapper.toEventDetailInquiryResponse(event);
@@ -148,7 +146,6 @@ public class EventServiceImpl implements EventService{
      * 조건에 따른 이벤트 조회
      */
     @Override
-    @Transactional
     public EventPagingResponse inquiryEvents(InquiryType type, double latitude, double longitude, int page, int size){
         LocalDate currentDate = LocalDate.now();
         Pageable pageable = PageRequest.of(page, size);
@@ -183,27 +180,14 @@ public class EventServiceImpl implements EventService{
 
     @Override
     @Transactional
-    public EventLikeResponse likeEvent(Long eventId){
+    public Boolean likeEvent(Long eventId){
         Member member = authService.getLoginMember();
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
+        Event event = loadEvent(eventId);
 
-        Optional <EventLike> existingLike = eventLikeRepository.findAllByMemberAndEvent(member, event);
+        Optional <EventLike> eventLike = eventLikeRepository.findByMemberAndEvent(member, event);
 
-        if(existingLike.isPresent()) // 이미 좋아요 누른 상태라면 좋아요 취소
-        {
-            EventLike eventLike = existingLike.get();
-            event.decreaseLikeCount();
-            eventLike.changeIsChecked();
-            eventLikeRepository.save(eventLike);
-        }
-        else// 좋아요 누른 적이 없으면 좋아요 증가
-        {
-            event.increaseLikeCount();
-            EventLike newEventLike = eventLikeMapper.toEventLike(member, event);
-            eventLikeRepository.save(newEventLike);
-        }
-
-        return eventLikeMapper.toEventLikeResponse(member, event);
+        return eventLike.map(EventLike::changeIsChecked)
+                .orElseGet(() -> eventLikeRepository.save(eventLikeMapper.toEventLike(member, event)).isChecked());
     }
 
 
@@ -235,7 +219,7 @@ public class EventServiceImpl implements EventService{
 
     private Event createAndSaveEvent(Member member, EventCreateRequest request, Address address) {
         Event event = eventMapper.toEvent(member, request, address);
-        return eventRepository.save(event);
+        return eventRepository. save(event);
     }
 
     @Override
