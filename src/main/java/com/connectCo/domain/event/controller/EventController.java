@@ -2,10 +2,7 @@ package com.connectCo.domain.event.controller;
 
 import com.connectCo.domain.event.dto.request.EventCreateRequest;
 import com.connectCo.domain.event.dto.request.EventUpdateRequest;
-import com.connectCo.domain.event.dto.response.EventDetailInquiryResponse;
-import com.connectCo.domain.event.dto.response.EventIdResponse;
-import com.connectCo.domain.event.dto.response.EventLikeResponse;
-import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
+import com.connectCo.domain.event.dto.response.*;
 import com.connectCo.domain.event.service.EventService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,7 +56,7 @@ public class EventController {
             @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
     })
     @GetMapping("/search")
-    public BaseResponse<List<EventSummaryInquiryResponse>> inquiryEventByName(
+    public BaseResponse<EventPagingResponse> inquiryEventByName(
             @RequestParam(name = "keyword") String keyword,
             @RequestParam(name = "page") int page,
             @RequestParam(name = "size") int size) {
@@ -73,9 +70,14 @@ public class EventController {
         return BaseResponse.onSuccess(eventService.inquiryEventDetailByEventId(eventId));
     }
 
-    @Operation(summary = "이벤트 조회 API(추천순, 거리순, ")
-    @GetMapping("/recent")
-    public BaseResponse<List<EventSummaryInquiryResponse>> inquiryEventByCreatedAt(){
+    @Operation(summary = "이벤트 조회 API(추천순, 거리순, 최근순)")
+    @Parameters(value = {
+            @Parameter(name = "keyword", description = "검색할 키워드로 한글자 이상 입력"),
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping
+    public BaseResponse<EventPagingResponse> inquiryEventByCreatedAt(){
         return BaseResponse.onSuccess(eventService.inquiryEventByRecent());
     }
 

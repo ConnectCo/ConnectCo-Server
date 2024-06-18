@@ -4,10 +4,12 @@ import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.event.dto.request.EventCreateRequest;
 import com.connectCo.domain.event.dto.response.EventDetailInquiryResponse;
+import com.connectCo.domain.event.dto.response.EventPagingResponse;
 import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
 import com.connectCo.domain.event.entity.Event;
 import com.connectCo.domain.event.entity.EventImage;
 import com.connectCo.domain.organization.entity.Organization;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -35,6 +37,17 @@ public class EventMapper {
         return EventImage.builder()
                 .event(event)
                 .url(url)
+                .build();
+    }
+
+    public EventPagingResponse toEventPagingResponse (Page<Event> events) {
+        return EventPagingResponse.builder()
+                .events(events.stream().map(this::toEventSummaryInquiryResponse).toList())
+                .page(events.getNumber())
+                .totalPages(events.getTotalPages())
+                .totalElements((int) events.getTotalElements())
+                .isFirst(events.isFirst())
+                .isLast(events.isLast())
                 .build();
     }
 

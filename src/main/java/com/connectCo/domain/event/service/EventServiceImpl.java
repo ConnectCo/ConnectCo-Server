@@ -6,10 +6,7 @@ import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.address.service.AddressService;
 import com.connectCo.domain.event.dto.request.EventCreateRequest;
 import com.connectCo.domain.event.dto.request.EventUpdateRequest;
-import com.connectCo.domain.event.dto.response.EventDetailInquiryResponse;
-import com.connectCo.domain.event.dto.response.EventIdResponse;
-import com.connectCo.domain.event.dto.response.EventLikeResponse;
-import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
+import com.connectCo.domain.event.dto.response.*;
 import com.connectCo.domain.event.entity.Event;
 import com.connectCo.domain.event.entity.EventImage;
 import com.connectCo.domain.event.entity.EventLike;
@@ -129,16 +126,14 @@ public class EventServiceImpl implements EventService{
      */
     @Override
     @Transactional
-    public List<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword, int page, int size){
+    public EventPagingResponse inquiryEventByKeyword(String keyword, int page, int size){
         LocalDateTime currentTime = LocalDateTime.now();
 
         Pageable pageable = PageRequest.of(page, size);
 
         Page<Event> eventPage = eventRepository.findAllBySearch(keyword,currentTime, pageable);
 
-        return eventPage.stream()
-                .map(eventMapper::toEventSummaryInquiryResponse)
-                .toList();
+        return eventMapper.toEventPagingResponse(eventPage);
     }
 
     /*
@@ -153,12 +148,10 @@ public class EventServiceImpl implements EventService{
 
     @Override//이벤트 최신순 조회하기
     @Transactional
-    public List<EventSummaryInquiryResponse> inquiryEventByRecent(){
+    public EventPagingResponse inquiryEventByRecent(){
         List<Event> eventList = eventRepository.findAllByOrderByCreatedAtDesc();
 
-        return eventList.stream()
-                .map(eventMapper::toEventSummaryInquiryResponse)
-                .toList();
+        return null;
     }
     @Override
     @Transactional
@@ -170,8 +163,6 @@ public class EventServiceImpl implements EventService{
                 .map(eventMapper::toEventSummaryInquiryResponse)
                 .toList();
     }
-
-
 
     @Override
     @Transactional
