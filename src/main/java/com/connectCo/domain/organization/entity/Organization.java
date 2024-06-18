@@ -38,9 +38,4 @@ public class Organization extends BaseEntity {
         this.homepageUrl = request.getHomepageUrl();
         this.academicDayUrl = request.getAcademicDayUrl();
     }
-
-    public void updateOrganizationAddress(Address address) {
-        this.address.delete();
-        this.address = address;
-    }
 }

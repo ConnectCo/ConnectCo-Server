@@ -73,7 +73,7 @@ public class EventController {
         return BaseResponse.onSuccess(eventService.inquiryEventDetailByEventId(eventId));
     }
 
-    @Operation(summary = "이벤트 최신순 조회 API")
+    @Operation(summary = "이벤트 조회 API(추천순, 거리순, ")
     @GetMapping("/recent")
     public BaseResponse<List<EventSummaryInquiryResponse>> inquiryEventByCreatedAt(){
         return BaseResponse.onSuccess(eventService.inquiryEventByRecent());

@@ -52,13 +52,11 @@ public class Store extends BaseEntity {
     @OneToMany(mappedBy = "store")
     private List<Coupon> coupons = new ArrayList<>();
 
-    public void updateStoreInfo(StoreUpdateRequest request, Address address) {
+    public void updateStoreInfo(StoreUpdateRequest request) {
         this.name = request.getName();
         this.description = request.getDescription();
         this.storeNumber = request.getStoreNumber();
         this.operatingTime = request.getOperatingTime();
-        this.address.delete();
-        this.address = address;
     }
 
     public void changeImages(List<StoreImage> storeImages) {

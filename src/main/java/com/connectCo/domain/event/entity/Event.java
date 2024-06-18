@@ -77,7 +77,7 @@ public class Event extends BaseEntity {
         this.organization = organization;
     }
 
-    public void updateEventInfo(EventUpdateRequest request, Address newAddress) {
+    public void updateEventInfo(EventUpdateRequest request) {
         this.name = request.getName();
         this.startAt = request.getStartAt();
         this.endAt = request.getEndAt();
@@ -86,8 +86,6 @@ public class Event extends BaseEntity {
         this.notification = request.getNotification();
         this.description = request.getDescription();
         this.priorityTarget = request.getPriorityTarget();
-        this.address.delete();
-        this.address = address;
     }
 
     public void changeImages(List<EventImage> eventImages) {

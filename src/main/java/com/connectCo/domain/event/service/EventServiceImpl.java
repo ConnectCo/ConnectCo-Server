@@ -86,9 +86,8 @@ public class EventServiceImpl implements EventService{
         // 수정 권한 유효성 검사(본인이 아닌 경우 수정 불가)
         ParamValidator.validModify(member.getId(), event.getMember().getId());
 
-        Address newAddress = addressService.createAddress(
-                request.getDetailAddress(), request.getLatitude(), request.getLongitude());
-        event.updateEventInfo(request, newAddress);
+        event.getAddress().updateAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
+        event.updateEventInfo(request);
 
         // 조직을 새로 추가했거나 기존 조직 그대로인 경우
         if (request.getOrganizationId() != null) {

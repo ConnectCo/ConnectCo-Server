@@ -62,8 +62,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         validateAdmin();
 
         Organization organization = loadOrganization(organizationId);
-        Address address = addressService.createAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
-        organization.updateOrganizationAddress(address);
+        organization.getAddress().updateAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
 
         return new OrganizationIdResponse(organization.getId());
     }

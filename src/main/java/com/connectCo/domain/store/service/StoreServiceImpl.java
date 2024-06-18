@@ -68,9 +68,11 @@ public class StoreServiceImpl implements StoreService {
         // 수정 권한 유효성 검사(본인이 아닌 경우 수정 불가)
         ParamValidator.validModify(member.getId(), store.getMember().getId());
 
-        Address newAddress = addressService.createAddress(
-                request.getDetailAddress(), request.getLatitude(), request.getLongitude());
-        store.updateStoreInfo(request, newAddress);
+        // 주소 정보 업데이트
+        store.getAddress().updateAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
+
+        // 정보 수정
+        store.updateStoreInfo(request);
 
         // 이미지 업데이트
         storeImageService.updateStoreImages(store, request.getExistingImages(), newImages);
