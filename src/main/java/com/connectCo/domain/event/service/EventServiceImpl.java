@@ -155,69 +155,82 @@ public class EventServiceImpl implements EventService{
      * 이벤트 검색
      */
     @Override
-    public EventPagingResponse inquiryEventByKeyword(String keyword, int page, int size){
+    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword, int page, int size){
         LocalDate currentDate = LocalDate.now();
         Pageable pageable = PageRequest.of(page, size);
         Page<Event> eventPage = eventRepository.findAllBySearch(keyword, currentDate, pageable);
-        return eventMapper.toEventPagingResponse(eventPage);
+        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
     }
 
     /*
      * 조건에 따른 이벤트 조회
      */
     @Override
-    public EventPagingResponse inquiryEvents(InquiryType type, double latitude, double longitude, int page, int size){
+    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEvents(InquiryType type, double latitude, double longitude, int page, int size){
         LocalDate currentDate = LocalDate.now();
         Pageable pageable = PageRequest.of(page, size);
 
-        switch (type) {
-            case RECOMMEND:
-                return inquiryEventByRecommend(currentDate, pageable);
-            case RECENT:
-                return inquiryEventByCreateAt(currentDate, pageable);
-            case DISTANCE:
+        return switch (type) {
+            case RECOMMEND -> inquiryEventByRecommend(currentDate, pageable);
+            case RECENT -> inquiryEventByCreateAt(currentDate, pageable);
+            case DISTANCE -> {
                 // 위도, 경도 데이터 유효성 검사
                 ParamValidator.validLocation(latitude, longitude);
-                return inquiryEventByDistance(latitude, longitude, currentDate, pageable);
-            default:
-                throw new CustomApiException(ErrorCode.UNKNOWN_INQUIRY_TYPE);
-        }
+                yield inquiryEventByDistance(latitude, longitude, currentDate, pageable);
+            }
+            default -> throw new CustomApiException(ErrorCode.UNKNOWN_INQUIRY_TYPE);
+        };
     }
-    private EventPagingResponse inquiryEventByRecommend(LocalDate currentDate, Pageable pageable){
+    private EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByRecommend(LocalDate currentDate, Pageable pageable){
         Page<Event> eventPage = eventRepository.findAllByRecommend(currentDate, pageable);
-        return eventMapper.toEventPagingResponse(eventPage);
+        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
     }
 
-    private EventPagingResponse inquiryEventByCreateAt(LocalDate currentDate, Pageable pageable){
+    private EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByCreateAt(LocalDate currentDate, Pageable pageable){
         Page<Event> eventPage = eventRepository.findAllByCreatedAt(currentDate, pageable);
-        return eventMapper.toEventPagingResponse(eventPage);
+        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
     }
 
-    private EventPagingResponse inquiryEventByDistance(double latitude, double longitude, LocalDate currentDate, Pageable pageable) {
+    private EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByDistance(double latitude, double longitude, LocalDate currentDate, Pageable pageable) {
         Page<Event> eventPage = eventRepository.findAllByDistance(latitude, longitude, currentDate, pageable);
-        return eventMapper.toEventPagingResponse(eventPage);
+        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
     }
 
     /*
      * 나의 이벤트 조회
      */
     @Override
-    public EventPagingResponse inquiryEventByMember(int page, int size) {
+    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByMember(int page, int size) {
         Member member = authService.getLoginMember();
         Pageable pageable = PageRequest.of(page, size);
         Page<Event> eventPage = eventRepository.findAllByMember(member, pageable);
-        return eventMapper.toEventPagingResponse(eventPage);
+        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
     }
 
     /*
      * 내가 찜한 이벤트 조회
      */
     @Override
-    public EventPagingResponse inquiryEventByLike(int page, int size) {
+    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByLike(int page, int size) {
         Member member = authService.getLoginMember();
         Pageable pageable = PageRequest.of(page, size);
         Page<Event> eventPage = eventLikeRepository.findAllEventsByMemberAndIsChecked(member, true, pageable);
-        return eventMapper.toEventPagingResponse(eventPage);
+        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
+    }
+
+    /*
+     * 내 주변 이벤트 목록 조회
+     */
+    @Override
+    public EventPagingResponse<EventLocationInquiryResponse> inquiryEventByLocation(double latitude, double longitude, int radius, int page, int size) {
+        // 위도, 경도, 반경 값 유효성 검사
+        ParamValidator.validLocation(latitude, longitude);
+        ParamValidator.validRadius(radius);
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Object[]> eventPage = eventRepository.findAllByLocationWithinRadius(latitude, longitude, radius, pageable);
+        Page<EventLocationInquiryResponse> mappedPage = eventPage.map(eventMapper::toEventLocationInquiryResponse);
+        return eventMapper.toEventPagingResponse(mappedPage);
     }
 
     @Override

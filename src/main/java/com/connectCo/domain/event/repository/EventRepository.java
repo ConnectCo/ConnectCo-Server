@@ -30,4 +30,16 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "ORDER BY function('ST_Distance_Sphere', point(a.longitude, a.latitude), point(:longitude, :latitude)) ASC")
     Page<Event> findAllByDistance(@Param("latitude") double latitude, @Param("longitude") double longitude,
                                   @Param("currentDate") LocalDate currentDate, Pageable pageable);
+    // 주변 이벤트 조회
+    @Query(value = "SELECT e.*, " +
+            "ST_Distance_Sphere(POINT(:longitude, :latitude), a.location) / 1000 AS distance " +
+            "FROM Event e " +
+            "JOIN Address a ON e.address.id = a.id " +
+            "WHERE ST_DWithin(a.location, POINT(:longitude, :latitude), :radius * 1000) " +
+            "AND e.expiredAt >= CURRENT_DATE " +
+            "ORDER BY distance", nativeQuery = true)
+    Page<Object[]> findAllByLocationWithinRadius(@Param("latitude") double latitude,
+                                                 @Param("longitude") double longitude,
+                                                 @Param("radius") double radius,
+                                                 Pageable pageable);
 }
