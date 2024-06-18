@@ -14,11 +14,12 @@ public interface EventService {
     EventIdResponse createEvent(List<MultipartFile> eventImages, EventCreateRequest request);
     EventIdResponse updateEvent(Long eventId, List<MultipartFile> newImages, EventUpdateRequest request);
     EventIdResponse deleteEvent(Long eventId);
-    EventPagingResponse inquiryEventByKeyword(String keyword, int page, int size);
-    EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId);
-    EventPagingResponse inquiryEvents(InquiryType type, double latitude, double longitude, int page, int size);
     Boolean likeEvent(Long eventId);
-    List<EventSummaryInquiryResponse> inquiryEventByMember();
-    List<EventSummaryInquiryResponse> inquiryEventByLike();
+    EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId);
+
+    EventPagingResponse inquiryEventByKeyword(String keyword, int page, int size);
+    EventPagingResponse inquiryEvents(InquiryType type, double latitude, double longitude, int page, int size);
+    EventPagingResponse inquiryEventByMember(int page, int size);
+    EventPagingResponse inquiryEventByLike(int page, int size);
     Event loadEvent(Long eventId);
 }

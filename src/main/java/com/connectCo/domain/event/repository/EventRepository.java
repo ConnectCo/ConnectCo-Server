@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    List<Event> findAllByMember(Member member);
+    Page<Event> findAllByMember(Member member, Pageable pageable);
     // 키워드로 이벤트 조회
     @Query("SELECT DISTINCT e FROM Event e JOIN e.organization o WHERE " +
             "(e.name LIKE%:keyword% OR o.name LIKE%:keyword% OR e.description LIKE %:keyword%) AND e.expiredAt >= :currentDate")

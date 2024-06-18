@@ -72,6 +72,11 @@ public class EventServiceImpl implements EventService{
         return new EventIdResponse(newEvent.getId());
     }
 
+    private Event createAndSaveEvent(Member member, EventCreateRequest request, Address address) {
+        Event event = eventMapper.toEvent(member, request, address);
+        return eventRepository. save(event);
+    }
+
     /*
      * 이벤트 정보 수정
      */
@@ -123,14 +128,18 @@ public class EventServiceImpl implements EventService{
     }
 
     /*
-     * 이벤트 검색
+     * 특정 가게 찜하기
      */
     @Override
-    public EventPagingResponse inquiryEventByKeyword(String keyword, int page, int size){
-        LocalDate currentDate = LocalDate.now();
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Event> eventPage = eventRepository.findAllBySearch(keyword, currentDate, pageable);
-        return eventMapper.toEventPagingResponse(eventPage);
+    @Transactional
+    public Boolean likeEvent(Long eventId){
+        Member member = authService.getLoginMember();
+        Event event = loadEvent(eventId);
+
+        Optional <EventLike> eventLike = eventLikeRepository.findByMemberAndEvent(member, event);
+
+        return eventLike.map(EventLike::changeIsChecked)
+                .orElseGet(() -> eventLikeRepository.save(eventLikeMapper.toEventLike(member, event)).isChecked());
     }
 
     /*
@@ -140,6 +149,17 @@ public class EventServiceImpl implements EventService{
     public EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId){
         Event event = loadEvent(eventId);
         return eventMapper.toEventDetailInquiryResponse(event);
+    }
+
+    /*
+     * 이벤트 검색
+     */
+    @Override
+    public EventPagingResponse inquiryEventByKeyword(String keyword, int page, int size){
+        LocalDate currentDate = LocalDate.now();
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Event> eventPage = eventRepository.findAllBySearch(keyword, currentDate, pageable);
+        return eventMapper.toEventPagingResponse(eventPage);
     }
 
     /*
@@ -178,48 +198,26 @@ public class EventServiceImpl implements EventService{
         return eventMapper.toEventPagingResponse(eventPage);
     }
 
+    /*
+     * 나의 이벤트 조회
+     */
     @Override
-    @Transactional
-    public Boolean likeEvent(Long eventId){
+    public EventPagingResponse inquiryEventByMember(int page, int size) {
         Member member = authService.getLoginMember();
-        Event event = loadEvent(eventId);
-
-        Optional <EventLike> eventLike = eventLikeRepository.findByMemberAndEvent(member, event);
-
-        return eventLike.map(EventLike::changeIsChecked)
-                .orElseGet(() -> eventLikeRepository.save(eventLikeMapper.toEventLike(member, event)).isChecked());
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Event> eventPage = eventRepository.findAllByMember(member, pageable);
+        return eventMapper.toEventPagingResponse(eventPage);
     }
 
-
+    /*
+     * 내가 찜한 이벤트 조회
+     */
     @Override
-    public List<EventSummaryInquiryResponse> inquiryEventByMember() {
-
+    public EventPagingResponse inquiryEventByLike(int page, int size) {
         Member member = authService.getLoginMember();
-
-        List<Event> eventList = eventRepository.findAllByMember(member);
-
-        return eventList.stream()
-                .map(eventMapper::toEventSummaryInquiryResponse)
-                .toList();
-    }
-
-    @Override
-    public List<EventSummaryInquiryResponse> inquiryEventByLike() {
-
-        Member member = authService.getLoginMember();
-
-        List<Event> eventList = eventLikeRepository.findAllByMemberAndIsChecked(member, true).stream()
-                        .map(EventLike::getEvent)
-                        .toList();
-
-        return eventList.stream()
-                .map(eventMapper::toEventSummaryInquiryResponse)
-                .toList();
-    }
-
-    private Event createAndSaveEvent(Member member, EventCreateRequest request, Address address) {
-        Event event = eventMapper.toEvent(member, request, address);
-        return eventRepository. save(event);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Event> eventPage = eventLikeRepository.findAllEventsByMemberAndIsChecked(member, true, pageable);
+        return eventMapper.toEventPagingResponse(eventPage);
     }
 
     @Override

@@ -65,16 +65,17 @@ public class StoreController {
         return BaseResponse.onSuccess(storeService.inquiryStoreDetail(storeId));
     }
 
+
+    @Operation(summary = "내 가게 조회 API")
+    @GetMapping("/mine")
+    public BaseResponse<List<StoreSummaryInquiryResponse>> inquiryStoreByMember() {
+        return BaseResponse.onSuccess(storeService.inquiryStoreByMember());
+    }
+
     @Operation(summary = "내가 찜한 가게 조회 API")
     @GetMapping("/like")
     public BaseResponse<List<StoreSummaryInquiryResponse>> inquiryStoreByLike() {
         return BaseResponse.onSuccess(storeService.inquiryStoreByLike());
-    }
-
-    @Operation(summary = "내 가게 조회 API")
-    @GetMapping("/mine")
-    public BaseResponse<List<StoreSummaryInquiryResponse>> inquiryStoreMine() {
-        return BaseResponse.onSuccess(storeService.inquiryStoreMine());
     }
 
     @Operation(summary = "내 주변 가게 조회 API")

@@ -27,7 +27,7 @@ public class EventController {
 
 
     @Operation(summary = "이벤트 생성 API")
-    @PostMapping("")
+    @PostMapping
     public BaseResponse<EventIdResponse> createEvent (
             @RequestPart(value = "eventImages", required = false) List<MultipartFile> eventImages,
             @Valid @RequestPart("request") EventCreateRequest request){
@@ -48,6 +48,13 @@ public class EventController {
     public BaseResponse<EventIdResponse> deleteEvent(
             @Parameter(description = "삭제할 이벤트 id") @PathVariable Long eventId) {
         return BaseResponse.onSuccess(eventService.deleteEvent(eventId));
+    }
+
+    @Operation(summary = "이벤트 찜하기 API")
+    @PostMapping("/{eventId}/like")
+    public BaseResponse<Boolean> likeEvent(
+            @Parameter(description = "찜할 이벤트 id") @PathVariable("eventId") Long eventId){
+        return BaseResponse.onSuccess(eventService.likeEvent(eventId));
     }
 
     @Operation(summary = "이벤트 검색 API", description = "학교 이름, 이벤트 이름, 세부 설명에서 키워드 검색")
@@ -89,23 +96,28 @@ public class EventController {
         return BaseResponse.onSuccess(eventService.inquiryEvents(type, latitude, latitude, page, size));
     }
 
-    @Operation(summary = "이벤트 찜하기 API")
-    @PostMapping("/{eventId}/like")
-    public BaseResponse<Boolean> likeEvent(
-            @Parameter(description = "찜할 이벤트 id") @PathVariable("eventId") Long eventId){
-        return BaseResponse.onSuccess(eventService.likeEvent(eventId));
-    }
-
 
     @Operation(summary = "나의 이벤트 조회 API")
+    @Parameters(value = {
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
     @GetMapping("/mine")
-    public BaseResponse<List<EventSummaryInquiryResponse>> inquiryEventByMember() {
-        return BaseResponse.onSuccess(eventService.inquiryEventByMember());
+    public BaseResponse<EventPagingResponse> inquiryEventByMember(
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "size") int size) {
+        return BaseResponse.onSuccess(eventService.inquiryEventByMember(page, size));
     }
 
     @Operation(summary = "내가 찜한 이벤트 조회 API")
+    @Parameters(value = {
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
     @GetMapping("/like")
-    public BaseResponse<List<EventSummaryInquiryResponse>> inquiryEventByLike() {
-        return BaseResponse.onSuccess(eventService.inquiryEventByLike());
+    public BaseResponse<EventPagingResponse> inquiryEventByLike(
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "size") int size) {
+        return BaseResponse.onSuccess(eventService.inquiryEventByLike(page, size));
     }
 }

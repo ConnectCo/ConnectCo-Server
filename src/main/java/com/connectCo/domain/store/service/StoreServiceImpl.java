@@ -147,7 +147,7 @@ public class StoreServiceImpl implements StoreService {
      * 나의 가게 조회
      */
     @Override
-    public List<StoreSummaryInquiryResponse> inquiryStoreMine() {
+    public List<StoreSummaryInquiryResponse> inquiryStoreByMember() {
         Member member = authService.getLoginMember();
         return getStoresByMember(member).stream().map(storeMapper::toStoreSummaryInquiryResponse).toList();
     }
