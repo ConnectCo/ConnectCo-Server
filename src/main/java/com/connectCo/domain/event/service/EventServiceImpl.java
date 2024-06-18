@@ -15,17 +15,17 @@ import com.connectCo.domain.event.entity.EventImage;
 import com.connectCo.domain.event.entity.EventLike;
 import com.connectCo.domain.event.mapper.EventLikeMapper;
 import com.connectCo.domain.event.mapper.EventMapper;
-import com.connectCo.domain.event.repository.EventImageRepository;
 import com.connectCo.domain.event.repository.EventLikeRepository;
 import com.connectCo.domain.event.repository.EventRepository;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.service.OrganizationService;
-import com.connectCo.domain.store.entity.StoreImage;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.global.validation.ParamValidator;
-import com.connectCo.utils.S3FileComponent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -119,12 +119,19 @@ public class EventServiceImpl implements EventService{
         return new EventIdResponse(deletedEventId);
     }
 
-    @Override//이벤트 검색하기 우선 학교 이름과 이벤트 제목 둘다에서 검색 되게 해놨습니다.
+    /*
+     * 이벤트 검색
+     */
+    @Override
     @Transactional
-    public List<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword){
+    public List<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword, int page, int size){
         LocalDateTime currentTime = LocalDateTime.now();
-        List<Event> eventList = eventRepository.findAllBySearch(keyword, currentTime);
-        return eventList.stream()
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Event> eventPage = eventRepository.findAllBySearch(keyword,currentTime, pageable);
+
+        return eventPage.stream()
                 .map(eventMapper::toEventSummaryInquiryResponse)
                 .toList();
     }

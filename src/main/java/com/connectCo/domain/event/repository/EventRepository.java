@@ -2,6 +2,8 @@ package com.connectCo.domain.event.repository;
 
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.event.entity.Event;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,8 +15,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findAllByMember(Member member);
 
-    @Query("SELECT DISTINCT e FROM Event e JOIN e.organization o WHERE (e.name LIKE%:keyword% OR o.name LIKE%:keyword%) AND e.expiredAt >= :currentTime")
-    List<Event> findAllBySearch(String keyword, @Param("currentTime")LocalDateTime currentTime);
+    @Query("SELECT DISTINCT e FROM Event e JOIN e.organization o WHERE " +
+            "(e.name LIKE%:keyword% OR o.name LIKE%:keyword% OR e.description LIKE %:keyword%) AND e.expiredAt >= :currentTime")
+    Page<Event> findAllBySearch(@Param("keyword") String keyword, @Param("currentTime") LocalDateTime currentTime, Pageable pageable);
+
     List<Event> findAllByOrderByCreatedAtDesc();
 
     @Query("SELECT DISTINCT e FROM Event e  WHERE e.expiredAt >= :currentTime GROUP BY e ORDER BY e.likeCount DESC")

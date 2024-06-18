@@ -10,6 +10,7 @@ import com.connectCo.domain.event.service.EventService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,10 +52,18 @@ public class EventController {
         return BaseResponse.onSuccess(eventService.deleteEvent(eventId));
     }
 
-    @Operation(summary = "이벤트 검색 API")
-    @GetMapping("")
-    public BaseResponse<List<EventSummaryInquiryResponse>> inquiryEventByName(@RequestParam String keyword) {
-        return BaseResponse.onSuccess(eventService.inquiryEventByKeyword(keyword));
+    @Operation(summary = "이벤트 검색 API", description = "학교 이름, 이벤트 이름, 세부 설명에서 키워드 검색")
+    @Parameters(value = {
+            @Parameter(name = "keyword", description = "검색할 키워드로 한글자 이상 입력"),
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping("/search")
+    public BaseResponse<List<EventSummaryInquiryResponse>> inquiryEventByName(
+            @RequestParam(name = "keyword") String keyword,
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "size") int size) {
+        return BaseResponse.onSuccess(eventService.inquiryEventByKeyword(keyword, page, size));
     }
 
     @Operation(summary = "이벤트 세부사항 조회 API")
