@@ -2,9 +2,7 @@ package com.connectCo.domain.coupon.entity;
 
 
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
-
 import com.connectCo.domain.sponsorship.entity.Sponsorship;
-
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -12,7 +10,6 @@ import lombok.*;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -17,10 +17,7 @@ import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.utils.S3FileComponent;
-
 import jakarta.annotation.Nullable;
-import jakarta.persistence.EntityNotFoundException;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

@@ -2,7 +2,6 @@ package com.connectCo.domain.search.entity;
 
 
 import com.connectCo.domain.Member.entity.Member;
-import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;

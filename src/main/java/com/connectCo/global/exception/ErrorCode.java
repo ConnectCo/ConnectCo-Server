@@ -12,6 +12,7 @@ public enum  ErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON402", "금지된 요청입니다."),
     UNAUTHORIZED_MODIFY(HttpStatus.BAD_REQUEST, "COMMON403", "수정, 삭제 권한이 없습니다."),
+    USER_NOT_ADMIN(HttpStatus.UNAUTHORIZED, "COMMON404", "관리자만 사용 가능한 API입니다."),
 
     // JWT Token
     INVALID_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "JWT401", "잘못된 JWT 토큰입니다."),
@@ -35,10 +36,11 @@ public enum  ErrorCode {
     //Event
     EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "EVENT401", "이벤트를 찾을 수 업습니다."),
 
+    // Organization
+    ORGANIZATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "ORGANIZATION401", "조직을 찾을 수 없습니다."),
 
     //Coupon
     COUPON_NOT_FOUND(HttpStatus.NOT_FOUND,"COUPON401","해당 쿠폰을 찾을 수 없습니다."),
-
 
     ;
 
