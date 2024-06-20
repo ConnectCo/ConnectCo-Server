@@ -11,6 +11,7 @@ import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.entity.StoreImage;
 import com.connectCo.domain.store.entity.StoreLike;
+import com.connectCo.global.common.mapper.CommonMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -74,7 +75,7 @@ public class StoreMapper {
                 .storeId(store.getId())
                 .name(store.getName())
                 .description(store.getDescription())
-                .address(store.getAddress())
+                .address(CommonMapper.toAddressResponse(store.getAddress()))
                 .number(store.getStoreNumber())
                 .operatingTime(store.getOperatingTime())
                 .images(images)

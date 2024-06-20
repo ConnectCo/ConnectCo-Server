@@ -124,7 +124,7 @@ public class StoreServiceImpl implements StoreService {
 
         return storeMapper.toStoreDetailInquiryResponse(store,
                 store.getImages().stream().map(StoreImage::getUrl).toList(),
-                store.getCoupons().stream().map(storeMapper::toStoreCoupon).toList());
+                store.getCoupons().stream().limit(2).map(storeMapper::toStoreCoupon).toList());
     }
 
     /*
