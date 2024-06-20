@@ -11,6 +11,8 @@ import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +33,8 @@ public class StoreController {
     @Operation(summary = "가게 등록 API")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<StoreIdResponse> createStore(
-            @RequestPart(value = "storeImages", required = false) List<MultipartFile> storeImages,
-            @Valid @RequestPart("request") StoreCreateRequest request) {
+            @Parameter(description = "가게 이미지 파일들(없을 시 사용 x)") @RequestPart(value = "storeImages", required = false) List<MultipartFile> storeImages,
+            @Parameter(description = "가게 생성 요청 json") @Valid @RequestPart(value = "request") StoreCreateRequest request) {
         return BaseResponse.onSuccess(storeService.createStore(storeImages, request));
     }
 
@@ -40,8 +42,8 @@ public class StoreController {
     @PatchMapping(value = "/{storeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<StoreIdResponse> updateStore(
             @Parameter(description = "수정할 가게 id") @PathVariable Long storeId,
-            @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages,
-            @Valid @RequestPart("request") StoreUpdateRequest request) {
+            @Parameter(description = "추가된 가게 이미지 파일들(없을 시 사용 x)") @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages,
+            @Parameter(description = "가게 수정 요청 json") @Valid @RequestPart("request") StoreUpdateRequest request) {
         return BaseResponse.onSuccess(storeService.updateStore(storeId, newImages, request));
     }
 
