@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@Schema(description = "가게 ID 응답", example = "{ \"storeId\": 1 }")
 public class StoreIdResponse {
+    @Schema(description = "타겟 가게 id", example = "1")
     private Long storeId;
 }
