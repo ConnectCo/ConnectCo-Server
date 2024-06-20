@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,7 +42,7 @@ public class CouponController {
     }
 
     @Operation(summary = "쿠폰 등록 API")
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<CouponIdResponse> createCoupon(@RequestPart(value = "couponImages", required = false) List<MultipartFile> couponImages,
                                                        @RequestPart("request") @Valid CouponCreateRequest request) {
         return BaseResponse.onSuccess(couponService.createCoupon(couponImages, request));
@@ -54,7 +55,7 @@ public class CouponController {
     }
 
     @Operation(summary = "쿠폰 수정 API")
-    @PutMapping("/{couponId}")
+    @PutMapping(value = "/{couponId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<CouponIdResponse> updateCoupon(@PathVariable Long couponId,
                                                        @RequestPart(value = "couponImages", required = false) List<MultipartFile> couponImages,
                                                        @RequestPart("request") @Valid CouponCreateRequest request) {

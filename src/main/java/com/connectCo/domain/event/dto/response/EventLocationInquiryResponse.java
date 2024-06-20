@@ -1,24 +1,24 @@
 package com.connectCo.domain.event.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Builder
-public class EventDetailInquiryResponse {
+@AllArgsConstructor
+@NoArgsConstructor
+public class EventLocationInquiryResponse {
     private Long eventId;
     private String organizationName;
     private String name;
-    private LocalDate expiredAt;
-    private String description;
     private LocalDate startAt;
     private LocalDate endAt;
-    private String benefitTarget;
-    private String priorityTarget;
-    private String detailAddress;
-    private String notification;
-    List<String> images;
+    private String thumbnail;
+    private double latitude;
+    private double longitude;
+    private double distance;
 }

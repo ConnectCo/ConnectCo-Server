@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +29,7 @@ public class StoreController {
     private final StoreService storeService;
 
     @Operation(summary = "가게 등록 API")
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<StoreIdResponse> createStore(
             @RequestPart(value = "storeImages", required = false) List<MultipartFile> storeImages,
             @Valid @RequestPart("request") StoreCreateRequest request) {
@@ -36,7 +37,7 @@ public class StoreController {
     }
 
     @Operation(summary = "가게 수정 API", description = "본인만 가능")
-    @PatchMapping("/{storeId}")
+    @PatchMapping(value = "/{storeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<StoreIdResponse> updateStore(
             @Parameter(description = "수정할 가게 id") @PathVariable Long storeId,
             @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages,
@@ -52,7 +53,7 @@ public class StoreController {
     }
 
     @Operation(summary = "가게 찜하기 API")
-    @PostMapping("/like/{storeId}")
+    @PostMapping("/{storeId}/like")
     public BaseResponse<Boolean> likeStore(
             @Parameter(description = "찜할 가게 id") @PathVariable Long storeId) {
         return BaseResponse.onSuccess(storeService.likeStore(storeId));
@@ -65,16 +66,17 @@ public class StoreController {
         return BaseResponse.onSuccess(storeService.inquiryStoreDetail(storeId));
     }
 
+
+    @Operation(summary = "내 가게 조회 API")
+    @GetMapping("/mine")
+    public BaseResponse<List<StoreSummaryInquiryResponse>> inquiryStoreByMember() {
+        return BaseResponse.onSuccess(storeService.inquiryStoreByMember());
+    }
+
     @Operation(summary = "내가 찜한 가게 조회 API")
     @GetMapping("/like")
     public BaseResponse<List<StoreSummaryInquiryResponse>> inquiryStoreByLike() {
         return BaseResponse.onSuccess(storeService.inquiryStoreByLike());
-    }
-
-    @Operation(summary = "내 가게 조회 API")
-    @GetMapping("/mine")
-    public BaseResponse<List<StoreSummaryInquiryResponse>> inquiryStoreMine() {
-        return BaseResponse.onSuccess(storeService.inquiryStoreMine());
     }
 
     @Operation(summary = "내 주변 가게 조회 API")

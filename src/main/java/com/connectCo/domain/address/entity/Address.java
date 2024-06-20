@@ -3,7 +3,11 @@ package com.connectCo.domain.address.entity;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 
 @Getter
 @Entity
@@ -24,17 +28,19 @@ public class Address extends BaseEntity {
     private double longitude;
 
     @Column(name = "location", columnDefinition = "POINT")
-    private String location;
+    private Point location;
 
     @PrePersist
     @PreUpdate
     public void updateLocation() {
-        this.location = String.format("POINT(%f %f)", this.longitude, this.latitude);
+        GeometryFactory geometryFactory = new GeometryFactory();
+        this.location = geometryFactory.createPoint(new Coordinate(this.longitude, this.latitude));
     }
 
     public void updateAddress(String detailAddress, double latitude, double longitude) {
         this.detailAddress = detailAddress;
         this.latitude = latitude;
         this.longitude = longitude;
+        updateLocation();
     }
 }

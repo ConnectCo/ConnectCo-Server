@@ -57,10 +57,10 @@ public class OrganizationController {
     }
 
     @Operation(summary = "조직 상세 조회 API")
-    @GetMapping("/{organizationId}")
+    @GetMapping("/{organizationName}")
     public BaseResponse<OrganizationInquiryResponse> inquiryOrganization(
-            @Parameter(description = "조회할 조직 id") @PathVariable Long organizationId) {
-        return BaseResponse.onSuccess(organizationService.inquiryOrganization(organizationId));
+            @Parameter(description = "조회할 조직 이름") @PathVariable String organizationName) {
+        return BaseResponse.onSuccess(organizationService.inquiryOrganization(organizationName));
     }
 
     @Operation(summary = "조직 검색 API", description = "이름 오름차순으로 정렬")

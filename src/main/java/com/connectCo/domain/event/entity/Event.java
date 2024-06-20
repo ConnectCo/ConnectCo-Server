@@ -1,6 +1,8 @@
 package com.connectCo.domain.event.entity;
 
 import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.address.entity.Address;
+import com.connectCo.domain.event.dto.request.EventUpdateRequest;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.sponsorship.entity.Sponsorship;
 import com.connectCo.global.common.BaseEntity;
@@ -11,6 +13,7 @@ import org.hibernate.annotations.Where;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Entity
@@ -26,9 +29,6 @@ public class Event extends BaseEntity {
 
     @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
-    private String address;
 
     @Column(nullable = false)
     private LocalDate startAt;
@@ -53,7 +53,11 @@ public class Event extends BaseEntity {
 
     @Column(nullable = false)
     @Builder.Default
-    private Integer likeCount=0;
+    private Integer likeCount = 0;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn
+    private Address address;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
@@ -63,25 +67,43 @@ public class Event extends BaseEntity {
     @JoinColumn
     private Organization organization;
 
-    @OneToMany(mappedBy = "event")
-    private List<EventCoupon> coupons;
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private List<EventCoupon> coupons = new ArrayList<>();
 
-    @OneToMany(mappedBy = "event")
-    private List<EventImage> images;
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private List<EventImage> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "event")
-    private List<Sponsorship> sponsorshipList=new ArrayList<>();
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
+    }
+
+    public void updateEventInfo(EventUpdateRequest request) {
+        this.name = request.getName();
+        this.startAt = request.getStartAt();
+        this.endAt = request.getEndAt();
+        this.expiredAt = request.getExpiredAt();
+        this.benefitTarget = request.getBenefitTarget();
+        this.notification = request.getNotification();
+        this.description = request.getDescription();
+        this.priorityTarget = request.getPriorityTarget();
+    }
 
     public void changeImages(List<EventImage> eventImages) {
-        // 기존 이미지가 있다면 삭제
-        if(this.images != null) removeImages();
-
         // 새로운 이미지로 변경
         this.images = eventImages;
     }
 
-    private void removeImages() {
-        this.images.forEach(BaseEntity::delete);
+    public String getThumbnail() {
+        return this.images.stream()
+                .findFirst()
+                .map(EventImage::getUrl)
+                .orElse(null);
+    }
+
+    public String getOrganizationName() {
+        return Optional.ofNullable(organization)
+                .map(Organization::getName)
+                .orElse(null);
     }
 
     public void increaseLikeCount() {
@@ -93,7 +115,4 @@ public class Event extends BaseEntity {
             this.likeCount--;
         }
     }
-
-
-
 }

@@ -29,8 +29,9 @@ public class EventLike extends BaseEntity {
     @JoinColumn
     private Event event;
 
-    public void changeIsChecked(){
+    public boolean changeIsChecked(){
         this.isChecked = !this.isChecked;
+        return isChecked;
     }
 
 }

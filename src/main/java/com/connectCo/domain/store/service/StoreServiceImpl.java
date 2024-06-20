@@ -46,7 +46,8 @@ public class StoreServiceImpl implements StoreService {
     @Transactional
     public StoreIdResponse createStore(List<MultipartFile> storeImages, StoreCreateRequest request) {
         Member member = authService.getLoginMember();
-        Address newAddress = getAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
+        Address newAddress = addressService.createAddress(
+                request.getDetailAddress(), request.getLatitude(), request.getLongitude());
         Store newStore = createAndSaveStore(member, request, newAddress);
 
         List<StoreImage> newStoreImages = (storeImages != null) ?
@@ -64,11 +65,14 @@ public class StoreServiceImpl implements StoreService {
         Member member = authService.getLoginMember();
         Store store = loadStore(storeId);
 
-        // 수정 권한 유효성 검사
+        // 수정 권한 유효성 검사(본인이 아닌 경우 수정 불가)
         ParamValidator.validModify(member.getId(), store.getMember().getId());
 
-        Address newAddress = getAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
-        store.updateStoreInfo(request, newAddress);
+        // 주소 정보 업데이트
+        store.getAddress().updateAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
+
+        // 정보 수정
+        store.updateStoreInfo(request);
 
         // 이미지 업데이트
         storeImageService.updateStoreImages(store, request.getExistingImages(), newImages);
@@ -89,8 +93,8 @@ public class StoreServiceImpl implements StoreService {
         ParamValidator.validModify(member.getId(), store.getMember().getId());
 
         // 가게 이미지 삭제
-        store.deleteImage();
         storeImageService.deleteExistingImages(store.getImages());
+        store.changeImages(List.of());
 
         // 가게 soft 삭제
         store.delete();
@@ -143,7 +147,7 @@ public class StoreServiceImpl implements StoreService {
      * 나의 가게 조회
      */
     @Override
-    public List<StoreSummaryInquiryResponse> inquiryStoreMine() {
+    public List<StoreSummaryInquiryResponse> inquiryStoreByMember() {
         Member member = authService.getLoginMember();
         return getStoresByMember(member).stream().map(storeMapper::toStoreSummaryInquiryResponse).toList();
     }
@@ -170,12 +174,6 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public List<Store> getStoresByMember(Member member) {
         return storeRepository.findAllByMember(member);
-    }
-
-    private Address getAddress(String detailAddress, double latitude, double longitude) {
-        // 위도, 경도 값 유효성 검사
-        ParamValidator.validLocation(latitude, longitude);
-        return addressService.createAddress(detailAddress, latitude, longitude);
     }
 
     /*

@@ -34,7 +34,6 @@ public class MemberController {
         return BaseResponse.onSuccess(memberService.saveMemberByNaver(accessToken));
     }
 
-
     @Operation(summary = "홈화면 유저 정보 조회 API")
     @GetMapping
     public BaseResponse<MemberInfoResponse> getMemberInfo() {

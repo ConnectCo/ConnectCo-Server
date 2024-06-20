@@ -7,6 +7,7 @@ import com.connectCo.domain.store.dto.request.StoreUpdateRequest;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class Store extends BaseEntity {
     @Column(nullable = false)
     private int couponCount;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn
     private Address address;
 
@@ -52,17 +53,11 @@ public class Store extends BaseEntity {
     @OneToMany(mappedBy = "store")
     private List<Coupon> coupons = new ArrayList<>();
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public void updateStoreInfo(StoreUpdateRequest request, Address address) {
+    public void updateStoreInfo(StoreUpdateRequest request) {
         this.name = request.getName();
         this.description = request.getDescription();
         this.storeNumber = request.getStoreNumber();
         this.operatingTime = request.getOperatingTime();
-        this.address.delete();
-        this.address = address;
     }
 
     public void changeImages(List<StoreImage> storeImages) {
@@ -79,9 +74,5 @@ public class Store extends BaseEntity {
                 .findFirst()
                 .map(StoreImage::getUrl)
                 .orElse(null);
-    }
-
-    public void deleteImage() {
-        this.images = List.of();
     }
 }

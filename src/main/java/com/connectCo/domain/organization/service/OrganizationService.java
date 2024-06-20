@@ -15,7 +15,8 @@ public interface OrganizationService {
     OrganizationIdResponse updateOrganizationInfo(Long organizationId, OrganizationUpdateRequest request);
     OrganizationIdResponse updateOrganizationAddress(Long organizationId, AddressRequest request);
     OrganizationIdResponse deleteOrganization(Long organizationId);
-    OrganizationInquiryResponse inquiryOrganization(Long organizationId);
+    OrganizationInquiryResponse inquiryOrganization(String organizationName);
     List<OrganizationSearchResponse> searchOrganization(String keyword);
     Organization loadOrganization(Long organizationId);
+    Organization loadOrganizationByName(String name);
 }

@@ -19,15 +19,12 @@ public class Organization extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn
     private Address address;
-
-    @Enumerated(EnumType.STRING)
-    private OrganizationType organizationType;
 
     @Column(nullable = false)
     private String homepageUrl;
@@ -40,10 +37,5 @@ public class Organization extends BaseEntity {
         this.name = request.getName();
         this.homepageUrl = request.getHomepageUrl();
         this.academicDayUrl = request.getAcademicDayUrl();
-    }
-
-    public void updateOrganizationAddress(Address address) {
-        this.address.delete();
-        this.address = address;
     }
 }

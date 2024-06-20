@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +54,7 @@ public class StoreImageServiceImpl implements StoreImageService {
         List<StoreImage> existingImages = store.getImages();
         List<StoreImage> existingImagesToKeep = existingImages.stream()
                 .filter(image -> existingImageUrls.contains(image.getUrl()))
-                .toList();
+                .collect(Collectors.toList());
 
         List<StoreImage> imagesToRemove = existingImages.stream()
                 .filter(image -> !existingImageUrls.contains(image.getUrl()))
@@ -67,7 +68,7 @@ public class StoreImageServiceImpl implements StoreImageService {
         existingImagesToKeep.addAll(newStoreImages);
         store.changeImages(existingImagesToKeep);
 
-        // 삭제된 기존 이미지 삭제
+        // 삭제할 기존 이미지 삭제
         deleteExistingImages(imagesToRemove);
     }
 }

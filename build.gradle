@@ -47,6 +47,10 @@ dependencies {
 
 	// s3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	// hibernate-spatial 의존성 추가
+	implementation 'org.hibernate:hibernate-spatial:6.2.13.Final'
+
 }
 
 

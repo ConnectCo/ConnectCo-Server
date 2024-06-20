@@ -21,7 +21,7 @@ public interface StoreService {
     Boolean likeStore(Long storeId);
     StoreDetailInquiryResponse inquiryStoreDetail(Long storeId);
     List<StoreSummaryInquiryResponse> inquiryStoreByLike();
-    List<StoreSummaryInquiryResponse> inquiryStoreMine();
+    List<StoreSummaryInquiryResponse> inquiryStoreByMember();
     List<StoreLocationInquiryResponse> inquiryStoreByLocation(double latitude, double longitude, int radius);
     List<Store> getStoresByMember(Member member);
     Store loadStore(Long storeId);

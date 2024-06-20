@@ -12,7 +12,6 @@ public class OrganizationMapper {
     public Organization toOrganization(OrganizationCreateRequest request, Address address) {
         return Organization.builder()
                 .name(request.getName())
-                .organizationType(request.getType())
                 .address(address)
                 .homepageUrl(request.getHomepageUrl())
                 .academicDayUrl(request.getAcademicDayUrl())
