@@ -4,10 +4,7 @@ package com.connectCo.domain.store.service;
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.request.StoreUpdateRequest;
-import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
-import com.connectCo.domain.store.dto.response.StoreIdResponse;
-import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
-import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
+import com.connectCo.domain.store.dto.response.*;
 import com.connectCo.domain.store.entity.Store;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,9 +17,9 @@ public interface StoreService {
     StoreIdResponse deleteStore(Long storeId);
     Boolean likeStore(Long storeId);
     StoreDetailInquiryResponse inquiryStoreDetail(Long storeId);
-    List<StoreSummaryInquiryResponse> inquiryStoreByLike();
-    List<StoreSummaryInquiryResponse> inquiryStoreByMember();
-    List<StoreLocationInquiryResponse> inquiryStoreByLocation(double latitude, double longitude, int radius);
+    StorePagingResponse<StoreSummaryInquiryResponse> inquiryStoreByLike(int page, int size);
+    StorePagingResponse<StoreSummaryInquiryResponse> inquiryStoreByMember(int page, int size);
+    StorePagingResponse<StoreLocationInquiryResponse> inquiryStoreByLocation(double latitude, double longitude, int radius, int page, int size);
     List<Store> getStoresByMember(Member member);
     Store loadStore(Long storeId);
 
