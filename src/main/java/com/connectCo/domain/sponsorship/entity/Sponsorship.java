@@ -4,14 +4,12 @@ import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.event.entity.Event;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Where;
 
 @Getter
 @Entity
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
@@ -21,7 +19,7 @@ public class Sponsorship extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Boolean isComplete;
+    private Boolean isComplete = false;
 
     @Enumerated(EnumType.STRING)
     private Sponsor sponsor;
