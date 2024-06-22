@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SponsorshipCreateRequest {
 
-    private Event event;
+    private Long eventId;
 
-    private Coupon coupon;
+    private Long couponId;
 
 }
