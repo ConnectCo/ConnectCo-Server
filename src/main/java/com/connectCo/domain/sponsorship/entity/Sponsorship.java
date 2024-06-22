@@ -31,4 +31,10 @@ public class Sponsorship extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Coupon coupon;
+
+
+    public void updateIsComplete(){
+        this.isComplete = true;
+    }
+
 }
