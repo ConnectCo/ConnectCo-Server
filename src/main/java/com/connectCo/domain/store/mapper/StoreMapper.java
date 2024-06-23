@@ -6,10 +6,13 @@ import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
 import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
+import com.connectCo.domain.store.dto.response.StorePagingResponse;
 import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.entity.StoreImage;
 import com.connectCo.domain.store.entity.StoreLike;
+import com.connectCo.global.common.mapper.CommonMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -44,6 +47,17 @@ public class StoreMapper {
                 .build();
     }
 
+    public <T>StorePagingResponse<T> toStorePagingResponse(Page<T> stores) {
+        return StorePagingResponse.<T>builder()
+                .stores(stores.getContent())
+                .page(stores.getNumber())
+                .totalPages(stores.getTotalPages())
+                .totalElements((int) stores.getTotalElements())
+                .isFirst(stores.isFirst())
+                .isLast(stores.isLast())
+                .build();
+    }
+
     public StoreSummaryInquiryResponse toStoreSummaryInquiryResponse(Store store) {
 
         return StoreSummaryInquiryResponse.builder()
@@ -61,7 +75,7 @@ public class StoreMapper {
                 .storeId(store.getId())
                 .name(store.getName())
                 .description(store.getDescription())
-                .address(store.getAddress())
+                .address(CommonMapper.toAddressResponse(store.getAddress()))
                 .number(store.getStoreNumber())
                 .operatingTime(store.getOperatingTime())
                 .images(images)
@@ -69,8 +83,9 @@ public class StoreMapper {
                 .build();
     }
 
-    public StoreLocationInquiryResponse toStoreLocationInquiryResponse(Store store, double distance) {
-
+    public StoreLocationInquiryResponse toStoreLocationInquiryResponse(Object[] storeWithDistance) {
+        Store store = (Store) storeWithDistance[0];
+        double distance = (double) storeWithDistance[1];
         return StoreLocationInquiryResponse.builder()
                 .storeId(store.getId())
                 .name(store.getName())
