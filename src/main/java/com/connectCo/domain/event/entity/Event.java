@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Getter
 @Entity
-@Builder
+@Builder 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")

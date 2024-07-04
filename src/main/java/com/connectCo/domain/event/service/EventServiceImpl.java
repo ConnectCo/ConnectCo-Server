@@ -151,6 +151,7 @@ public class EventServiceImpl implements EventService{
         return eventMapper.toEventDetailInquiryResponse(event);
     }
 
+
     /*
      * 이벤트 검색
      */

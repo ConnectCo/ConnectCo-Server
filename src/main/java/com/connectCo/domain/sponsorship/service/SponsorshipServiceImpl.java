@@ -1,8 +1,5 @@
 package com.connectCo.domain.sponsorship.service;
 
-
-import com.connectCo.domain.Member.entity.Member;
-import com.connectCo.domain.Member.service.AuthService;
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.coupon.repository.CouponRepository;
 import com.connectCo.domain.event.entity.Event;
@@ -10,6 +7,7 @@ import com.connectCo.domain.event.repository.EventRepository;
 import com.connectCo.domain.sponsorship.dto.request.SponsorshipCreateRequest;
 import com.connectCo.domain.sponsorship.dto.request.SponsorshipDecisionRequest;
 import com.connectCo.domain.sponsorship.dto.response.SponsorshipIdResponse;
+import com.connectCo.domain.sponsorship.entity.Sponsor;
 import com.connectCo.domain.sponsorship.entity.Sponsorship;
 import com.connectCo.domain.sponsorship.mapper.SponsorshipMapper;
 import com.connectCo.domain.sponsorship.repository.SponsorshipRepository;
@@ -22,25 +20,35 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class SponsorshipServiceImpl implements SponsorshipService{
-    private final SponsorshipMapper sponsorshipMapper;
-    private final SponsorshipRepository sponsorshipRepository;
-    private final EventRepository eventRepository;
-    private final CouponRepository couponRepository;
-    /*
-     * 협찬 생성
-     */
-    @Override
-    @Transactional
-    public SponsorshipIdResponse createSponsorship(SponsorshipCreateRequest request){
-        Event event = eventRepository.findById(request.getEventId()).orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
-        Coupon coupon = couponRepository.findById(request.getCouponId()).orElseThrow(() -> new CustomApiException(ErrorCode.COUPON_NOT_FOUND));
-        Sponsorship newSponsorship = createAndSaveSponsorship(event, coupon);
+            private final SponsorshipMapper sponsorshipMapper;
+            private final SponsorshipRepository sponsorshipRepository;
+            private final EventRepository eventRepository;
+            private final CouponRepository couponRepository;
+            /*
+             * 협찬 생성
+             */
+            @Override
+            @Transactional
+            public SponsorshipIdResponse createSponsorshipByStore(SponsorshipCreateRequest request){
+                Event event = eventRepository.findById(request.getEventId()).orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
+                Coupon coupon = couponRepository.findById(request.getCouponId()).orElseThrow(() -> new CustomApiException(ErrorCode.COUPON_NOT_FOUND));
+                Sponsorship newSponsorship = createAndSaveSponsorship(event, coupon, Sponsor.STORE);
         return new SponsorshipIdResponse(newSponsorship.getId());
 
     }
 
-    private Sponsorship createAndSaveSponsorship(Event event, Coupon coupon){
-        Sponsorship sponsorship = sponsorshipMapper.toSponsorship(event, coupon);
+    @Override
+    @Transactional
+    public SponsorshipIdResponse createSponsorshipByMember(SponsorshipCreateRequest request){
+        Event event = eventRepository.findById(request.getEventId()).orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
+        Coupon coupon = couponRepository.findById(request.getCouponId()).orElseThrow(() -> new CustomApiException(ErrorCode.COUPON_NOT_FOUND));
+        Sponsorship newSponsorship = createAndSaveSponsorship(event, coupon, Sponsor.MEMBER);
+        return new SponsorshipIdResponse(newSponsorship.getId());
+
+    }
+
+    private Sponsorship createAndSaveSponsorship(Event event, Coupon coupon, Sponsor sponsor){
+        Sponsorship sponsorship = sponsorshipMapper.toSponsorship(event, coupon, sponsor);
         return sponsorshipRepository.save(sponsorship);
     }
 

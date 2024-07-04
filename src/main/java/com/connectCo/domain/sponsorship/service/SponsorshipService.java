@@ -6,7 +6,9 @@ import com.connectCo.domain.sponsorship.dto.request.SponsorshipDecisionRequest;
 import com.connectCo.domain.sponsorship.dto.response.SponsorshipIdResponse;
 
 public interface SponsorshipService {
-    SponsorshipIdResponse createSponsorship(SponsorshipCreateRequest request);
+    SponsorshipIdResponse createSponsorshipByStore(SponsorshipCreateRequest request);
+
+    SponsorshipIdResponse createSponsorshipByMember(SponsorshipCreateRequest request);
 
     SponsorshipIdResponse decisionSponsorship(SponsorshipDecisionRequest request);
 }
