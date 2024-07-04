@@ -6,5 +6,5 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Sponsor {
-    STORE, MEMBER;
+    STORE, ORGANIZATION;
 }

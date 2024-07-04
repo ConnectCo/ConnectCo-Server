@@ -42,7 +42,7 @@ public class SponsorshipServiceImpl implements SponsorshipService{
     public SponsorshipIdResponse createSponsorshipByMember(SponsorshipCreateRequest request){
         Event event = eventRepository.findById(request.getEventId()).orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
         Coupon coupon = couponRepository.findById(request.getCouponId()).orElseThrow(() -> new CustomApiException(ErrorCode.COUPON_NOT_FOUND));
-        Sponsorship newSponsorship = createAndSaveSponsorship(event, coupon, Sponsor.MEMBER);
+        Sponsorship newSponsorship = createAndSaveSponsorship(event, coupon, Sponsor.ORGANIZATION);
         return new SponsorshipIdResponse(newSponsorship.getId());
 
     }
