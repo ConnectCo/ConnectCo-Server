@@ -2,10 +2,13 @@ package com.connectCo.domain.coupon.mapper;
 
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.response.CouponDetailResponse;
+import com.connectCo.domain.coupon.dto.response.CouponPagingResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.coupon.entity.CouponImage;
 import com.connectCo.domain.store.entity.Store;
+import org.springframework.data.domain.Page;
+import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -59,16 +62,23 @@ public class CouponMapper {
         return CouponDetailResponse.builder()
                 .id(coupon.getId())
                 .storeId(coupon.getStore().getId())
+                .storeName(coupon.getStore().getName())
                 .name(coupon.getName())
                 .description(coupon.getDescription())
                 .priorityTarget(coupon.getPriorityTarget())
                 .notification(coupon.getNotification())
-                .couponType(coupon.getCouponType().toString())
                 .expiredAt(coupon.getExpiredAt())
                 .images(imageUrls)
-                .validCount(coupon.getValidCount())
-                .validPeriod(coupon.getValidPeriod())
-                .validDate(coupon.getValidDate())
+                .build();
+    }
+
+    public <T> CouponPagingResponse<T> toCouponPagingResponse(Page<T> coupons){
+        return CouponPagingResponse.<T>builder()
+                .coupons(coupons.getContent())
+                .totalPages(coupons.getTotalPages())
+                .totalElements((int) coupons.getTotalElements())
+                .isFirst(coupons.isFirst())
+                .isLast(coupons.isLast())
                 .build();
     }
 }
