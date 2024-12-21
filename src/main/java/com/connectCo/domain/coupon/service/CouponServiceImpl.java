@@ -5,6 +5,7 @@ import com.connectCo.domain.Member.service.AuthService;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.response.CouponDetailResponse;
 import com.connectCo.domain.coupon.dto.response.CouponIdResponse;
+import com.connectCo.domain.coupon.dto.response.CouponPagingResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.coupon.entity.CouponImage;
@@ -20,12 +21,14 @@ import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.utils.S3FileComponent;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -41,16 +44,16 @@ public class CouponServiceImpl implements CouponService {
     private final CouponImageRepository couponImageRepository;
 
     @Override
-    public List<CouponSummaryInquiryResponse> inquiryCouponByMember() {
+    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByMember(int page, int size) {
         Member member = authService.getLoginMember();
+        LocalDate currentDate = LocalDate.now();
+        Pageable pageable = PageRequest.of(page, size);
 
-        List<Coupon> couponList = storeService.getStoresByMember(member).stream()
-                .flatMap(store -> couponRepository.findAllByStore(store).stream())
-                .toList();
+        List<Store> stores = storeService.getStoresByMember(member);
+        Page<CouponSummaryInquiryResponse> coupons = couponRepository.findAllByStores(stores, currentDate, pageable)
+                .map(couponMapper::toCouponSummaryInquiryResponse);
 
-        return couponList.stream()
-                .map(couponMapper::toCouponSummaryInquiryResponse)
-                .toList();
+        return couponMapper.toCouponPagingResponse(coupons);
     }
 
     @Override

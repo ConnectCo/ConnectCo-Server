@@ -3,12 +3,15 @@ package com.connectCo.domain.coupon.controller;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.response.CouponDetailResponse;
 import com.connectCo.domain.coupon.dto.response.CouponIdResponse;
+import com.connectCo.domain.coupon.dto.response.CouponPagingResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.service.CouponService;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +32,15 @@ public class CouponController {
 
     @Operation(summary = "나의 쿠폰 조회 API")
     @GetMapping("/mine")
-    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByMember() {
-        return BaseResponse.onSuccess(couponService.inquiryCouponByMember());
+    @Parameters(value = {
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 쿠폰 개수"),
+    })
+    public BaseResponse<CouponPagingResponse<CouponSummaryInquiryResponse>> inquiryCouponByMember(
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "size") int size
+    ) {
+        return BaseResponse.onSuccess(couponService.inquiryCouponByMember(page, size));
     }
 
     @Operation(summary = "내가 찜한 쿠폰 조회 API")
