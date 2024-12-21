@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -13,15 +14,12 @@ public class CouponDetailResponse {
 
     private Long id;
     private Long storeId;
+    private String storeName;
     private String name;
     private String description;
     private String priorityTarget;
     private String notification;
-    private String couponType;
     private LocalDate expiredAt;
+    private LocalDateTime createdAt;
     private List<String> images;
-    private int validCount;
-    private int validPeriod;
-    private LocalDate validDate;
-
 }
