@@ -1,6 +1,7 @@
 package com.connectCo.domain.coupon.mapper;
 
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
+import com.connectCo.domain.coupon.dto.response.CouponDetailResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.coupon.entity.CouponImage;
@@ -8,6 +9,8 @@ import com.connectCo.domain.store.entity.Store;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class CouponMapper {
@@ -44,6 +47,28 @@ public class CouponMapper {
                 .description(coupon.getDescription())
                 .expiredAt(coupon.getExpiredAt())
                 .thumbnail(thumbnail)
+                .build();
+    }
+
+    public CouponDetailResponse toCouponDetailResponse(Coupon coupon) {
+        List<String> imageUrls = coupon.getImages().stream()
+                .map(CouponImage::getUrl)
+                .collect(Collectors.toList());
+
+
+        return CouponDetailResponse.builder()
+                .id(coupon.getId())
+                .storeId(coupon.getStore().getId())
+                .name(coupon.getName())
+                .description(coupon.getDescription())
+                .priorityTarget(coupon.getPriorityTarget())
+                .notification(coupon.getNotification())
+                .couponType(coupon.getCouponType().toString())
+                .expiredAt(coupon.getExpiredAt())
+                .images(imageUrls)
+                .validCount(coupon.getValidCount())
+                .validPeriod(coupon.getValidPeriod())
+                .validDate(coupon.getValidDate())
                 .build();
     }
 }

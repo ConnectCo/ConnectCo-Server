@@ -40,12 +40,12 @@ public class Coupon extends BaseEntity {
     @Column(nullable = false)
     private LocalDate expiredAt;
 
-    //    @Enumerated(EnumType.STRING)
-    //    private CouponType couponType;
+    @Enumerated(EnumType.STRING)
+    private CouponType couponType;
     //
-    //    private int validCount;
-    //    private int validPeriod;
-    //    private LocalDate validDate;
+    private int validCount;
+    private int validPeriod;
+    private LocalDate validDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn

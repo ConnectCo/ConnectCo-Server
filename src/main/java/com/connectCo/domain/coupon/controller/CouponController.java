@@ -1,9 +1,12 @@
 package com.connectCo.domain.coupon.controller;
 
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
+import com.connectCo.domain.coupon.dto.response.CouponDetailResponse;
 import com.connectCo.domain.coupon.dto.response.CouponIdResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.service.CouponService;
+import com.connectCo.domain.store.entity.Store;
+import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,6 +26,7 @@ public class CouponController {
 
     private final CouponService couponService;
 
+
     @Operation(summary = "나의 쿠폰 조회 API")
     @GetMapping("/mine")
     public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByMember() {
@@ -40,6 +44,18 @@ public class CouponController {
     public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByRecent() {
         return BaseResponse.onSuccess(couponService.inquiryCouponByRecent());
     }
+    @Operation(summary = "특정 가게의 쿠폰 조회 API")
+    @GetMapping("/store/{storeId}")
+    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByEachStore(@PathVariable Long storeId) {
+        return BaseResponse.onSuccess(couponService.inquiryCouponByEachStore(storeId));
+    }
+
+    @Operation(summary = "쿠폰 상세 조회 API")
+    @GetMapping("/{couponId}")
+    public BaseResponse<CouponDetailResponse> inquiryCouponDetail(@PathVariable Long couponId) {
+        return BaseResponse.onSuccess(couponService.inquiryCouponDetail(couponId));
+    }
+
 
     @Operation(summary = "쿠폰 등록 API")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

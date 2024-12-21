@@ -3,6 +3,7 @@ package com.connectCo.domain.coupon.service;
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.service.AuthService;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
+import com.connectCo.domain.coupon.dto.response.CouponDetailResponse;
 import com.connectCo.domain.coupon.dto.response.CouponIdResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.entity.Coupon;
@@ -165,8 +166,25 @@ public class CouponServiceImpl implements CouponService {
         return new CouponIdResponse(coupon.getId());
     }
 
+    @Override
+    public List<CouponSummaryInquiryResponse> inquiryCouponByEachStore(Long storeId) {
+        Store store=storeService.loadStore(storeId);
+        return inquiryCouponByStore(store).stream()
+                .map(couponMapper::toCouponSummaryInquiryResponse)
+                .toList();
+    }
     public List<Coupon> inquiryCouponByStore(Store store) {
         return couponRepository.findAllByStore(store);
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public CouponDetailResponse inquiryCouponDetail(Long couponId) {
+        Coupon coupon = couponRepository.findById(couponId)
+                .orElseThrow(() -> new CustomApiException(ErrorCode.COUPON_NOT_FOUND));
+
+        return couponMapper.toCouponDetailResponse(coupon);
     }
 
 }
