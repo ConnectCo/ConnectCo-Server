@@ -57,16 +57,15 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<CouponSummaryInquiryResponse> inquiryCouponByLike() {
+    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByLike(int page, int size) {
         Member member = authService.getLoginMember();
+        Pageable pageable = PageRequest.of(page, size);
 
-        List<Coupon> couponList = couponLikeRepository.findAllByMemberAndIsChecked(member, true).stream()
+        Page<CouponSummaryInquiryResponse> coupons = couponLikeRepository.findAllByMemberAndIsChecked(member, true, pageable)
                 .map(CouponLike::getCoupon)
-                .toList();
+                .map(couponMapper::toCouponSummaryInquiryResponse);
 
-        return couponList.stream()
-                .map(couponMapper::toCouponSummaryInquiryResponse)
-                .toList();
+        return couponMapper.toCouponPagingResponse(coupons);
     }
 
     @Override

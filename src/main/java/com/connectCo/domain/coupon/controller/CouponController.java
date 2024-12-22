@@ -45,8 +45,15 @@ public class CouponController {
 
     @Operation(summary = "내가 찜한 쿠폰 조회 API")
     @GetMapping("/like")
-    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByLike() {
-        return BaseResponse.onSuccess(couponService.inquiryCouponByLike());
+    @Parameters(value = {
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 쿠폰 개수"),
+    })
+    public BaseResponse<CouponPagingResponse<CouponSummaryInquiryResponse>> inquiryCouponByLike(
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "size") int size
+    ) {
+        return BaseResponse.onSuccess(couponService.inquiryCouponByLike(page, size));
     }
 
     @Operation(summary = "쿠폰 조회 API(최신순)")

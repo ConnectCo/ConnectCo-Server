@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface CouponService {
     CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByMember(int page, int size);
-    List<CouponSummaryInquiryResponse> inquiryCouponByLike();
+    CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByLike(int page, int size);
     List<CouponSummaryInquiryResponse> inquiryCouponByRecent();
     List<CouponSummaryInquiryResponse> inquiryCouponByEachStore(Long storeId);
 
