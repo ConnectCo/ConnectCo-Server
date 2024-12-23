@@ -9,6 +9,7 @@ import com.connectCo.domain.coupon.service.CouponService;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.common.BaseResponse;
+import com.connectCo.global.common.enums.InquiryType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -56,15 +57,14 @@ public class CouponController {
         return BaseResponse.onSuccess(couponService.inquiryCouponByLike(page, size));
     }
 
-    @Operation(summary = "쿠폰 조회 API(최신순)")
-    @GetMapping("/recent")
-    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByRecent() {
-        return BaseResponse.onSuccess(couponService.inquiryCouponByRecent());
-    }
-    @Operation(summary = "특정 가게의 쿠폰 조회 API")
-    @GetMapping("/store/{storeId}")
-    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByEachStore(@PathVariable Long storeId) {
-        return BaseResponse.onSuccess(couponService.inquiryCouponByEachStore(storeId));
+    @Operation(summary = "쿠폰 조회 API(추천순, 거리순, 최근순)")
+    @GetMapping("/recommend")
+    public BaseResponse<CouponPagingResponse<CouponSummaryInquiryResponse>> inquiryCoupon(
+            @RequestParam(name = "type") InquiryType type,
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "size") int size
+    ){
+        return BaseResponse.onSuccess(couponService.inquiryCoupon(type, page , size));
     }
 
     @Operation(summary = "쿠폰 상세 조회 API")

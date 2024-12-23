@@ -42,9 +42,11 @@ public class Coupon extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private CouponType couponType;
-    //
+
     private int validCount;
+
     private int validPeriod;
+
     private LocalDate validDate;
 
     @ManyToOne(fetch = FetchType.LAZY)

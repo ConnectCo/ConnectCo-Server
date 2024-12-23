@@ -1,5 +1,6 @@
 package com.connectCo.domain.organization.entity;
 
+import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import com.connectCo.global.common.BaseEntity;
@@ -32,6 +33,9 @@ public class Organization extends BaseEntity {
     @Column(nullable = false)
     private String academicDayUrl;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Member member;
 
     public void updateOrganizationInfo(OrganizationUpdateRequest request) {
         this.name = request.getName();

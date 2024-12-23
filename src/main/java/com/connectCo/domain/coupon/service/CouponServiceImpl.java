@@ -2,6 +2,7 @@ package com.connectCo.domain.coupon.service;
 
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.service.AuthService;
+import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.response.CouponDetailResponse;
 import com.connectCo.domain.coupon.dto.response.CouponIdResponse;
@@ -14,10 +15,17 @@ import com.connectCo.domain.coupon.mapper.CouponMapper;
 import com.connectCo.domain.coupon.repository.CouponImageRepository;
 import com.connectCo.domain.coupon.repository.CouponLikeRepository;
 import com.connectCo.domain.coupon.repository.CouponRepository;
+import com.connectCo.domain.event.dto.response.EventPagingResponse;
+import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
+import com.connectCo.domain.event.entity.Event;
+import com.connectCo.domain.organization.entity.Organization;
+import com.connectCo.domain.organization.repository.OrganizationRepository;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.service.StoreService;
+import com.connectCo.global.common.enums.InquiryType;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
+import com.connectCo.global.validation.ParamValidator;
 import com.connectCo.utils.S3FileComponent;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +50,7 @@ public class CouponServiceImpl implements CouponService {
     private final CouponMapper couponMapper;
     private final S3FileComponent s3FileComponent;
     private final CouponImageRepository couponImageRepository;
+    private final OrganizationRepository organizationRepository;
 
     @Override
     public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByMember(int page, int size) {
@@ -66,16 +75,6 @@ public class CouponServiceImpl implements CouponService {
                 .map(couponMapper::toCouponSummaryInquiryResponse);
 
         return couponMapper.toCouponPagingResponse(coupons);
-    }
-
-    @Override
-    public List<CouponSummaryInquiryResponse> inquiryCouponByRecent() {
-        Pageable pageable= PageRequest.of(0,10);
-        List<Coupon> couponList=couponRepository.findAllByOrderByCreatedAtDesc(pageable).getContent();
-
-        return couponList.stream()
-                .map(couponMapper::toCouponSummaryInquiryResponse)
-                .toList();
     }
 
     /*
@@ -169,18 +168,6 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<CouponSummaryInquiryResponse> inquiryCouponByEachStore(Long storeId) {
-        Store store=storeService.loadStore(storeId);
-        return inquiryCouponByStore(store).stream()
-                .map(couponMapper::toCouponSummaryInquiryResponse)
-                .toList();
-    }
-    public List<Coupon> inquiryCouponByStore(Store store) {
-        return couponRepository.findAllByStore(store);
-    }
-
-
-    @Override
     @Transactional(readOnly = true)
     public CouponDetailResponse inquiryCouponDetail(Long couponId) {
         Coupon coupon = couponRepository.findById(couponId)
@@ -189,4 +176,37 @@ public class CouponServiceImpl implements CouponService {
         return couponMapper.toCouponDetailResponse(coupon);
     }
 
+    @Override
+    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCoupon(InquiryType type, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+
+        return switch (type) {
+            case RECOMMEND -> inquiryCouponByRecommend(pageable);
+            case RECENT -> null;
+            case DISTANCE -> null;
+            default -> throw new CustomApiException(ErrorCode.UNKNOWN_INQUIRY_TYPE);
+        };
+    }
+
+    private CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByRecommend(Pageable pageable){
+        Member member = authService.getLoginMember();
+        Organization organization = getMemberOrganization(member);
+        Address address = organization.getAddress();
+
+        Page<Coupon> couponPage = findRecommendedCoupons(address, pageable);
+
+        return couponMapper.toCouponPagingResponse(couponPage.map(couponMapper::toCouponSummaryInquiryResponse));
+    }
+
+    private Page<Coupon> findRecommendedCoupons(Address address, Pageable pageable) {
+        LocalDate currentDate = LocalDate.now();
+        double latitude = address.getLatitude();
+        double longitude = address.getLongitude();
+        return couponRepository.findAllByRecommend(latitude, longitude, currentDate, pageable);
+    }
+
+    private Organization getMemberOrganization(Member member) {
+        return organizationRepository.findOrganizationByMember(member)
+                .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
+    }
 }
