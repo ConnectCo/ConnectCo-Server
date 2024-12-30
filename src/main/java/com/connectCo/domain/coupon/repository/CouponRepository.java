@@ -24,7 +24,7 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
                                     @Param("longitude") double longitude,
                                     @Param("currentDate") LocalDate currentDate,
                                     Pageable pageable);
-    //쿠폰 최신순 조회
-    Page<Coupon> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    @Query("SELECT c FROM Coupon c WHERE c.expiredAt >= :currentDate  ORDER BY c.createdAt DESC")
+    Page<Coupon> findAllByCreatedAt(@Param("currentDate") LocalDate currentDate, Pageable pageable);
 
 }

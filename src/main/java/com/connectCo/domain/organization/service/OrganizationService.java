@@ -1,5 +1,6 @@
 package com.connectCo.domain.organization.service;
 
+import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
 import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationIdResponse;
@@ -19,4 +20,5 @@ public interface OrganizationService {
     List<OrganizationSearchResponse> searchOrganization(String keyword);
     Organization loadOrganization(Long organizationId);
     Organization loadOrganizationByName(String name);
+    Organization loadOrganizationByMember(Member member);
 }

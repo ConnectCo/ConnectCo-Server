@@ -110,6 +110,12 @@ public class OrganizationServiceImpl implements OrganizationService {
                 .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
     }
 
+    @Override
+    public Organization loadOrganizationByMember(Member member) {
+        return organizationRepository.findOrganizationByMember(member)
+                .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
+    }
+
 
     private void validateAdmin() {
         Member member = authService.getLoginMember();

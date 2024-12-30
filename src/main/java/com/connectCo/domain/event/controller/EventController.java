@@ -4,7 +4,6 @@ import com.connectCo.domain.event.dto.request.EventCreateRequest;
 import com.connectCo.domain.event.dto.request.EventUpdateRequest;
 import com.connectCo.domain.event.dto.response.*;
 import com.connectCo.domain.event.service.EventService;
-import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
 import com.connectCo.global.common.BaseResponse;
 import com.connectCo.global.common.enums.InquiryType;
 import io.swagger.v3.oas.annotations.Operation;
