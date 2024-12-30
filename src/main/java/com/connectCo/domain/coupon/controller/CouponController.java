@@ -58,13 +58,22 @@ public class CouponController {
     }
 
     @Operation(summary = "쿠폰 조회 API(추천순, 거리순, 최근순)")
+    @Parameters(value = {
+            @Parameter(name = "type", description = "조회 타입 지정(추천순: RECOMMEND, 거리순: DISTANCE, 최근순: RECENT"),
+            @Parameter(name = "latitude", description = "유저의 현재 위치의 위도(최근순의 경우 사용 X)"),
+            @Parameter(name = "longitude", description = "유저의 현재 위치의 경도(최근순의 경우 사용 X)"),
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
     @GetMapping("/recommend")
     public BaseResponse<CouponPagingResponse<CouponSummaryInquiryResponse>> inquiryCoupon(
             @RequestParam(name = "type") InquiryType type,
+            @RequestParam(name = "latitude") Double latitude,
+            @RequestParam(name = "longitude") Double longitude,
             @RequestParam(name = "page") int page,
             @RequestParam(name = "size") int size
     ){
-        return BaseResponse.onSuccess(couponService.inquiryCoupon(type, page , size));
+        return BaseResponse.onSuccess(couponService.inquiryCoupon(type, latitude, longitude, page , size));
     }
 
     @Operation(summary = "쿠폰 상세 조회 API")

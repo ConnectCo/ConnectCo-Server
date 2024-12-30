@@ -173,42 +173,30 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCoupon(InquiryType type, int page, int size){
+    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCoupon(InquiryType type, double latitude, double longitude, int page, int size){
+        LocalDate currentDate = LocalDate.now();
         Pageable pageable = PageRequest.of(page, size);
 
         return switch (type) {
-            case RECOMMEND -> inquiryCouponByRecommend(pageable);
-            case RECENT -> inquiryCouponByRecent(pageable);
-            case DISTANCE -> null;
+            case RECOMMEND -> inquiryCouponByRecommend(latitude, longitude, currentDate, pageable);
+            case RECENT -> inquiryCouponByRecent(currentDate, pageable);
+            case DISTANCE -> inquiryCouponByDistance(latitude, longitude, currentDate, pageable);
             default -> throw new CustomApiException(ErrorCode.UNKNOWN_INQUIRY_TYPE);
         };
     }
 
-    private CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByRecommend(Pageable pageable){
-        Member member = authService.getLoginMember();
-        Organization organization = organizationService.loadOrganizationByMember(member);
-        Address address = organization.getAddress();
-
-        Page<Coupon> couponPage = findRecommendedCoupons(address, pageable);
-
+    private CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByRecommend(double latitude, double longitude, LocalDate currentDate, Pageable pageable){
+        Page<Coupon> couponPage = couponRepository.findAllByRecommend(latitude, longitude, currentDate, pageable);
         return couponMapper.toCouponPagingResponse(couponPage.map(couponMapper::toCouponSummaryInquiryResponse));
     }
 
-    private CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByRecent(Pageable pageable){
-        Page<Coupon> couponPage = findRecentlyCreatedCoupons(pageable);
+    private CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByRecent(LocalDate currentDate, Pageable pageable){
+        Page<Coupon> couponPage = couponRepository.findAllByCreatedAt(currentDate, pageable);
         return couponMapper.toCouponPagingResponse(couponPage.map(couponMapper::toCouponSummaryInquiryResponse));
     }
 
-    private Page<Coupon> findRecommendedCoupons(Address address, Pageable pageable) {
-        LocalDate currentDate = LocalDate.now();
-        double latitude = address.getLatitude();
-        double longitude = address.getLongitude();
-        return couponRepository.findAllByRecommend(latitude, longitude, currentDate, pageable);
+    private CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByDistance(double latitude, double longitude, LocalDate currentDate, Pageable pageable){
+        Page<Coupon> couponPage = couponRepository.findAllByDistance(latitude, longitude,currentDate, pageable);
+        return couponMapper.toCouponPagingResponse(couponPage.map(couponMapper::toCouponSummaryInquiryResponse));
     }
-
-    private Page<Coupon> findRecentlyCreatedCoupons(Pageable pageable) {
-        LocalDate currentDate = LocalDate.now();
-        return couponRepository.findAllByCreatedAt(currentDate, pageable);
-    }
-
 }

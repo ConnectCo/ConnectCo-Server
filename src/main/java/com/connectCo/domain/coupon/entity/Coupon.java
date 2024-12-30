@@ -1,6 +1,7 @@
 package com.connectCo.domain.coupon.entity;
 
 
+import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.sponsorship.entity.Sponsorship;
 import com.connectCo.domain.store.entity.Store;
@@ -48,6 +49,10 @@ public class Coupon extends BaseEntity {
     private int validPeriod;
 
     private LocalDate validDate;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn
+    private Address address;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
