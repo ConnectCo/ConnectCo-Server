@@ -2,7 +2,6 @@ package com.connectCo.domain.coupon.service;
 
 import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.service.AuthService;
-import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.response.CouponDetailResponse;
 import com.connectCo.domain.coupon.dto.response.CouponIdResponse;
@@ -15,8 +14,6 @@ import com.connectCo.domain.coupon.mapper.CouponMapper;
 import com.connectCo.domain.coupon.repository.CouponImageRepository;
 import com.connectCo.domain.coupon.repository.CouponLikeRepository;
 import com.connectCo.domain.coupon.repository.CouponRepository;
-import com.connectCo.domain.organization.entity.Organization;
-import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.common.enums.InquiryType;
@@ -46,7 +43,6 @@ public class CouponServiceImpl implements CouponService {
     private final CouponMapper couponMapper;
     private final S3FileComponent s3FileComponent;
     private final CouponImageRepository couponImageRepository;
-    private final OrganizationService organizationService;
 
     @Override
     public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByMember(int page, int size) {
@@ -54,11 +50,15 @@ public class CouponServiceImpl implements CouponService {
         LocalDate currentDate = LocalDate.now();
         Pageable pageable = PageRequest.of(page, size);
 
-        List<Store> stores = storeService.getStoresByMember(member);
-        Page<CouponSummaryInquiryResponse> coupons = couponRepository.findAllByStores(stores, currentDate, pageable)
-                .map(couponMapper::toCouponSummaryInquiryResponse);
+        Page<CouponSummaryInquiryResponse> coupons = findCouponsByMember(member, currentDate, pageable);
 
         return couponMapper.toCouponPagingResponse(coupons);
+    }
+
+    private Page<CouponSummaryInquiryResponse> findCouponsByMember(Member member, LocalDate currentDate, Pageable pageable) {
+        List<Store> stores = storeService.getStoresByMember(member);
+        return couponRepository.findAllByStores(stores, currentDate, pageable)
+                .map(couponMapper::toCouponSummaryInquiryResponse);
     }
 
     @Override
@@ -172,6 +172,9 @@ public class CouponServiceImpl implements CouponService {
         return couponMapper.toCouponDetailResponse(coupon);
     }
 
+    /*
+     * 조건에 따른 쿠폰 조회
+     */
     @Override
     public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCoupon(InquiryType type, double latitude, double longitude, int page, int size){
         LocalDate currentDate = LocalDate.now();
@@ -179,7 +182,7 @@ public class CouponServiceImpl implements CouponService {
 
         return switch (type) {
             case RECOMMEND -> inquiryCouponByRecommend(latitude, longitude, currentDate, pageable);
-            case RECENT -> inquiryCouponByRecent(currentDate, pageable);
+            case RECENT -> inquiryCouponByCreatedAt(currentDate, pageable);
             case DISTANCE -> inquiryCouponByDistance(latitude, longitude, currentDate, pageable);
             default -> throw new CustomApiException(ErrorCode.UNKNOWN_INQUIRY_TYPE);
         };
@@ -190,7 +193,7 @@ public class CouponServiceImpl implements CouponService {
         return couponMapper.toCouponPagingResponse(couponPage.map(couponMapper::toCouponSummaryInquiryResponse));
     }
 
-    private CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByRecent(LocalDate currentDate, Pageable pageable){
+    private CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByCreatedAt(LocalDate currentDate, Pageable pageable){
         Page<Coupon> couponPage = couponRepository.findAllByCreatedAt(currentDate, pageable);
         return couponMapper.toCouponPagingResponse(couponPage.map(couponMapper::toCouponSummaryInquiryResponse));
     }
