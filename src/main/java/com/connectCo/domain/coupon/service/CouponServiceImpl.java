@@ -44,6 +44,10 @@ public class CouponServiceImpl implements CouponService {
     private final S3FileComponent s3FileComponent;
     private final CouponImageRepository couponImageRepository;
 
+
+    /*
+     * 내 쿠폰 조회
+     */
     @Override
     public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByMember(int page, int size) {
         Member member = authService.getLoginMember();
@@ -61,6 +65,9 @@ public class CouponServiceImpl implements CouponService {
                 .map(couponMapper::toCouponSummaryInquiryResponse);
     }
 
+    /*
+     * 찜한 쿠폰을 조회
+     */
     @Override
     public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByLike(int page, int size) {
         Member member = authService.getLoginMember();
@@ -115,7 +122,6 @@ public class CouponServiceImpl implements CouponService {
                 .toList();
     }
 
-
     @Override
     @Transactional
     public CouponIdResponse deleteCoupon(Long couponId) {
@@ -130,8 +136,6 @@ public class CouponServiceImpl implements CouponService {
         couponRepository.deleteById(deletedCouponId);
         return new CouponIdResponse(deletedCouponId);
     }
-
-
 
     @Override
     @Transactional
@@ -167,6 +171,9 @@ public class CouponServiceImpl implements CouponService {
         return new CouponIdResponse(coupon.getId());
     }
 
+    /*
+     * 쿠폰 상세보기
+     */
     @Override
     @Transactional(readOnly = true)
     public CouponDetailResponse inquiryCouponDetail(Long couponId) {
@@ -192,16 +199,25 @@ public class CouponServiceImpl implements CouponService {
         };
     }
 
+    /*
+     * 추천 쿠폰 조회 함수
+     */
     private CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByRecommend(double latitude, double longitude, LocalDate currentDate, Pageable pageable){
         Page<Coupon> couponPage = couponRepository.findAllByRecommend(latitude, longitude, currentDate, pageable);
         return couponMapper.toCouponPagingResponse(couponPage.map(couponMapper::toCouponSummaryInquiryResponse));
     }
 
+    /*
+     * 최신순 쿠폰 조회 함수
+     */
     private CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByCreatedAt(LocalDate currentDate, Pageable pageable){
         Page<Coupon> couponPage = couponRepository.findAllByCreatedAt(currentDate, pageable);
         return couponMapper.toCouponPagingResponse(couponPage.map(couponMapper::toCouponSummaryInquiryResponse));
     }
 
+    /*
+     * 거리순 쿠폰 조회 함수
+     */
     private CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByDistance(double latitude, double longitude, LocalDate currentDate, Pageable pageable){
         Page<Coupon> couponPage = couponRepository.findAllByDistance(latitude, longitude,currentDate, pageable);
         return couponMapper.toCouponPagingResponse(couponPage.map(couponMapper::toCouponSummaryInquiryResponse));
