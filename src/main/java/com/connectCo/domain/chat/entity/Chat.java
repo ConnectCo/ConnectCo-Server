@@ -24,11 +24,11 @@ public class Chat {
     @JoinColumn
     private Member sender; // 메시지 보낸 사람
 
-    @ManyToOne
-    @JoinColumn
-    private Member receiver; // 메시지 받는 사람
-
     private String message;
 
     private LocalDateTime sendTime;
+
+    public void ChatMessage() {
+        this.sendTime = LocalDateTime.now();
+    }
 }
