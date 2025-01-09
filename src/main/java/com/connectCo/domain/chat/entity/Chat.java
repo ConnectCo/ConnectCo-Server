@@ -1,16 +1,16 @@
 package com.connectCo.domain.chat.entity;
 
 import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
 @Builder
-public class Chat {
+public class Chat extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,13 +22,11 @@ public class Chat {
 
     @ManyToOne
     @JoinColumn
-    private Member sender; // 메시지 보낸 사람
+    private Member sender;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Member receiver;
 
     private String message;
-
-    private LocalDateTime sendTime;
-
-    public void ChatMessage() {
-        this.sendTime = LocalDateTime.now();
-    }
 }
