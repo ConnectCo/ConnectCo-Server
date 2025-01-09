@@ -32,13 +32,10 @@ public class ChatServiceImpl implements ChatService {
     @Override
     @Transactional
     public CreateChatResponse createChat(CreateChatRequest request) {
-        Member sender =  memberRepository.findById(request.getSenderId()).orElseThrow(()-> new CustomApiException(ErrorCode.USER_NOT_FOUND));
-        Member receiver = memberRepository.findById(request.getReceiverId()).orElseThrow(()-> new CustomApiException(ErrorCode.USER_NOT_FOUND));
-
         ChatRoom chatRoom = chatRoomRepository.findById(request.getChatRoomId())
-                .orElseGet(chatRoomService::createChatRoom);
+                .orElseGet(()->chatRoomService.createChatRoom(request.getSenderId(), request.getReceiverId()));
 
-        Chat chat = chatMapper.toChat(request, chatRoom, sender, receiver);
+        Chat chat = chatMapper.toChat(request, chatRoom);
         return chatMapper.toCreateChatResponse(chat);
     }
 }

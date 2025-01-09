@@ -10,12 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ChatMapper {
 
-    public Chat toChat(CreateChatRequest request, ChatRoom chatRoom, Member sender, Member receiver) {
+    public Chat toChat(CreateChatRequest request, ChatRoom chatRoom) {
         return Chat.builder()
                 .chatRoom(chatRoom)
                 .message(request.getMessage())
-                .sender(sender)
-                .receiver(receiver)
                 .build();
     }
 
@@ -23,12 +21,7 @@ public class ChatMapper {
         return CreateChatResponse.builder()
                 .chatId(chat.getId())
                 .chatRoomId(chat.getChatRoom().getId())
-                .senderId(chat.getSender().getId())
-                .senderName(chat.getSender().getName())
-                .receiverId(chat.getReceiver().getId())
-                .receiverName(chat.getReceiver().getName())
                 .message(chat.getMessage())
-                .createdAt(chat.getCreatedAt())
                 .build();
     }
 }

@@ -10,10 +10,6 @@ import java.time.LocalDateTime;
 public class CreateChatResponse {
     private Long chatId;
     private Long chatRoomId;
-    private Long senderId;
-    private String senderName;
-    private Long receiverId;
-    private String receiverName;
     private String message;
     private LocalDateTime createdAt;
 }
