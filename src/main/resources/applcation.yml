@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    url: jdbc:mysql://conneco-db.cfk6mms4akrs.ap-northeast-2.rds.amazonaws.com:3306/conneco-dev?userSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&autoReconnect=True
+    username: root
+    password: ig26827463
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: never
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        hbm2ddl:
+          auto: create
+        default_batch_fetch_size: 1000
+
+jwt:
+  secret-key: 07509fae3d502dc7f8db08a67d62719af2f9a53e819c40716eec40a03541df6b27480e8890f5ef773433e0a7a1d150e2b9ce74e70667d729daaf17857196a992
+
+springdoc:
+  packages-to-scan: com.connectCo.domain
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    path: /
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
