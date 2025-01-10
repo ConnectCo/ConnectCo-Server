@@ -15,5 +15,5 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
         WHERE cr.sender.id = :userId OR cr.receiver.id = :userId
         ORDER BY (SELECT MAX(c.createdAt) FROM Chat c WHERE c.chatRoom.id = cr.id) DESC
     """)
-    List<ChatRoomSummaryResponse> findChatRoomsByMember(@Param("userId") Long userId);
+    List<ChatRoom> findChatRoomsByMember(@Param("userId") Long userId);
 }

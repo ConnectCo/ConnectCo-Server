@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +37,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public List<ChatRoomSummaryResponse> getChatRoomsByMember(Long memberId){
-        List<ChatRoomSummaryResponse> chatRooms = chatRoomRepository.findChatRoomsByMember(memberId);
+        List<ChatRoom> chatRooms = chatRoomRepository.findChatRoomsByMember(memberId);
+
+        return chatRooms.stream()
+                .map(chatRoom -> chatRoomMapper.toChatRoomSummaryResponse(chatRoom, memberId))
+                .toList();
     }
 
 
