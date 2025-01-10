@@ -34,6 +34,8 @@ public class ChatServiceImpl implements ChatService {
                 .orElseGet(()->chatRoomService.createChatRoom(request.getSenderId(), request.getReceiverId()));
 
         Chat chat = chatMapper.toChat(request, chatRoom);
+        chatRepository.save(chat);
+
         return chatMapper.toCreateChatResponse(chat);
     }
 
