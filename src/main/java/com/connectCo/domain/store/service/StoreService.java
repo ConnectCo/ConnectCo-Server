@@ -1,7 +1,7 @@
 package com.connectCo.domain.store.service;
 
 
-import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.request.StoreUpdateRequest;
 import com.connectCo.domain.store.dto.response.*;

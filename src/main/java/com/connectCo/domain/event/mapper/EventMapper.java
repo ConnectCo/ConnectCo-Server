@@ -1,6 +1,6 @@
 package com.connectCo.domain.event.mapper;
 
-import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.event.dto.request.EventCreateRequest;
 import com.connectCo.domain.event.dto.response.EventDetailInquiryResponse;
@@ -9,12 +9,10 @@ import com.connectCo.domain.event.dto.response.EventPagingResponse;
 import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
 import com.connectCo.domain.event.entity.Event;
 import com.connectCo.domain.event.entity.EventImage;
-import com.connectCo.domain.organization.entity.Organization;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class EventMapper {

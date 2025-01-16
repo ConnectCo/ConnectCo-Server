@@ -1,7 +1,7 @@
 package com.connectCo.domain.chat.service;
 
-import com.connectCo.domain.Member.entity.Member;
-import com.connectCo.domain.Member.repository.MemberRepository;
+import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.repository.MemberRepository;
 import com.connectCo.domain.chat.dto.response.ChatRoomSummaryResponse;
 import com.connectCo.domain.chat.entity.ChatRoom;
 import com.connectCo.domain.chat.mapper.ChatRoomMapper;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

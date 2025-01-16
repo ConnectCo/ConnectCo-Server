@@ -1,4 +1,4 @@
-package com.connectCo.domain.Member.entity;
+package com.connectCo.domain.member.entity;
 
 import com.connectCo.domain.search.entity.Search;
 import com.connectCo.global.common.BaseEntity;

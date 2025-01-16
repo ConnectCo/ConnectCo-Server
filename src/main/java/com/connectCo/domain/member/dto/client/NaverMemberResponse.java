@@ -1,4 +1,4 @@
-package com.connectCo.domain.Member.dto.client;
+package com.connectCo.domain.member.dto.client;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.connectCo.config.jwt;
 
-import com.connectCo.domain.Member.entity.Role;
+import com.connectCo.domain.member.entity.Role;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 import io.jsonwebtoken.*;

@@ -1,8 +1,8 @@
-package com.connectCo.domain.Member.controller;
+package com.connectCo.domain.member.controller;
 
-import com.connectCo.domain.Member.dto.response.MemberInfoResponse;
-import com.connectCo.domain.Member.dto.response.MemberLoginResponse;
-import com.connectCo.domain.Member.service.MemberService;
+import com.connectCo.domain.member.dto.response.MemberInfoResponse;
+import com.connectCo.domain.member.dto.response.MemberLoginResponse;
+import com.connectCo.domain.member.service.MemberService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

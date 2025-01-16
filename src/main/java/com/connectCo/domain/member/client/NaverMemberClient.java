@@ -1,6 +1,6 @@
-package com.connectCo.domain.Member.client;
+package com.connectCo.domain.member.client;
 
-import com.connectCo.domain.Member.dto.client.NaverMemberResponse;
+import com.connectCo.domain.member.dto.client.NaverMemberResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 

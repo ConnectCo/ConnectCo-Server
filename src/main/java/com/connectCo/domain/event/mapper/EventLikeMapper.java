@@ -1,6 +1,6 @@
 package com.connectCo.domain.event.mapper;
 
-import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.event.dto.response.EventLikeResponse;
 import com.connectCo.domain.event.entity.Event;
 import com.connectCo.domain.event.entity.EventLike;

@@ -1,7 +1,7 @@
 package com.connectCo.domain.coupon.service;
 
-import com.connectCo.domain.Member.entity.Member;
-import com.connectCo.domain.Member.service.AuthService;
+import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.service.AuthService;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.response.CouponDetailResponse;
 import com.connectCo.domain.coupon.dto.response.CouponIdResponse;

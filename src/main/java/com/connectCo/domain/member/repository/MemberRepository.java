@@ -1,8 +1,8 @@
-package com.connectCo.domain.Member.repository;
+package com.connectCo.domain.member.repository;
 
 
-import com.connectCo.domain.Member.entity.LoginType;
-import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.member.entity.LoginType;
+import com.connectCo.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

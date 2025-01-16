@@ -1,10 +1,9 @@
 package com.connectCo.domain.event.entity;
 
-import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.event.dto.request.EventUpdateRequest;
 import com.connectCo.domain.organization.entity.Organization;
-import com.connectCo.domain.sponsorship.entity.Sponsorship;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;

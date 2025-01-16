@@ -1,6 +1,6 @@
 package com.connectCo.domain.store.mapper;
 
-import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;

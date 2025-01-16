@@ -1,6 +1,5 @@
 package com.connectCo.domain.chat.mapper;
 
-import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.chat.dto.request.CreateChatRequest;
 import com.connectCo.domain.chat.dto.response.CreateChatResponse;
 import com.connectCo.domain.chat.entity.Chat;

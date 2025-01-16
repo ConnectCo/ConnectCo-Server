@@ -1,7 +1,7 @@
-package com.connectCo.domain.Member.service;
+package com.connectCo.domain.member.service;
 
-import com.connectCo.domain.Member.dto.response.MemberInfoResponse;
-import com.connectCo.domain.Member.dto.response.MemberLoginResponse;
+import com.connectCo.domain.member.dto.response.MemberInfoResponse;
+import com.connectCo.domain.member.dto.response.MemberLoginResponse;
 
 public interface MemberService {
     MemberLoginResponse saveMemberByNaver(String accessToken);

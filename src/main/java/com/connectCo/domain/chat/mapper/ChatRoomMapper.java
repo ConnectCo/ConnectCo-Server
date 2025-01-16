@@ -1,6 +1,6 @@
 package com.connectCo.domain.chat.mapper;
 
-import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.chat.dto.response.ChatRoomSummaryResponse;
 import com.connectCo.domain.chat.entity.ChatRoom;
 import org.springframework.stereotype.Component;

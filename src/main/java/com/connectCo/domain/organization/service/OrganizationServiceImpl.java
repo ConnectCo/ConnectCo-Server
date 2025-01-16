@@ -1,8 +1,8 @@
 package com.connectCo.domain.organization.service;
 
-import com.connectCo.domain.Member.entity.Member;
-import com.connectCo.domain.Member.entity.Role;
-import com.connectCo.domain.Member.service.AuthService;
+import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.entity.Role;
+import com.connectCo.domain.member.service.AuthService;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.address.service.AddressService;
 import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;

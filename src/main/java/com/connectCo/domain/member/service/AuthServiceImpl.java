@@ -1,9 +1,9 @@
-package com.connectCo.domain.Member.service;
+package com.connectCo.domain.member.service;
 
 import com.connectCo.config.jwt.JwtToken;
 import com.connectCo.config.jwt.JwtTokenProvider;
-import com.connectCo.domain.Member.entity.Member;
-import com.connectCo.domain.Member.repository.MemberRepository;
+import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.repository.MemberRepository;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

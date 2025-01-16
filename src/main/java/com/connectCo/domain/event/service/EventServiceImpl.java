@@ -1,7 +1,7 @@
 package com.connectCo.domain.event.service;
 
-import com.connectCo.domain.Member.entity.Member;
-import com.connectCo.domain.Member.service.AuthService;
+import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.service.AuthService;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.address.service.AddressService;
 import com.connectCo.domain.event.dto.request.EventCreateRequest;

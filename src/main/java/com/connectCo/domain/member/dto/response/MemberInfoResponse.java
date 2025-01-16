@@ -1,4 +1,4 @@
-package com.connectCo.domain.Member.dto.response;
+package com.connectCo.domain.member.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,15 +1,15 @@
-package com.connectCo.domain.Member.service;
+package com.connectCo.domain.member.service;
 
 import com.connectCo.config.jwt.JwtToken;
-import com.connectCo.domain.Member.client.GoogleMemberClient;
-import com.connectCo.domain.Member.client.KakaoMemberClient;
-import com.connectCo.domain.Member.client.NaverMemberClient;
-import com.connectCo.domain.Member.dto.response.MemberInfoResponse;
-import com.connectCo.domain.Member.dto.response.MemberLoginResponse;
-import com.connectCo.domain.Member.entity.LoginType;
-import com.connectCo.domain.Member.entity.Member;
-import com.connectCo.domain.Member.mapper.MemberMapper;
-import com.connectCo.domain.Member.repository.MemberRepository;
+import com.connectCo.domain.member.client.GoogleMemberClient;
+import com.connectCo.domain.member.client.KakaoMemberClient;
+import com.connectCo.domain.member.client.NaverMemberClient;
+import com.connectCo.domain.member.dto.response.MemberInfoResponse;
+import com.connectCo.domain.member.dto.response.MemberLoginResponse;
+import com.connectCo.domain.member.entity.LoginType;
+import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.mapper.MemberMapper;
+import com.connectCo.domain.member.repository.MemberRepository;
 import com.connectCo.domain.store.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.connectCo.domain.event.repository;
 
-import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.event.entity.Event;
 import com.connectCo.domain.event.entity.EventLike;
 import org.springframework.data.domain.Page;
@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface EventLikeRepository extends JpaRepository<EventLike, Long> {
