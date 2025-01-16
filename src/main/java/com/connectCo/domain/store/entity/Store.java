@@ -3,40 +3,23 @@ package com.connectCo.domain.store.entity;
 import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.coupon.entity.Coupon;
+import com.connectCo.domain.member.entity.Profile;
 import com.connectCo.domain.store.dto.request.StoreUpdateRequest;
-import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 @Entity
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Where(clause = "deleted_at is null")
-public class Store extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
-    private String name;
+public class Store extends Profile {
 
     private String description;
 
     @Column(nullable = false)
-    private String storeNumber;
+    private String phoneNumber;
 
     @Column(nullable = false)
     private String operatingTime;
-
-    @Column(nullable = false)
-    private int couponCount;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn
@@ -55,7 +38,7 @@ public class Store extends BaseEntity {
     public void updateStoreInfo(StoreUpdateRequest request) {
         this.name = request.getName();
         this.description = request.getDescription();
-        this.storeNumber = request.getStoreNumber();
+        this.phoneNumber = request.getStoreNumber();
         this.operatingTime = request.getOperatingTime();
     }
 

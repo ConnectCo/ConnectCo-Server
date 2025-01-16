@@ -43,7 +43,7 @@ public class StoreMapper {
         return StoreLike.builder()
                 .store(store)
                 .member(member)
-                .isChecked(true)
+                .isActive(true)
                 .build();
     }
 

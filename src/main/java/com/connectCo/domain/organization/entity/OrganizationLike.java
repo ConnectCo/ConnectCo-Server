@@ -1,10 +1,20 @@
-package com.connectCo.domain.store.entity;
+package com.connectCo.domain.organization.entity;
 
-import com.connectCo.domain.member.entity.Member;
-import com.connectCo.domain.organization.entity.Organization;
+import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 @Getter
@@ -13,7 +23,7 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
-public class StoreLike extends BaseEntity {
+public class OrganizationLike extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

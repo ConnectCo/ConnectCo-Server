@@ -111,7 +111,7 @@ public class StoreServiceImpl implements StoreService {
         Optional<StoreLike> storeLike = storeLikeRepository.findByMemberAndStore(member, store);
 
         return storeLike.map(StoreLike::changeLike)
-                .orElseGet(() -> storeLikeRepository.save(storeMapper.toStoreLike(store, member)).isChecked());
+                .orElseGet(() -> storeLikeRepository.save(storeMapper.toStoreLike(store, member)).isActive());
 
     }
 

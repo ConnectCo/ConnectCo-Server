@@ -1,13 +1,9 @@
 package com.connectCo.domain.member.entity;
 
-import com.connectCo.domain.search.entity.Search;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Where;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -21,12 +17,6 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
-    private String phoneNumber;
-
-    private String profileImage;
-
     @Column(nullable = false)
     private String clientId;
 
@@ -37,9 +27,6 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @OneToMany(mappedBy = "member")
-    private List<Search> searchList= new ArrayList<>();
 
     public void saveRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
