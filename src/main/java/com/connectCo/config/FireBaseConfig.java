@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +40,7 @@ public class FireBaseConfig {
             }
 
         }catch (IOException e){
+            llog.error("Error initializing Firebase: {}", e.getMessage(), e);
             throw new CustomApiException(ErrorCode.FIREBASE_INIT_FAILED);
         }
     }
