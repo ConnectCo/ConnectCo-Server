@@ -42,10 +42,8 @@ jobs:
       - name : Create fcm.json
         run: |
           pushd ./src/main/resources
-          cd resources
           touch ConnectCo_fcm.json
           echo "${{ secrets.FCM_JSON }}" | base64 -d > ConnectCo_fcm.json
-          cat ConnectCo_fcm.json
           popd
 
       # 빌드 (test 제외)
