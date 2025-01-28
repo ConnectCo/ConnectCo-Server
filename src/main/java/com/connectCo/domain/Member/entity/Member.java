@@ -33,6 +33,8 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
+    private String fcmToken;
+
     private String refreshToken;
 
     @Enumerated(EnumType.STRING)
@@ -44,4 +46,6 @@ public class Member extends BaseEntity {
     public void saveRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
+
+    public void saveFcmToken(String fcmToken) { this.fcmToken = fcmToken; }
 }

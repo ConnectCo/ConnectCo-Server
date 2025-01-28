@@ -1,6 +1,7 @@
 package com.connectCo.domain.Member.mapper;
 
 import com.connectCo.config.jwt.JwtToken;
+import com.connectCo.domain.Member.dto.response.MemberFcmTokenResponse;
 import com.connectCo.domain.Member.dto.response.MemberInfoResponse;
 import com.connectCo.domain.Member.dto.response.MemberLoginResponse;
 import com.connectCo.domain.Member.entity.LoginType;
@@ -43,4 +44,12 @@ public class MemberMapper {
                 .name(store.getName())
                 .build();
     }
+
+    public MemberFcmTokenResponse toMemberFcmTokenResponse(Long memberId, String fcmToken){
+        return MemberFcmTokenResponse.builder()
+                .memberId(memberId)
+                .fcmToken(fcmToken)
+                .build();
+    }
+
 }

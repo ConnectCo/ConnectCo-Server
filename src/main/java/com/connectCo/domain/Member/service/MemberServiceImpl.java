@@ -4,6 +4,7 @@ import com.connectCo.config.jwt.JwtToken;
 import com.connectCo.domain.Member.client.GoogleMemberClient;
 import com.connectCo.domain.Member.client.KakaoMemberClient;
 import com.connectCo.domain.Member.client.NaverMemberClient;
+import com.connectCo.domain.Member.dto.response.MemberFcmTokenResponse;
 import com.connectCo.domain.Member.dto.response.MemberInfoResponse;
 import com.connectCo.domain.Member.dto.response.MemberLoginResponse;
 import com.connectCo.domain.Member.entity.LoginType;
@@ -11,6 +12,8 @@ import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.mapper.MemberMapper;
 import com.connectCo.domain.Member.repository.MemberRepository;
 import com.connectCo.domain.store.service.StoreService;
+import com.connectCo.global.exception.CustomApiException;
+import com.connectCo.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,5 +102,15 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.save(memberMapper.toMember(clientId, loginType));
         JwtToken jwtToken = authService.getToken(member);
         return memberMapper.toMemberLoginResponse(member.getId(), jwtToken);
+    }
+
+    @Override
+    @Transactional
+    public MemberFcmTokenResponse saveFcmToken(Long memberId, String fcmToken){
+        Member member = memberRepository.findById(memberId).orElseThrow(()-> new CustomApiException(ErrorCode.USER_NOT_FOUND));
+        member.saveFcmToken(fcmToken);
+        memberRepository.save(member);
+
+        return memberMapper.toMemberFcmTokenResponse(memberId, fcmToken);
     }
 }
