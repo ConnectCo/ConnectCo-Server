@@ -13,6 +13,7 @@ import org.springframework.core.annotation.Order;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Configuration
@@ -29,6 +30,9 @@ public class FireBaseConfig {
             if (serviceAccount == null) {
                 throw new CustomApiException(ErrorCode.FIREBASE_INIT_FAILED);
             }
+
+            String jsonContent = new String(serviceAccount.readAllBytes(), StandardCharsets.UTF_8);
+            log.info("Loaded Firebase config: {}", jsonContent);
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
