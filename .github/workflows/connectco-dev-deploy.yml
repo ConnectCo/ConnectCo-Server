@@ -37,6 +37,15 @@ jobs:
           touch application.yml
           echo "${{ secrets.YML }}" >> application.yml
           popd
+      # fcm.json 생성
+      - name : Create fcm.json
+        run: |
+          pushd ./src/main/resouces
+          mkdir -p firebase
+          cd firebase
+          touch ConnectCo_fcm.json
+          echo "{{ secrets.FCM_JSON }}" >> ConnectCo_fcm.json
+          popd
 
       # 빌드 (test 제외)
       - name: Build with Gradle
