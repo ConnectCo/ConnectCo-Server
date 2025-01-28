@@ -40,7 +40,7 @@ public class FireBaseConfig {
             }
 
         }catch (IOException e){
-            llog.error("Error initializing Firebase: {}", e.getMessage(), e);
+            log.error("Error initializing Firebase: {}", e.getMessage(), e);
             throw new CustomApiException(ErrorCode.FIREBASE_INIT_FAILED);
         }
     }
