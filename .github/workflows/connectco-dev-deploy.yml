@@ -45,7 +45,7 @@ jobs:
           mkdir -p firebase
           cd firebase
           touch ConnectCo_fcm.json
-          echo "${{ secrets.FCM_JSON }}" | sed 's/\\n/\n/g' > ConnectCo_fcm.json
+          echo -e "${{ secrets.FCM_JSON }}" > ConnectCo_fcm.json
           popd
 
       # 빌드 (test 제외)
