@@ -1,6 +1,8 @@
 package com.connectCo.domain.chat.service;
 
+import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.Member.repository.MemberRepository;
+import com.connectCo.domain.Member.service.MemberService;
 import com.connectCo.domain.chat.dto.request.CreateChatRequest;
 import com.connectCo.domain.chat.dto.response.ChatResponse;
 import com.connectCo.domain.chat.dto.response.CreateChatResponse;
@@ -10,6 +12,9 @@ import com.connectCo.domain.chat.mapper.ChatMapper;
 import com.connectCo.domain.chat.mapper.ChatRoomMapper;
 import com.connectCo.domain.chat.repository.ChatRepository;
 import com.connectCo.domain.chat.repository.ChatRoomRepository;
+import com.connectCo.domain.fcm.service.FcmService;
+import com.connectCo.global.exception.CustomApiException;
+import com.connectCo.global.exception.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,10 +27,11 @@ public class ChatServiceImpl implements ChatService {
 
     private final ChatRoomService chatRoomService;
     private final ChatRepository chatRepository;
-    private final MemberRepository memberRepository;
     private final ChatMapper chatMapper;
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatRoomMapper chatRoomMapper;
+    private final MemberRepository memberRepository;
+    private final MemberService memberService;
+    private final FcmService fcmService;
 
     @Override
     @Transactional
@@ -35,6 +41,10 @@ public class ChatServiceImpl implements ChatService {
 
         Chat chat = chatMapper.toChat(request, chatRoom);
         chatRepository.save(chat);
+
+        Member member = memberRepository.findById(request.getReceiverId()).orElseThrow(()->new CustomApiException(ErrorCode.USER_NOT_FOUND));
+
+        fcmService.sendPushNotification(member.getFcmToken(), "새로운 메시지", request.getMessage());
 
         return chatMapper.toCreateChatResponse(chat);
     }

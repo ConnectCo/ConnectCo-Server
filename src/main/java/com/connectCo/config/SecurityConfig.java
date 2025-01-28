@@ -33,8 +33,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v3/**", "/swagger-ui/**",
                                 "/members/google", "/members/kakao",
-                                "/members/naver", "/test/**",
-                                "/ws/**").permitAll()
+                                "/members/naver", "/members/fcm-token",
+                                "/test/**", "/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
