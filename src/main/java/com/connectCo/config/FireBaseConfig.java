@@ -8,7 +8,9 @@ import com.google.firebase.FirebaseOptions;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
@@ -16,6 +18,7 @@ import java.io.InputStream;
 
 @Slf4j
 @Configuration
+@Order(1)
 public class FireBaseConfig {
 
     @Value("${fcm.file_path}")
@@ -37,5 +40,11 @@ public class FireBaseConfig {
         }catch (IOException e){
             throw new CustomApiException(ErrorCode.FIREBASE_INIT_FAILED);
         }
+    }
+
+    //빈 이름 명시적으로 설정
+    @Bean(name = "firebaseConfig")
+    public FireBaseConfig firebaseConfig() {
+        return new FireBaseConfig();
     }
 }
