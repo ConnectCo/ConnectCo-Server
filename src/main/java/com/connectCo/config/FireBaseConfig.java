@@ -27,7 +27,10 @@ public class FireBaseConfig {
     @PostConstruct
     public void init(){
         try (InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream(serviceAccountFilePath)){
+            log.info("Service account file path: {}", serviceAccountFilePath);
+
             if (serviceAccount == null) {
+                log.error("Firebase service account file not found at: {}", serviceAccountFilePath);
                 throw new CustomApiException(ErrorCode.FIREBASE_INIT_FAILED);
             }
 
