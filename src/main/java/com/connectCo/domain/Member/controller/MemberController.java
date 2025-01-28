@@ -1,10 +1,13 @@
 package com.connectCo.domain.Member.controller;
 
+import com.connectCo.domain.Member.dto.response.MemberFcmTokenResponse;
 import com.connectCo.domain.Member.dto.response.MemberInfoResponse;
 import com.connectCo.domain.Member.dto.response.MemberLoginResponse;
 import com.connectCo.domain.Member.service.MemberService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -38,5 +41,18 @@ public class MemberController {
     @GetMapping
     public BaseResponse<MemberInfoResponse> getMemberInfo() {
         return BaseResponse.onSuccess(memberService.getMemberInfo());
+    }
+
+    @Operation(summary = "FCM 토큰 저장 API")
+    @PostMapping("/fcm-token")
+    @Parameters(value = {
+            @Parameter(name = "memberId", description = "저장할 멤버 아아디 입력"),
+            @Parameter(name = "fcmToken", description = "저장할 FCM 토큰 입력"),
+    })
+    public BaseResponse<MemberFcmTokenResponse> saveFcmToken(
+            @RequestParam(name = "memberId") Long memberId,
+            @RequestParam(name = "fcmToken") String fcmToken
+            ) {
+        return BaseResponse.onSuccess(memberService.saveFcmToken(memberId, fcmToken));
     }
 }

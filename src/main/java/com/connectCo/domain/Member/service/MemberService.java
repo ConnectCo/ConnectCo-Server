@@ -1,5 +1,6 @@
 package com.connectCo.domain.Member.service;
 
+import com.connectCo.domain.Member.dto.response.MemberFcmTokenResponse;
 import com.connectCo.domain.Member.dto.response.MemberInfoResponse;
 import com.connectCo.domain.Member.dto.response.MemberLoginResponse;
 
@@ -8,5 +9,5 @@ public interface MemberService {
     MemberLoginResponse saveMemberByKakao(String accessToken);
     MemberLoginResponse saveMemberByGoogle(String accessToken);
     MemberInfoResponse getMemberInfo();
-
+    MemberFcmTokenResponse saveFcmToken(Long memberId, String FcmToken);
 }
