@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@DependsOn("firebaseConfig")
 public class FcmService {
 
     private final FcmMapper fcmMapper;
 
+    @DependsOn("firebaseConfig")
     public void sendPushNotification(String targetToken, String title, String body) {
 
         try {
