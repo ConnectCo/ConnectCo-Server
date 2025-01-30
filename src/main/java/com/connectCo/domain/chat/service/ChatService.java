@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface ChatService {
     CreateChatResponse createChat(CreateChatRequest request);
-    List<ChatResponse> getChatsByChatRoom(Long chatRoomId);
 }

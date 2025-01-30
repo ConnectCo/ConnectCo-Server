@@ -19,5 +19,7 @@ public class Chat extends BaseEntity {
     @JoinColumn
     private ChatRoom chatRoom;
 
+    private Long senderId;
+
     private String message;
 }

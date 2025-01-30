@@ -30,7 +30,6 @@ public class ChatServiceImpl implements ChatService {
     private final ChatMapper chatMapper;
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
-    private final MemberService memberService;
     private final FcmService fcmService;
 
     @Override
@@ -47,10 +46,5 @@ public class ChatServiceImpl implements ChatService {
         fcmService.sendPushNotification(member.getFcmToken(), "새로운 메시지", request.getMessage());
 
         return chatMapper.toCreateChatResponse(chat);
-    }
-
-    @Override
-    public List<ChatResponse> getChatsByChatRoom(Long chatRoomId){
-        return chatRepository.findChatsByChatRoomId(chatRoomId);
     }
 }
