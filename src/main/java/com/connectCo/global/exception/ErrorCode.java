@@ -43,6 +43,9 @@ public enum  ErrorCode {
     //Coupon
     COUPON_NOT_FOUND(HttpStatus.NOT_FOUND,"COUPON401","해당 쿠폰을 찾을 수 없습니다."),
 
+    //Chat
+    CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND,"CHATROOM401","해당 채팅방을 찾을 수 없습니다."),
+
     //firebase
     FIREBASE_INIT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FIREBASE500", "Firebase 초기화에 실패했습니다."),
     FIREBASE_PUSH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FIREBASE501", "Firebase 알림 푸쉬에 실패했습니다.");

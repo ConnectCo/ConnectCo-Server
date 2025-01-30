@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ChatResponse {
     private Long chatId;
+    private Long senderId;
     private String message;
     private LocalDateTime createdAt;
 }
