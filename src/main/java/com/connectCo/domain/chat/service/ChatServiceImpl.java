@@ -30,16 +30,31 @@ public class ChatServiceImpl implements ChatService {
     @Override
     @Transactional
     public ChatResponse createChat(CreateChatRequest request) {
-        ChatRoom chatRoom = chatRoomRepository.findById(request.getChatRoomId())
-                .orElseGet(()->chatRoomService.createChatRoom(request.getSenderId(), request.getReceiverId()));
-
-        Chat chat = chatMapper.toChat(request, chatRoom);
-        chatRepository.save(chat);
-
-        Member member = memberRepository.findById(request.getReceiverId()).orElseThrow(()->new CustomApiException(ErrorCode.USER_NOT_FOUND));
-
-        fcmService.sendPushNotification(member.getFcmToken(), "새로운 메시지", request.getMessage());
+        ChatRoom chatRoom = findOrCreateChatRoom(request);
+        Chat chat = saveChat(request, chatRoom);
+        updateChatRoomRecentMessage(chatRoom, chat);
+        sendPushNotificationToReceiver(request);
 
         return chatMapper.toChatResponse(chat);
+    }
+
+    private ChatRoom findOrCreateChatRoom(CreateChatRequest request) {
+        return chatRoomRepository.findById(request.getChatRoomId())
+                .orElseGet(() -> chatRoomService.createChatRoom(request.getSenderId(), request.getReceiverId()));
+    }
+
+    private Chat saveChat(CreateChatRequest request, ChatRoom chatRoom) {
+        Chat chat = chatMapper.toChat(request, chatRoom);
+        return chatRepository.save(chat);
+    }
+
+    private void updateChatRoomRecentMessage(ChatRoom chatRoom, Chat chat) {
+        chatRoom.updateRecentMessage(chat.getMessage(), chat.getCreatedAt());
+        chatRoomRepository.save(chatRoom);
+    }
+
+    private void sendPushNotificationToReceiver(CreateChatRequest request) {
+        Member member = memberRepository.findById(request.getReceiverId()).orElseThrow(()->new CustomApiException(ErrorCode.USER_NOT_FOUND));
+        fcmService.sendPushNotification(member.getFcmToken(), "새로운 메시지", request.getMessage());
     }
 }

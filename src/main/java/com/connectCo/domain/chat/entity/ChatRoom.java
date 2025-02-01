@@ -35,4 +35,10 @@ public class ChatRoom extends BaseEntity {
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chat> chats = new ArrayList<>();
+
+    public void updateRecentMessage(String recentMessage, LocalDateTime recentMessageTime) {
+        this.recentMessage = recentMessage;
+        this.recentMessageTime = recentMessageTime;
+    }
+
 }
