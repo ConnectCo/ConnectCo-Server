@@ -24,7 +24,8 @@ public class ChatRoomMapper {
                 .otherMemberName(chatRoom.getSender().getId().equals(loginMemberId)
                         ? chatRoom.getReceiver().getName()
                         : chatRoom.getSender().getName())
-                .lastMessage("최근 메시지 구현 필요")//Todo 최근 메시지 반환 추가
+                .recentMessage(chatRoom.getRecentMessage())
+                .recentMessageTime(chatRoom.getRecentMessageTime())
                 .build();
     }
 
