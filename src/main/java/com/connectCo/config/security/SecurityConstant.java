@@ -20,22 +20,24 @@ public class SecurityConstant {
 
     // 로그인 필요 API
     public static final String[] AUTHENTICATED_URLS = {
-        "/auth/select-profile"
+        "/auth/select-profile",
+        "/stores",
+        "/organizations"
     };
 
     // 가게 프로필 전용 API
     public static final String[] STORE_URLS = {
-        "/api/store/**"
+        "/stores/**"
     };
 
     // 조직 프로필 전용 API
     public static final String[] ORGANIZATION_URLS = {
-        "/api/organization/**"
+        "/organizations/**"
     };
 
     // 관리자 전용 API
     public static final String[] ADMIN_URLS = {
-        "/api/admin/**"
+        "/admin/**"
     };
 
     // 모든 경로를 포함한 배열 (필요할 경우 사용)

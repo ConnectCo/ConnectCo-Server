@@ -14,15 +14,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Where;
 
 @Getter
 @Entity
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
 @Inheritance(strategy = InheritanceType.JOINED)

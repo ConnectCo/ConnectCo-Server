@@ -1,6 +1,5 @@
 package com.connectCo.domain.store.entity;
 
-import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.member.entity.Profile;
@@ -9,8 +8,17 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
+@Getter
 @Entity
+@SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Store extends Profile {
 
     private String description;
@@ -24,10 +32,6 @@ public class Store extends Profile {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn
     private Address address;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Member member;
 
     @OneToMany(mappedBy = "store")
     private List<StoreImage> images = new ArrayList<>();

@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface StoreImageService {
     List<StoreImage> createAndSaveStoreImages(Store store, List<MultipartFile> storeImages);
-
-    void deleteExistingImages(List<StoreImage> imagesToRemove);
-
-    void updateStoreImages(Store store, List<String> existingImageUrls, List<MultipartFile> newImages);
+//
+//    void deleteExistingImages(List<StoreImage> imagesToRemove);
+//
+//    void updateStoreImages(Store store, List<String> existingImageUrls, List<MultipartFile> newImages);
 }
 
 

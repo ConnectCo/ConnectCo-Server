@@ -32,43 +32,43 @@ public class StoreImageServiceImpl implements StoreImageService {
                 .map(storeImageRepository::save)
                 .toList();
     }
-
-    /*
-     * 삭제할 기존 이미지를 S3와 DB에서 삭제
-     */
-    @Override
-    public void deleteExistingImages(List<StoreImage> imagesToRemove) {
-        for (StoreImage image : imagesToRemove) {
-            s3FileComponent.deleteFile(image.getUrl());
-            storeImageRepository.delete(image);
-        }
-    }
-
-    /*
-     * 가게 이미지를 업데이트
-     */
-    @Override
-    @Transactional
-    public void updateStoreImages(Store store, List<String> existingImageUrls, List<MultipartFile> newImages) {
-        // 기존 이미지를 유지하거나 삭제
-        List<StoreImage> existingImages = store.getImages();
-        List<StoreImage> existingImagesToKeep = existingImages.stream()
-                .filter(image -> existingImageUrls.contains(image.getUrl()))
-                .collect(Collectors.toList());
-
-        List<StoreImage> imagesToRemove = existingImages.stream()
-                .filter(image -> !existingImageUrls.contains(image.getUrl()))
-                .toList();
-
-        // 새로운 이미지 추가
-        List<StoreImage> newStoreImages = (newImages != null)
-                ? createAndSaveStoreImages(store, newImages) : List.of();
-
-        // 기존 이미지와 새로운 이미지를 합침
-        existingImagesToKeep.addAll(newStoreImages);
-        store.changeImages(existingImagesToKeep);
-
-        // 삭제할 기존 이미지 삭제
-        deleteExistingImages(imagesToRemove);
-    }
+//
+//    /*
+//     * 삭제할 기존 이미지를 S3와 DB에서 삭제
+//     */
+//    @Override
+//    public void deleteExistingImages(List<StoreImage> imagesToRemove) {
+//        for (StoreImage image : imagesToRemove) {
+//            s3FileComponent.deleteFile(image.getUrl());
+//            storeImageRepository.delete(image);
+//        }
+//    }
+//
+//    /*
+//     * 가게 이미지를 업데이트
+//     */
+//    @Override
+//    @Transactional
+//    public void updateStoreImages(Store store, List<String> existingImageUrls, List<MultipartFile> newImages) {
+//        // 기존 이미지를 유지하거나 삭제
+//        List<StoreImage> existingImages = store.getImages();
+//        List<StoreImage> existingImagesToKeep = existingImages.stream()
+//                .filter(image -> existingImageUrls.contains(image.getUrl()))
+//                .collect(Collectors.toList());
+//
+//        List<StoreImage> imagesToRemove = existingImages.stream()
+//                .filter(image -> !existingImageUrls.contains(image.getUrl()))
+//                .toList();
+//
+//        // 새로운 이미지 추가
+//        List<StoreImage> newStoreImages = (newImages != null)
+//                ? createAndSaveStoreImages(store, newImages) : List.of();
+//
+//        // 기존 이미지와 새로운 이미지를 합침
+//        existingImagesToKeep.addAll(newStoreImages);
+//        store.changeImages(existingImagesToKeep);
+//
+//        // 삭제할 기존 이미지 삭제
+//        deleteExistingImages(imagesToRemove);
+//    }
 }

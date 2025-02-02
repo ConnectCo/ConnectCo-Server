@@ -38,6 +38,7 @@ public enum  ErrorCode {
 
     // Store
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE401", "가게를 찾을 수 없습니다."),
+    STORE_NAME_DUPLICATION(HttpStatus.CONFLICT, "STORE402", "이미 존재하는 가게명입���다."),
 
     //Event
     EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "EVENT401", "이벤트를 찾을 수 업습니다."),
