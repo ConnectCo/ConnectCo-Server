@@ -1,8 +1,18 @@
 package com.connectCo.domain.member.entity;
 
 import com.connectCo.global.common.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 @Getter
@@ -23,12 +33,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
-    private String refreshToken;
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public void saveRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 }
