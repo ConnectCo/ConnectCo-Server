@@ -58,6 +58,11 @@ public class AuthServiceImpl implements AuthService{
         List<Profile> profiles = profileRepository.findByMember(member);
         return new ProfileListResponse(
             profiles.stream()
+                .filter(profile -> profile.getProfileType() == ProfileType.STORE)
+                .map(authMapper::toProfileResponse)
+                .toList(),
+            profiles.stream()
+                .filter(profile -> profile.getProfileType() == ProfileType.ORGANIZATION)
                 .map(authMapper::toProfileResponse)
                 .toList()
         );

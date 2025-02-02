@@ -9,7 +9,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ProfileListResponse {
-    private List<ProfileResponse> profiles;
+    private List<ProfileResponse> storeProfiles;
+    private List<ProfileResponse> organizationProfiles;
 
     @Getter
     @Builder
@@ -20,6 +21,4 @@ public class ProfileListResponse {
         private String profileName;
         private String profileImageUrl;
     }
-
-
 }
