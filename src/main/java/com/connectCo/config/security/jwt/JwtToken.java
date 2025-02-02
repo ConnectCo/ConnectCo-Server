@@ -1,4 +1,4 @@
-package com.connectCo.config.jwt;
+package com.connectCo.config.security.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

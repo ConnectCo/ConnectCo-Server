@@ -22,6 +22,11 @@ public enum  ErrorCode {
     EMPTY_JWT_CLAIMS(HttpStatus.UNAUTHORIZED, "JWT404", "JWT claims string is empty입니다."),
     UNAUTHORIZED_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "JWT405", "권한 정보가 없는 토큰입니다."),
 
+    // Profile
+    PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE401", "프로필을 찾을 수 없습니다."),
+    UNAUTHORIZED_PROFILE(HttpStatus.UNAUTHORIZED, "PROFILE402", "프로필 권한이 없습니다."),
+    INVALID_PROFILE_TYPE(HttpStatus.BAD_REQUEST, "PROFILE403", "잘못된 프로필 타입입니다."),
+
     // MAP
     INVALID_LOCATION(HttpStatus.BAD_REQUEST, "MAP01", "잘못된 위치 정보입니다."),
     INVALID_RADIUS(HttpStatus.BAD_REQUEST, "MAP02", "반경은 양의 정수 값이어야 합니다."),
