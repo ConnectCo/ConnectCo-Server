@@ -22,6 +22,7 @@ public class ChatMapper {
                 .chatId(chat.getId())
                 .senderId(chat.getSenderId())
                 .message(chat.getMessage())
+                .createdAt(chat.getCreatedAt())
                 .build();
     }
 }
