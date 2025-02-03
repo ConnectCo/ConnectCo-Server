@@ -4,6 +4,7 @@ import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.member.entity.ProfileType;
+import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
 import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
@@ -39,14 +40,14 @@ public class StoreMapper {
                 .url(url)
                 .build();
     }
-//
-//    public StoreLike toStoreLike(Store store, Member member) {
-//        return StoreLike.builder()
-//                .store(store)
-//                .member(member)
-//                .isActive(true)
-//                .build();
-//    }
+
+    public StoreLike toStoreLike(Organization organization, Store store) {
+        return StoreLike.builder()
+                .store(store)
+                .organization(organization)
+                .isActive(true)
+                .build();
+    }
 //
 //    public <T>StorePagingResponse<T> toStorePagingResponse(Page<T> stores) {
 //        return StorePagingResponse.<T>builder()

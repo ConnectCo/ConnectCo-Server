@@ -32,9 +32,9 @@ import java.util.Optional;
 public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
-    private final StoreLikeRepository storeLikeRepository;
     private final StoreMapper storeMapper;
     private final StoreImageService storeImageService;
+    private final StoreLikeService storeLikeService;
 
     private final AddressService addressService;
 
@@ -119,16 +119,12 @@ public class StoreServiceImpl implements StoreService {
     /*
      * 특정 가게 찜하기
      */
-//    @Override
-//    @Transactional
-//    public Boolean likeStore(Member member, Long storeId) {
-//        Store store = loadStore(storeId);
-//
-//        Optional<StoreLike> storeLike = storeLikeRepository.findByMemberAndStore(member, store);
-//
-//        return storeLike.map(StoreLike::changeLike)
-//                .orElseGet(() -> storeLikeRepository.save(storeMapper.toStoreLike(store, member)).isActive());
-//    }
+    @Override
+    @Transactional
+    public Boolean likeStore(Long profileId, Long storeId) {
+        Store store = loadStore(storeId);
+        return storeLikeService.likeStore(profileId, store);
+    }
 //
 //    /*
 //     * 특정 가게 상세 조회

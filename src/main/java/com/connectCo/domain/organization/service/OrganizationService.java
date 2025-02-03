@@ -14,12 +14,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface OrganizationService {
     OrganizationIdResponse createOrganization(
-        Member member, MultipartFile profileImage, OrganizationCreateRequest request);
+        Member member, MultipartFile profileImage, OrganizationCreateRequest request
+    );
 //    OrganizationIdResponse updateOrganizationInfo(Long organizationId, OrganizationUpdateRequest request);
 //    OrganizationIdResponse updateOrganizationAddress(Long organizationId, AddressRequest request);
 //    OrganizationIdResponse deleteOrganization(Long organizationId);
 //    OrganizationInquiryResponse inquiryOrganization(String organizationName);
 //    List<OrganizationSearchResponse> searchOrganization(String keyword);
-//    Organization loadOrganization(Long organizationId);
+    Organization loadOrganization(Long organizationId);
 //    Organization loadOrganizationByName(String name);
 }

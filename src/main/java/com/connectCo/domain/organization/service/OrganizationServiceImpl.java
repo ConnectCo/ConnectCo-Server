@@ -115,11 +115,11 @@ public class OrganizationServiceImpl implements OrganizationService {
 //        return organizations.stream().map(organizationMapper::toOrganizationSearchResponse).toList();
 //    }
 //
-//    @Override
-//    public Organization loadOrganization(Long organizationId) {
-//        return organizationRepository.findById(organizationId)
-//                .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
-//    }
+    @Override
+    public Organization loadOrganization(Long organizationId) {
+        return organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
+    }
 //
 //    @Override
 //    public Organization loadOrganizationByName(String name) {

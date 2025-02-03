@@ -59,13 +59,15 @@ public class StoreController {
     ) {
         return BaseResponse.onSuccess(storeService.deleteStore(principal.member(), storeId));
     }
-//
-//    @Operation(summary = "가게 찜하기 API")
-//    @PostMapping("/{storeId}/like")
-//    public BaseResponse<Boolean> likeStore(
-//            @Parameter(description = "찜할 가게 id") @PathVariable Long storeId) {
-//        return BaseResponse.onSuccess(storeService.likeStore(storeId));
-//    }
+
+    @Operation(summary = "가게 찜하기 API", description = "조직 프로필만 가능")
+    @PostMapping("/{storeId}/like")
+    public BaseResponse<Boolean> likeStore(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Parameter(description = "찜할 가게 id") @PathVariable Long storeId
+    ) {
+        return BaseResponse.onSuccess(storeService.likeStore(principal.profileId(), storeId));
+    }
 //
 //    @Operation(summary = "가게 상세조회 API")
 //    @GetMapping("/{storeId}")
