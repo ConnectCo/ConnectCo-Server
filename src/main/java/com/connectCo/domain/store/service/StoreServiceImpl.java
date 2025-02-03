@@ -89,27 +89,25 @@ public class StoreServiceImpl implements StoreService {
 
         return new StoreIdResponse(store.getId());
     }
-//
-//    /*
-//     * 특정 가게 삭제
-//     */
-//    @Override
-//    @Transactional
-//    public StoreIdResponse deleteStore(Long storeId) {
-//        Member member = authService.getLoginMember();
-//        Store store = loadStore(storeId);
-//        // 삭제 권한 유효성 검사
-//        ParamValidator.validModify(member.getId(), store.getMember().getId());
-//
-//        // 가게 이미지 삭제
-//        storeImageService.deleteExistingImages(store.getImages());
-//        store.changeImages(List.of());
-//
-//        // 가게 soft 삭제
-//        store.delete();
-//
-//        return new StoreIdResponse(storeId);
-//    }
+
+    /*
+     * 특정 가게 삭제
+     */
+    @Override
+    @Transactional
+    public StoreIdResponse deleteStore(Member member, Long storeId) {
+        Store store = loadStore(storeId);
+        // 삭제 권한 유효성 검사
+        ParamValidator.validModify(member.getId(), store.getMember().getId());
+
+        // 가게 이미지 삭제
+        storeImageService.deleteImages(store);
+        // TODO: 관련된 가게, 가게 리뷰, 찜 기록 등 삭제 로직 추가
+
+        store.delete();
+
+        return new StoreIdResponse(storeId);
+    }
 //
 //    /*
 //     * 특정 가게 찜하기

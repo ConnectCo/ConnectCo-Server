@@ -50,13 +50,15 @@ public class StoreController {
             @Parameter(description = "가게 수정 요청 json") @Valid @RequestPart("request") StoreUpdateRequest request) {
         return BaseResponse.onSuccess(storeService.updateStore(principal.member(), storeId, newImages, request));
     }
-//
-//    @Operation(summary = "가게 삭제 API", description = "본인만 가능")
-//    @DeleteMapping("/{storeId}")
-//    public BaseResponse<StoreIdResponse> deleteStore(
-//            @Parameter(description = "삭제할 가게 id") @PathVariable Long storeId) {
-//        return BaseResponse.onSuccess(storeService.deleteStore(storeId));
-//    }
+
+    @Operation(summary = "가게 삭제 API", description = "본인만 가능")
+    @DeleteMapping("/{storeId}")
+    public BaseResponse<StoreIdResponse> deleteStore(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Parameter(description = "삭제할 가게 id") @PathVariable Long storeId
+    ) {
+        return BaseResponse.onSuccess(storeService.deleteStore(principal.member(), storeId));
+    }
 //
 //    @Operation(summary = "가게 찜하기 API")
 //    @PostMapping("/{storeId}/like")

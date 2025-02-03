@@ -18,7 +18,7 @@ public interface StoreService {
     StoreIdResponse updateStore(
         Member member, Long storeId, List<MultipartFile> newImages, StoreUpdateRequest request
     );
-//    StoreIdResponse deleteStore(Long storeId);
+    StoreIdResponse deleteStore(Member member, Long storeId);
 //    Boolean likeStore(Long storeId);
 //    StoreDetailInquiryResponse inquiryStoreDetail(Long storeId);
 //    StorePagingResponse<StoreSummaryInquiryResponse> inquiryStoreByLike(int page, int size);

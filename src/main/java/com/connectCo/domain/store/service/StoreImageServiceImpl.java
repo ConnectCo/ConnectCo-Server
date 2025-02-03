@@ -37,6 +37,17 @@ public class StoreImageServiceImpl implements StoreImageService {
      * 삭제할 기존 이미지를 S3와 DB에서 삭제
      */
     @Override
+    @Transactional
+    public void deleteImages(Store store) {
+        List<StoreImage> imagesToRemove = storeImageRepository.findAllByStore(store);
+        deleteExistingImages(imagesToRemove);
+    }
+
+    /*
+     * 기존 이미지를 S3와 DB에서 삭제
+     */
+    @Override
+    @Transactional
     public void deleteExistingImages(List<StoreImage> imagesToRemove) {
         for (StoreImage image : imagesToRemove) {
             s3FileComponent.deleteFile(image.getUrl());
