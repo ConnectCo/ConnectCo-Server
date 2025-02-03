@@ -60,7 +60,7 @@ public class StoreImageServiceImpl implements StoreImageService {
      */
     @Override
     @Transactional
-    public void updateStoreImages(Store store, List<String> existingImageUrls, List<MultipartFile> newImages) {
+    public String updateStoreImages(Store store, List<String> existingImageUrls, List<MultipartFile> newImages) {
         // 기존 이미지를 유지하거나 삭제
         List<StoreImage> existingImages = storeImageRepository.findAllByStore(store);
         List<StoreImage> existingImagesToKeep = existingImages.stream()
@@ -80,5 +80,7 @@ public class StoreImageServiceImpl implements StoreImageService {
 
         // 삭제할 기존 이미지 삭제
         deleteExistingImages(imagesToRemove);
+
+        return existingImagesToKeep.get(0).getUrl();
     }
 }

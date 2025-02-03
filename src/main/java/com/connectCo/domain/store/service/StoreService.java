@@ -19,7 +19,7 @@ public interface StoreService {
         Member member, Long storeId, List<MultipartFile> newImages, StoreUpdateRequest request
     );
     StoreIdResponse deleteStore(Member member, Long storeId);
-//    Boolean likeStore(Long storeId);
+//    Boolean likeStore(Long organizationId, Long storeId);
 //    StoreDetailInquiryResponse inquiryStoreDetail(Long storeId);
 //    StorePagingResponse<StoreSummaryInquiryResponse> inquiryStoreByLike(int page, int size);
 //    StorePagingResponse<StoreSummaryInquiryResponse> inquiryStoreByMember(int page, int size);

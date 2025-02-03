@@ -32,7 +32,7 @@ import java.util.Optional;
 public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
-//    private final StoreLikeRepository storeLikeRepository;
+    private final StoreLikeRepository storeLikeRepository;
     private final StoreMapper storeMapper;
     private final StoreImageService storeImageService;
 
@@ -59,8 +59,11 @@ public class StoreServiceImpl implements StoreService {
 
         Store newStore = createAndSaveStore(member, request, newAddress);
 
-        List<StoreImage> newStoreImages = (storeImages != null) ?
-                storeImageService.createAndSaveStoreImages(newStore, storeImages) : List.of();
+        if (storeImages != null) {
+            List<StoreImage> andSaveStoreImages = storeImageService.createAndSaveStoreImages(newStore, storeImages);
+            newStore.updateProfileImage(andSaveStoreImages.get(0).getUrl());
+        }
+
         return new StoreIdResponse(newStore.getId());
     }
 
@@ -85,7 +88,10 @@ public class StoreServiceImpl implements StoreService {
         store.updateStoreInfo(request);
 
         // 이미지 업데이트
-        storeImageService.updateStoreImages(store, request.getExistingImages(), newImages);
+        if (newImages != null || !request.getExistingImages().isEmpty() ) {
+            String profileUrl = storeImageService.updateStoreImages(store, request.getExistingImages(), newImages);
+            store.updateProfileImage(profileUrl);
+        }
 
         return new StoreIdResponse(store.getId());
     }
@@ -105,24 +111,23 @@ public class StoreServiceImpl implements StoreService {
         // TODO: 관련된 가게, 가게 리뷰, 찜 기록 등 삭제 로직 추가
 
         store.delete();
+        store.updateProfileImage(null);
 
         return new StoreIdResponse(storeId);
     }
-//
-//    /*
-//     * 특정 가게 찜하기
-//     */
+
+    /*
+     * 특정 가게 찜하기
+     */
 //    @Override
 //    @Transactional
-//    public Boolean likeStore(Long storeId) {
-//        Member member = authService.getLoginMember();
+//    public Boolean likeStore(Member member, Long storeId) {
 //        Store store = loadStore(storeId);
 //
 //        Optional<StoreLike> storeLike = storeLikeRepository.findByMemberAndStore(member, store);
 //
 //        return storeLike.map(StoreLike::changeLike)
 //                .orElseGet(() -> storeLikeRepository.save(storeMapper.toStoreLike(store, member)).isActive());
-//
 //    }
 //
 //    /*
