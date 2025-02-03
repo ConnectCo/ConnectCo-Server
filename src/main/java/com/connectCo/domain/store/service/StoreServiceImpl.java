@@ -46,9 +46,9 @@ public class StoreServiceImpl implements StoreService {
     public StoreIdResponse createStore(
         Member member, List<MultipartFile> storeImages, MultipartFile businessLicense, StoreCreateRequest request
     ) {
-        // 가게명 중복 검사
-        if (storeRepository.existsByName(request.getName())) {
-            throw new CustomApiException(ErrorCode.STORE_NAME_DUPLICATION);
+        // 가게 등록 제한 검사
+        if (storeRepository.countByMember(member) >= 3) {
+            throw new CustomApiException(ErrorCode.STORE_LIMIT_EXCEEDED);
         }
 
         Address newAddress = addressService.createAddress(
@@ -61,31 +61,34 @@ public class StoreServiceImpl implements StoreService {
 
         List<StoreImage> newStoreImages = (storeImages != null) ?
                 storeImageService.createAndSaveStoreImages(newStore, storeImages) : List.of();
-        newStore.changeImages(newStoreImages);
         return new StoreIdResponse(newStore.getId());
     }
-//
-//    /*
-//     * 특정 가게 정보 업데이트
-//     */
-//    @Override
-//    @Transactional
-//    public StoreIdResponse updateStore(Long storeId, List<MultipartFile> newImages, StoreUpdateRequest request) {
-//        Member member = authService.getLoginMember();
-//        Store store = loadStore(storeId);
-//        // 수정 권한 유효성 검사(본인이 아닌 경우 수정 불가)
-//        ParamValidator.validModify(member.getId(), store.getMember().getId());
-//
-//        // 주소 정보 업데이트
-//        store.getAddress().updateAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
-//        // 정보 수정
-//        store.updateStoreInfo(request);
-//
-//        // 이미지 업데이트
-//        storeImageService.updateStoreImages(store, request.getExistingImages(), newImages);
-//
-//        return new StoreIdResponse(store.getId());
-//    }
+
+    /*
+     * 특정 가게 정보 업데이트
+     */
+    @Override
+    @Transactional
+    public StoreIdResponse updateStore(
+        Member member, Long storeId, List<MultipartFile> newImages, StoreUpdateRequest request
+    ) {
+        Store store = loadStore(storeId);
+        // 수정 권한 유효성 검사(본인이 아닌 경우 수정 불가)
+        ParamValidator.validModify(member.getId(), store.getMember().getId());
+        if (storeRepository.existsByName(request.getName()) && !store.getName().equals(request.getName())) {
+            throw new CustomApiException(ErrorCode.STORE_NAME_DUPLICATION);
+        }
+
+        // 주소 정보 업데이트
+        store.getAddress().updateAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
+        // 정보 수정
+        store.updateStoreInfo(request);
+
+        // 이미지 업데이트
+        storeImageService.updateStoreImages(store, request.getExistingImages(), newImages);
+
+        return new StoreIdResponse(store.getId());
+    }
 //
 //    /*
 //     * 특정 가게 삭제
@@ -191,12 +194,9 @@ public class StoreServiceImpl implements StoreService {
         Store store = storeMapper.toStore(member, request, address);
         return storeRepository.save(store);
     }
-//
-//    /*
-//     * 가게 id로 가게 엔티티를 반환
-//     */
-//    public Store loadStore(Long storeId) {
-//        return storeRepository.findById(storeId)
-//                .orElseThrow(() -> new CustomApiException(ErrorCode.STORE_NOT_FOUND));
-//    }
+
+    public Store loadStore(Long storeId) {
+        return storeRepository.findById(storeId)
+                .orElseThrow(() -> new CustomApiException(ErrorCode.STORE_NOT_FOUND));
+    }
 }

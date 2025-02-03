@@ -10,15 +10,12 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "가게 수정 요청 json")
 public class StoreUpdateRequest {
     @Schema(description = "가게 이름", example = "가게명")
     @NotBlank(message = "가게 이름은 필수 입력값입니다.")
-    @ExistStore
     private String name;
 
     @Schema(description = "가게 주소", example = "주소")

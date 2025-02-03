@@ -33,8 +33,6 @@ public class Store extends Profile {
     @JoinColumn
     private Address address;
 
-    @OneToMany(mappedBy = "store")
-    private List<StoreImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "store")
     private List<Coupon> coupons = new ArrayList<>();
@@ -46,19 +44,7 @@ public class Store extends Profile {
         this.operatingTime = request.getOperatingTime();
     }
 
-    public void changeImages(List<StoreImage> storeImages) {
-        // 새로운 이미지로 변경
-        this.images = storeImages;
-    }
-
     public void updateCoupon(List<Coupon> coupons) {
         this.coupons = coupons;
-    }
-
-    public String getThumbnail() {
-        return this.images.stream()
-                .findFirst()
-                .map(StoreImage::getUrl)
-                .orElse(null);
     }
 }

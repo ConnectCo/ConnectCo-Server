@@ -15,7 +15,9 @@ public interface StoreService {
     StoreIdResponse createStore(
         Member member, List<MultipartFile> storeImages, MultipartFile businessLicense, StoreCreateRequest request
     );
-//    StoreIdResponse updateStore(Long storeId, List<MultipartFile> newImages, StoreUpdateRequest request);
+    StoreIdResponse updateStore(
+        Member member, Long storeId, List<MultipartFile> newImages, StoreUpdateRequest request
+    );
 //    StoreIdResponse deleteStore(Long storeId);
 //    Boolean likeStore(Long storeId);
 //    StoreDetailInquiryResponse inquiryStoreDetail(Long storeId);

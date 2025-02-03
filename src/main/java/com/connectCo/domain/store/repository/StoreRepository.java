@@ -13,8 +13,8 @@ import java.util.List;
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
     boolean existsByName(String name);
-
     boolean existsStoreByName(String name);
+    long countByMember(Member member);
 
 //    @Query(value = "SELECT s.*, " +
 //            "ST_Distance_Sphere(POINT(:longitude, :latitude), a.location) / 1000 AS distance " +

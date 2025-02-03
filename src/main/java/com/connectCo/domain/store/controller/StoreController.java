@@ -40,15 +40,16 @@ public class StoreController {
             storeService.createStore(principal.member(), storeImages, businessLicense, request)
         );
     }
-//
-//    @Operation(summary = "가게 수정 API", description = "본인만 가능")
-//    @PatchMapping(value = "/{storeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public BaseResponse<StoreIdResponse> updateStore(
-//            @Parameter(description = "수정할 가게 id") @PathVariable Long storeId,
-//            @Parameter(description = "추가된 가게 이미지 파일들(없을 시 사용 x)") @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages,
-//            @Parameter(description = "가게 수정 요청 json") @Valid @RequestPart("request") StoreUpdateRequest request) {
-//        return BaseResponse.onSuccess(storeService.updateStore(storeId, newImages, request));
-//    }
+
+    @Operation(summary = "가게 수정 API", description = "본인만 가능")
+    @PatchMapping(value = "/{storeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BaseResponse<StoreIdResponse> updateStore(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Parameter(description = "수정할 가게 id") @PathVariable Long storeId,
+            @Parameter(description = "추가된 가게 이미지 파일들(없을 시 사용 x)") @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages,
+            @Parameter(description = "가게 수정 요청 json") @Valid @RequestPart("request") StoreUpdateRequest request) {
+        return BaseResponse.onSuccess(storeService.updateStore(principal.member(), storeId, newImages, request));
+    }
 //
 //    @Operation(summary = "가게 삭제 API", description = "본인만 가능")
 //    @DeleteMapping("/{storeId}")
