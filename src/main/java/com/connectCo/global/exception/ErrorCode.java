@@ -46,6 +46,8 @@ public enum  ErrorCode {
 
     // Organization
     ORGANIZATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "ORGANIZATION401", "조직을 찾을 수 없습니다."),
+    ORGANIZATION_NAME_DUPLICATION(HttpStatus.BAD_REQUEST, "ORGANIZATION402", "이미 존재하는 조직명입니다."),
+    ORGANIZATION_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "ORGANIZATION403", "조직 등록 제한을 초과하였씁니다."),
 
     //Coupon
     COUPON_NOT_FOUND(HttpStatus.NOT_FOUND,"COUPON401","해당 쿠폰을 찾을 수 없습니다."),

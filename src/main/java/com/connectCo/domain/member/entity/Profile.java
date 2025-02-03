@@ -43,4 +43,8 @@ public class Profile extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private ProfileType profileType;
+
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
 }

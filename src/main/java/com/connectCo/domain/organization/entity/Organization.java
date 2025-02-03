@@ -5,8 +5,17 @@ import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.member.entity.Profile;
 import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
+@Getter
 @Entity
+@SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Organization extends Profile {
 
     @Column(nullable = false)
@@ -18,10 +27,6 @@ public class Organization extends Profile {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn
     private Address address;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Member member;
 
     public void updateOrganizationInfo(OrganizationUpdateRequest request) {
         this.name = request.getName();

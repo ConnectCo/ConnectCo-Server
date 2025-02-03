@@ -16,11 +16,13 @@ import com.connectCo.domain.organization.repository.OrganizationRepository;
 import com.connectCo.global.common.dto.AddressRequest;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
+import com.connectCo.utils.S3FileComponent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -28,92 +30,105 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     private final OrganizationRepository organizationRepository;
     private final OrganizationMapper organizationMapper;
-
-    private final AuthService authService;
     private final AddressService addressService;
+    private final S3FileComponent s3FileComponent;
 
     @Override
-    public OrganizationIdResponse createOrganization(OrganizationCreateRequest request) {
+    @Transactional
+    public OrganizationIdResponse createOrganization(
+        Member member, MultipartFile profileImage, OrganizationCreateRequest request
+    ) {
+        // 조직 등록 제한 검사
+        if (organizationRepository.countByMember(member) >= 3) {
+            throw new CustomApiException(ErrorCode.ORGANIZATION_LIMIT_EXCEEDED);
+        }
 
-        validateAdmin();
+        Address address = addressService.createAddress(
+            request.getDetailAddress(), request.getLatitude(), request.getLongitude()
+        );
 
-        Address address = addressService.createAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
-        Organization newOrganization = organizationRepository.save(organizationMapper.toOrganization(request, address));
+        // TODO: 이메일 인증 로직 추가
+
+        Organization newOrganization = createAndSaveOrganization(member, request, address);
+
+        // 프로필 이미지 업로드
+        if (profileImage != null) {
+            String profileUrl = s3FileComponent.uploadFile("organization", profileImage);
+            newOrganization.updateProfileImage(profileUrl);
+        }
 
         return new OrganizationIdResponse(newOrganization.getId());
     }
+//
+//    @Override
+//    @Transactional
+//    public OrganizationIdResponse updateOrganizationInfo(Long organizationId, OrganizationUpdateRequest request) {
+//
+//        validateAdmin();
+//
+//        Organization organization = loadOrganization(organizationId);
+//        organization.updateOrganizationInfo(request);
+//
+//        return new OrganizationIdResponse(organization.getId());
+//    }
+//
+//    @Override
+//    @Transactional
+//    public OrganizationIdResponse updateOrganizationAddress(Long organizationId, AddressRequest request) {
+//
+//        validateAdmin();
+//
+//        Organization organization = loadOrganization(organizationId);
+//        organization.getAddress().updateAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
+//
+//        return new OrganizationIdResponse(organization.getId());
+//    }
+//
+//    @Override
+//    @Transactional
+//    public OrganizationIdResponse deleteOrganization(Long organizationId) {
+//
+//        validateAdmin();
+//
+//        Organization organization = loadOrganization(organizationId);
+//
+//        //TODO 관련된 Event들 다 삭제 처리되는지 확인 필요
+//
+//        organization.delete();
+//
+//        return new OrganizationIdResponse(organization.getId());
+//    }
+//
+//    @Override
+//    public OrganizationInquiryResponse inquiryOrganization(String organizationName) {
+//
+//        Organization organization = loadOrganizationByName(organizationName);
+//
+//        return organizationMapper.toOrganizationInquiryResponse(organization);
+//    }
+//
+//    @Override
+//    public List<OrganizationSearchResponse> searchOrganization(String keyword) {
+//
+//        List<Organization> organizations = organizationRepository.findAllByNameContainingIgnoreCaseOrderByNameAsc(keyword);
+//
+//        return organizations.stream().map(organizationMapper::toOrganizationSearchResponse).toList();
+//    }
+//
+//    @Override
+//    public Organization loadOrganization(Long organizationId) {
+//        return organizationRepository.findById(organizationId)
+//                .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
+//    }
+//
+//    @Override
+//    public Organization loadOrganizationByName(String name) {
+//        return organizationRepository.findOrganizationByName(name)
+//                .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
+//    }
 
-    @Override
-    @Transactional
-    public OrganizationIdResponse updateOrganizationInfo(Long organizationId, OrganizationUpdateRequest request) {
-
-        validateAdmin();
-
-        Organization organization = loadOrganization(organizationId);
-        organization.updateOrganizationInfo(request);
-
-        return new OrganizationIdResponse(organization.getId());
-    }
-
-    @Override
-    @Transactional
-    public OrganizationIdResponse updateOrganizationAddress(Long organizationId, AddressRequest request) {
-
-        validateAdmin();
-
-        Organization organization = loadOrganization(organizationId);
-        organization.getAddress().updateAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
-
-        return new OrganizationIdResponse(organization.getId());
-    }
-
-    @Override
-    @Transactional
-    public OrganizationIdResponse deleteOrganization(Long organizationId) {
-
-        validateAdmin();
-
-        Organization organization = loadOrganization(organizationId);
-
-        //TODO 관련된 Event들 다 삭제 처리되는지 확인 필요
-
-        organization.delete();
-
-        return new OrganizationIdResponse(organization.getId());
-    }
-
-    @Override
-    public OrganizationInquiryResponse inquiryOrganization(String organizationName) {
-
-        Organization organization = loadOrganizationByName(organizationName);
-
-        return organizationMapper.toOrganizationInquiryResponse(organization);
-    }
-
-    @Override
-    public List<OrganizationSearchResponse> searchOrganization(String keyword) {
-
-        List<Organization> organizations = organizationRepository.findAllByNameContainingIgnoreCaseOrderByNameAsc(keyword);
-
-        return organizations.stream().map(organizationMapper::toOrganizationSearchResponse).toList();
-    }
-
-    @Override
-    public Organization loadOrganization(Long organizationId) {
-        return organizationRepository.findById(organizationId)
-                .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
-    }
-
-    @Override
-    public Organization loadOrganizationByName(String name) {
-        return organizationRepository.findOrganizationByName(name)
-                .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
-    }
-
-
-    private void validateAdmin() {
-        Member member = authService.getLoginMember();
-        if (!member.getRole().equals(Role.ADMIN))
-            throw new CustomApiException(ErrorCode.USER_NOT_ADMIN);
+    private Organization createAndSaveOrganization(Member member, OrganizationCreateRequest request, Address address) {
+        Organization organization = organizationMapper.toOrganization(member, request, address);
+        return organizationRepository.save(organization);
     }
 }
