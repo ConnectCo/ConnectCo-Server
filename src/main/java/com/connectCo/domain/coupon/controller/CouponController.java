@@ -122,6 +122,7 @@ public class CouponController {
         return BaseResponse.onSuccess(couponService.inquiryCouponsByStore(storeId, page, size));
     }
 
+    // TODO: 생성순, 거리순, 임박순 하나로 합치기? --> 생성순, 임박순도 결국 위치 기반으로 조회 해야 함(비로그인 시)
     @Operation(summary = "쿠폰 목록 조회 API(생성순)", description = "비로그인 시도 가능")
     @GetMapping("/recent")
     @Parameters(value = {
