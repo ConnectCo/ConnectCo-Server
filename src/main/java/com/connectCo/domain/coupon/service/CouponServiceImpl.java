@@ -36,78 +36,27 @@ public class CouponServiceImpl implements CouponService {
     private final CouponRepository couponRepository;
 //    private final CouponLikeRepository couponLikeRepository;
     private final CouponMapper couponMapper;
-//    private final S3FileComponent s3FileComponent;
-//    private final CouponImageRepository couponImageRepository;
-//
+    private final S3FileComponent s3FileComponent;
+    private final CouponImageRepository couponImageRepository;
+
+    /*
+     * 새로운 쿠폰을 등록하는 서비스 함수
+     */
     @Override
-    public List<CouponSummaryInquiryResponse> inquiryCouponByMember(Long profileId) {
+    @Transactional
+    public CouponIdResponse createCoupon(
+        Long profileId, List<MultipartFile> couponImages, CouponCreateRequest request
+    ) {
         Store store = storeService.loadStore(profileId);
 
-        return store.getCoupons().stream()
-                .map(couponMapper::toCouponSummaryInquiryResponse)
-                .toList();
+        Coupon newCoupon = createAndSaveCoupon(store, request);
+        if (couponImages != null) {
+            List<CouponImage> newCouponImages = createAndSaveCouponImages(newCoupon, couponImages);
+            newCoupon.changeImages(newCouponImages);
+        }
+
+        return new CouponIdResponse(newCoupon.getId());
     }
-//
-//    @Override
-//    public List<CouponSummaryInquiryResponse> inquiryCouponByLike() {
-//        Member member = authService.getLoginMember();
-//
-//        List<Coupon> couponList = couponLikeRepository.findAllByMemberAndIsChecked(member, true).stream()
-//                .map(CouponLike::getCoupon)
-//                .toList();
-//
-//        return couponList.stream()
-//                .map(couponMapper::toCouponSummaryInquiryResponse)
-//                .toList();
-//    }
-//
-//    @Override
-//    public List<CouponSummaryInquiryResponse> inquiryCouponByRecent() {
-//        Pageable pageable= PageRequest.of(0,10);
-//        List<Coupon> couponList=couponRepository.findAllByOrderByCreatedAtDesc(pageable).getContent();
-//
-//        return couponList.stream()
-//                .map(couponMapper::toCouponSummaryInquiryResponse)
-//                .toList();
-//    }
-//
-//    /*
-//     * 새로운 쿠폰을 등록하는 서비스 함수
-//     */
-//    @Override
-//    @Transactional
-//    public CouponIdResponse createCoupon(List<MultipartFile> couponImages, CouponCreateRequest request) {
-//
-//        Store store = storeService.loadStore(request.getStoreId());
-//        //storeRepository에 접근해서 클라이언트에서 받은 storeid를 가지고 jpa를 통해 store객체 찾기
-//
-//        Coupon newCoupon = createAndSaveCoupon(store, request);
-//
-//        List<CouponImage> newCouponImages = createAndSaveCouponImages(newCoupon, couponImages);
-//
-//        newCoupon.changeImages(newCouponImages);
-//
-//        return new CouponIdResponse(newCoupon.getId());
-//    }
-//
-//    /*
-//     * Coupon 객체를 생성하고 DB에 저장하는 함수
-//     */
-//    private Coupon createAndSaveCoupon(Store store, CouponCreateRequest request) {
-//        Coupon coupon = couponMapper.toCoupon(store, request);
-//        return couponRepository.save(coupon);
-//    }
-//
-//    /*
-//     * 쿠폰 이미지 객체를 생성하고 DB에 저장하는 함수
-//     */
-//    private List<CouponImage> createAndSaveCouponImages(Coupon newCoupon, List<MultipartFile> couponImages) {
-//        return couponImages.stream()
-//                .map(couponImage -> s3FileComponent.uploadFile("coupon", couponImage))
-//                .map(couponUrl -> couponMapper.toCouponImage(newCoupon, couponUrl))
-//                .map(couponImageRepository::save)
-//                .toList();
-//    }
 //
 //
 //    @Override
@@ -160,6 +109,38 @@ public class CouponServiceImpl implements CouponService {
 //
 //        return new CouponIdResponse(coupon.getId());
 //    }
+
+    @Override
+    public List<CouponSummaryInquiryResponse> inquiryCouponByMember(Long profileId) {
+        Store store = storeService.loadStore(profileId);
+
+        return store.getCoupons().stream()
+            .map(couponMapper::toCouponSummaryInquiryResponse)
+            .toList();
+    }
+//
+//    @Override
+//    public List<CouponSummaryInquiryResponse> inquiryCouponByLike() {
+//        Member member = authService.getLoginMember();
+//
+//        List<Coupon> couponList = couponLikeRepository.findAllByMemberAndIsChecked(member, true).stream()
+//                .map(CouponLike::getCoupon)
+//                .toList();
+//
+//        return couponList.stream()
+//                .map(couponMapper::toCouponSummaryInquiryResponse)
+//                .toList();
+//    }
+//
+//    @Override
+//    public List<CouponSummaryInquiryResponse> inquiryCouponByRecent() {
+//        Pageable pageable= PageRequest.of(0,10);
+//        List<Coupon> couponList=couponRepository.findAllByOrderByCreatedAtDesc(pageable).getContent();
+//
+//        return couponList.stream()
+//                .map(couponMapper::toCouponSummaryInquiryResponse)
+//                .toList();
+//    }
 //
 //    @Override
 //    public List<CouponSummaryInquiryResponse> inquiryCouponByEachStore(Long storeId) {
@@ -182,4 +163,16 @@ public class CouponServiceImpl implements CouponService {
 //        return couponMapper.toCouponDetailResponse(coupon);
 //    }
 
+    private Coupon createAndSaveCoupon(Store store, CouponCreateRequest request) {
+        Coupon coupon = couponMapper.toCoupon(store, request);
+        return couponRepository.save(coupon);
+    }
+
+    private List<CouponImage> createAndSaveCouponImages(Coupon newCoupon, List<MultipartFile> couponImages) {
+        return couponImages.stream()
+                .map(couponImage -> s3FileComponent.uploadFile("coupon", couponImage))
+                .map(couponUrl -> couponMapper.toCouponImage(newCoupon, couponUrl))
+                .map(couponImageRepository::save)
+                .toList();
+    }
 }

@@ -5,10 +5,11 @@ import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Where;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,13 +38,14 @@ public class Coupon extends BaseEntity {
     private String notification;
 
     @Column(nullable = false)
-    private LocalDate expiredAt;
+    private LocalDateTime expiredAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Store store;
 
     @OneToMany(mappedBy = "coupon")
+    @Builder.Default
     private List<CouponImage> images = new ArrayList<>();
 
     public void changeImages(List<CouponImage> couponImages) {
@@ -64,7 +66,7 @@ public class Coupon extends BaseEntity {
         this.description = request.getDescription();
         this.priorityTarget = request.getPriorityTarget();
         this.notification = request.getNotification();
-        this.expiredAt = LocalDate.parse(request.getExpiredAt());
+        this.expiredAt = request.getExpiredAt();
 
     }
 

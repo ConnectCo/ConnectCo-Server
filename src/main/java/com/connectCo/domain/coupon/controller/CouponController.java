@@ -10,6 +10,7 @@ import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,31 @@ import java.util.List;
 public class CouponController {
 
     private final CouponService couponService;
+
+    @Operation(summary = "쿠폰 등록 API", description = "가게 프로필만 등록 가능")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BaseResponse<CouponIdResponse> createCoupon(
+        @AuthenticationPrincipal PrincipalDetails principal,
+        @Parameter(description = "쿠폰 이미지 파일들(없을 시 사용 x)") @RequestPart(value = "couponImages", required = false) List<MultipartFile> couponImages,
+        @Parameter(description = "쿠폰 생성 요청 json") @RequestPart("request") @Valid CouponCreateRequest request) {
+        return BaseResponse.onSuccess(
+            couponService.createCoupon(principal.profileId(), couponImages, request)
+        );
+    }
+//
+//    @Operation(summary = "쿠폰 삭제 API")
+//    @DeleteMapping("/{couponId}")
+//    public BaseResponse<CouponIdResponse> deleteCoupon(@PathVariable Long couponId) {
+//        return BaseResponse.onSuccess(couponService.deleteCoupon(couponId));
+//    }
+//
+//    @Operation(summary = "쿠폰 수정 API")
+//    @PutMapping(value = "/{couponId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public BaseResponse<CouponIdResponse> updateCoupon(@PathVariable Long couponId,
+//                                                       @RequestPart(value = "couponImages", required = false) List<MultipartFile> couponImages,
+//                                                       @RequestPart("request") @Valid CouponCreateRequest request) {
+//        return BaseResponse.onSuccess(couponService.updateCoupon(couponId, couponImages, request));
+//    }
 
     @Operation(summary = "나의 쿠폰 조회 API", description = "가게 프로필만 조회 가능")
     @GetMapping("/mine")
@@ -59,25 +85,6 @@ public class CouponController {
 //        return BaseResponse.onSuccess(couponService.inquiryCouponDetail(couponId));
 //    }
 //
-//
-//    @Operation(summary = "쿠폰 등록 API")
-//    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public BaseResponse<CouponIdResponse> createCoupon(@RequestPart(value = "couponImages", required = false) List<MultipartFile> couponImages,
-//                                                       @RequestPart("request") @Valid CouponCreateRequest request) {
-//        return BaseResponse.onSuccess(couponService.createCoupon(couponImages, request));
-//    }
-//
-//    @Operation(summary = "쿠폰 삭제 API")
-//    @DeleteMapping("/{couponId}")
-//    public BaseResponse<CouponIdResponse> deleteCoupon(@PathVariable Long couponId) {
-//        return BaseResponse.onSuccess(couponService.deleteCoupon(couponId));
-//    }
-//
-//    @Operation(summary = "쿠폰 수정 API")
-//    @PutMapping(value = "/{couponId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public BaseResponse<CouponIdResponse> updateCoupon(@PathVariable Long couponId,
-//                                                       @RequestPart(value = "couponImages", required = false) List<MultipartFile> couponImages,
-//                                                       @RequestPart("request") @Valid CouponCreateRequest request) {
-//        return BaseResponse.onSuccess(couponService.updateCoupon(couponId, couponImages, request));
-//    }
+
+
 }

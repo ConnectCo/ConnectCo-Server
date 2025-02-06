@@ -12,16 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface CouponService {
-    List<CouponSummaryInquiryResponse> inquiryCouponByMember(Long profileId);
-//    List<CouponSummaryInquiryResponse> inquiryCouponByLike();
-//    List<CouponSummaryInquiryResponse> inquiryCouponByRecent();
-//    List<CouponSummaryInquiryResponse> inquiryCouponByEachStore(Long storeId);
-//
-//    List<Coupon> inquiryCouponByStore(Store store);
-//
-//    CouponDetailResponse inquiryCouponDetail(Long couponId);
-//
-//    CouponIdResponse createCoupon(List<MultipartFile> couponImages, CouponCreateRequest request);
+    CouponIdResponse createCoupon(
+        Long profileId, List<MultipartFile> couponImages, CouponCreateRequest request
+    );
 //
 //
 //    CouponIdResponse deleteCoupon(Long couponId);
@@ -30,5 +23,13 @@ public interface CouponService {
 //
 //
 //
+    List<CouponSummaryInquiryResponse> inquiryCouponByMember(Long profileId);
+//    List<CouponSummaryInquiryResponse> inquiryCouponByLike();
+//    List<CouponSummaryInquiryResponse> inquiryCouponByRecent();
+//    List<CouponSummaryInquiryResponse> inquiryCouponByEachStore(Long storeId);
+//
+//    List<Coupon> inquiryCouponByStore(Store store);
+//
+//    CouponDetailResponse inquiryCouponDetail(Long couponId);
 
 }

@@ -18,7 +18,7 @@ public class CouponMapper {
     public Coupon toCoupon(Store store, CouponCreateRequest request){
         return Coupon.builder()
                 .name(request.getName())
-                .expiredAt(LocalDate.parse(request.getExpiredAt()))
+                .expiredAt(request.getExpiredAt())
                 .description(request.getDescription())
                 .priorityTarget(request.getPriorityTarget())
                 .notification(request.getNotification())
@@ -34,7 +34,6 @@ public class CouponMapper {
                 .build();
     }
 
-
     public CouponSummaryInquiryResponse toCouponSummaryInquiryResponse(Coupon coupon) {
         String thumbnail = coupon.getImages().stream()
                 .findFirst()
@@ -45,26 +44,26 @@ public class CouponMapper {
                 .couponId(coupon.getId())
                 .name(coupon.getName())
                 .description(coupon.getDescription())
-                .expiredAt(coupon.getExpiredAt())
+                .expiredAt(coupon.getExpiredAt().toLocalDate())
                 .thumbnail(thumbnail)
                 .build();
     }
-
-    public CouponDetailResponse toCouponDetailResponse(Coupon coupon) {
-        List<String> imageUrls = coupon.getImages().stream()
-                .map(CouponImage::getUrl)
-                .collect(Collectors.toList());
-
-
-        return CouponDetailResponse.builder()
-                .id(coupon.getId())
-                .storeId(coupon.getStore().getId())
-                .name(coupon.getName())
-                .description(coupon.getDescription())
-                .priorityTarget(coupon.getPriorityTarget())
-                .notification(coupon.getNotification())
-                .expiredAt(coupon.getExpiredAt())
-                .images(imageUrls)
-                .build();
-    }
+//
+//    public CouponDetailResponse toCouponDetailResponse(Coupon coupon) {
+//        List<String> imageUrls = coupon.getImages().stream()
+//                .map(CouponImage::getUrl)
+//                .collect(Collectors.toList());
+//
+//
+//        return CouponDetailResponse.builder()
+//                .id(coupon.getId())
+//                .storeId(coupon.getStore().getId())
+//                .name(coupon.getName())
+//                .description(coupon.getDescription())
+//                .priorityTarget(coupon.getPriorityTarget())
+//                .notification(coupon.getNotification())
+//                .expiredAt(coupon.getExpiredAt())
+//                .images(imageUrls)
+//                .build();
+//    }
 }
