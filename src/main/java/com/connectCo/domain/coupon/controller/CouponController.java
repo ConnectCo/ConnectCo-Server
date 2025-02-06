@@ -70,7 +70,14 @@ public class CouponController {
         return BaseResponse.onSuccess(couponService.inquiryCouponByStore(principal.profileId()));
     }
 
-    // TODO: 특정 쿠폰 찜하기 추가
+    @Operation(summary = "쿠폰 찜하기 API", description = "조직 프로필만 가능")
+    @PostMapping("/{couponId}/like")
+    public BaseResponse<Boolean> likeCoupon(
+        @AuthenticationPrincipal PrincipalDetails principal,
+        @Parameter(description = "찜할 쿠폰 id") @PathVariable Long couponId
+    ) {
+        return BaseResponse.onSuccess(couponService.likeCoupon(principal.profileId(), couponId));
+    }
 
     //
 //    @Operation(summary = "쿠폰 상세 조회 API")

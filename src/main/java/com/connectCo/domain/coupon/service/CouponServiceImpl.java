@@ -18,12 +18,14 @@ import com.connectCo.domain.coupon.repository.CouponRepository;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.domain.store.entity.Store;
+import com.connectCo.domain.store.repository.StoreLikeRepository;
 import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.global.validation.ParamValidator;
 import com.connectCo.utils.S3FileComponent;
 import jakarta.annotation.Nullable;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,6 +49,7 @@ public class CouponServiceImpl implements CouponService {
     private final StoreService storeService;
     private final OrganizationService organizationService;
     private final S3FileComponent s3FileComponent;
+    private final StoreLikeRepository storeLikeRepository;
 
     /*
      * 새로운 쿠폰을 등록하는 서비스 함수
@@ -115,13 +118,21 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<CouponSummaryInquiryResponse> inquiryCouponByStore(Long profileId) {
-        Store store = storeService.loadStore(profileId);
-
-        return store.getCoupons().stream()
-            .map(couponMapper::toCouponSummaryInquiryResponse)
-            .toList();
+    @Transactional
+    public Boolean likeCoupon(Long profileId, Long couponId) {
+        Organization organization = organizationService.loadOrganization(profileId);
+        Coupon coupon = couponRepository.getCoupon(couponId);
+        return likeCoupon(organization, coupon);
     }
+
+    //    @Override
+//    @Transactional(readOnly = true)
+//    public CouponDetailResponse inquiryCouponDetail(Long couponId) {
+//        Coupon coupon = couponRepository.findById(couponId)
+//                .orElseThrow(() -> new CustomApiException(ErrorCode.COUPON_NOT_FOUND));
+//
+//        return couponMapper.toCouponDetailResponse(coupon);
+//    }
 
     @Override
     public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByLike(
@@ -136,6 +147,15 @@ public class CouponServiceImpl implements CouponService {
         return couponMapper.toCouponPagingResponse(
             couponList.map(couponMapper::toCouponSummaryInquiryResponse)
         );
+    }
+
+    @Override
+    public List<CouponSummaryInquiryResponse> inquiryCouponByStore(Long profileId) {
+        Store store = storeService.loadStore(profileId);
+
+        return store.getCoupons().stream()
+            .map(couponMapper::toCouponSummaryInquiryResponse)
+            .toList();
     }
 //
 //    @Override
@@ -160,14 +180,7 @@ public class CouponServiceImpl implements CouponService {
 //    }
 //
 //
-//    @Override
-//    @Transactional(readOnly = true)
-//    public CouponDetailResponse inquiryCouponDetail(Long couponId) {
-//        Coupon coupon = couponRepository.findById(couponId)
-//                .orElseThrow(() -> new CustomApiException(ErrorCode.COUPON_NOT_FOUND));
-//
-//        return couponMapper.toCouponDetailResponse(coupon);
-//    }
+
 
     private Coupon createAndSaveCoupon(Store store, CouponCreateRequest request) {
         Coupon coupon = couponMapper.toCoupon(store, request);
@@ -211,5 +224,15 @@ public class CouponServiceImpl implements CouponService {
             s3FileComponent.deleteFile(image.getUrl());
             couponImageRepository.delete(image);
         }
+    }
+
+    private Boolean likeCoupon(Organization organization, Coupon coupon) {
+        Optional<CouponLike> couponLikeOpt = couponLikeRepository.findByOrganizationAndCoupon(organization, coupon);
+        if (couponLikeOpt.isPresent()) {
+            return couponLikeOpt.get().changeLike();
+        }
+
+        couponLikeRepository.save(couponMapper.toCouponLike(coupon, organization));
+        return true;
     }
 }

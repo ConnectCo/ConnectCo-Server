@@ -17,14 +17,15 @@ public interface CouponService {
         Long profileId, Long couponId, List<MultipartFile> couponImages, CouponUpdateRequest request
     );
     CouponIdResponse deleteCoupon(Long profileId, Long couponId);
+    Boolean likeCoupon(Long profileId, Long couponId);
+    //    CouponDetailResponse inquiryCouponDetail(Long couponId);
+    CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByLike(Long profileId, int page, int size);
 
     List<CouponSummaryInquiryResponse> inquiryCouponByStore(Long profileId);
-    CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByLike(Long profileId, int page, int size);
 //    List<CouponSummaryInquiryResponse> inquiryCouponByRecent();
 //    List<CouponSummaryInquiryResponse> inquiryCouponByEachStore(Long storeId);
 //
 //    List<Coupon> inquiryCouponByStore(Store store);
 //
-//    CouponDetailResponse inquiryCouponDetail(Long couponId);
 
 }
