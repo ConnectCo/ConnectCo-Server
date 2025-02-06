@@ -1,20 +1,16 @@
 package com.connectCo.domain.store.mapper;
 
+import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
-import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
-import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
-import com.connectCo.domain.store.dto.response.StorePagingResponse;
-import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.entity.StoreImage;
 import com.connectCo.domain.store.entity.StoreLike;
 import com.connectCo.global.common.mapper.CommonMapper;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -71,19 +67,24 @@ public class StoreMapper {
 //                .build();
 //    }
 //
-//    public StoreDetailInquiryResponse toStoreDetailInquiryResponse(
-//            Store store, List<String> images, List<StoreDetailInquiryResponse.StoreCoupon> coupons) {
-//        return StoreDetailInquiryResponse.builder()
-//                .storeId(store.getId())
-//                .name(store.getName())
-//                .description(store.getDescription())
-//                .address(CommonMapper.toAddressResponse(store.getAddress()))
-//                .number(store.getStoreNumber())
-//                .operatingTime(store.getOperatingTime())
-//                .images(images)
-//                .coupons(coupons)
-//                .build();
-//    }
+    public StoreDetailInquiryResponse toStoreDetailInquiryResponse(
+            Store store, List<String> images, Boolean isLike,
+            Boolean isMine, List<StoreDetailInquiryResponse.StoreCoupon> coupons
+    ) {
+        return StoreDetailInquiryResponse.builder()
+                .storeId(store.getId())
+                .name(store.getName())
+                .description(store.getDescription())
+                .address(CommonMapper.toAddressResponse(store.getAddress()))
+                .phoneNumber(store.getPhoneNumber())
+                .operatingTime(store.getOperatingTime())
+                .images(images)
+                .coupons(coupons)
+                .appliedEventCount(store.getAppliedEventCount())
+                .isLike(isLike)
+                .isMine(isMine)
+                .build();
+    }
 //
 //    public StoreLocationInquiryResponse toStoreLocationInquiryResponse(Object[] storeWithDistance) {
 //        Store store = (Store) storeWithDistance[0];
@@ -100,11 +101,16 @@ public class StoreMapper {
 //                .build();
 //    }
 //
-//    public StoreDetailInquiryResponse.StoreCoupon toStoreCoupon(Coupon coupon) {
-//        return StoreDetailInquiryResponse.StoreCoupon.builder()
-//                .couponId(coupon.getId())
-//                .name(coupon.getName())
-//                .expiredAt(coupon.getExpiredAt())
-//                .build();
-//    }
+    public StoreDetailInquiryResponse.StoreCoupon toStoreCoupon(Coupon coupon) {
+        String couponThumbnail = (coupon.getImages() != null && !coupon.getImages().isEmpty())
+            ? coupon.getImages().get(0).getUrl()
+            : null;
+
+        return StoreDetailInquiryResponse.StoreCoupon.builder()
+            .couponId(coupon.getId())
+            .name(coupon.getName())
+            .expiredAt(coupon.getExpiredAt())
+            .couponThumbnail(couponThumbnail)
+            .build();
+    }
 }

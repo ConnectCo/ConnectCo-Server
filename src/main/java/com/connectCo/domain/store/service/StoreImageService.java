@@ -11,6 +11,7 @@ public interface StoreImageService {
     void deleteImages(Store store);
     void deleteExistingImages(List<StoreImage> imagesToRemove);
     String updateStoreImages(Store store, List<String> existingImageUrls, List<MultipartFile> newImages);
+    List<String> getStoreImageUrls(Store store);
 }
 
 

@@ -31,4 +31,11 @@ public class StoreLikeServiceImpl implements StoreLikeService {
         storeLikeRepository.save(storeMapper.toStoreLike(organization, store));
         return true;
     }
+
+    @Override
+    public Boolean isLikeStore(Long organizationId, Store store) {
+        return storeLikeRepository.findByOrganizationAndStore(organizationService.loadOrganization(organizationId), store)
+            .map(StoreLike::isActive)
+            .orElse(false);
+    }
 }

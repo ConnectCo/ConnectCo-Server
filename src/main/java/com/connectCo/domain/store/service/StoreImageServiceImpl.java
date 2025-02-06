@@ -83,4 +83,11 @@ public class StoreImageServiceImpl implements StoreImageService {
 
         return existingImagesToKeep.get(0).getUrl();
     }
+
+    @Override
+    public List<String> getStoreImageUrls(Store store) {
+        return storeImageRepository.findAllByStore(store).stream()
+                .map(StoreImage::getUrl)
+                .toList();
+    }
 }

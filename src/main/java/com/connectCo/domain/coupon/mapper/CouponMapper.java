@@ -63,12 +63,8 @@ public class CouponMapper {
                 .description(coupon.getDescription())
                 .priorityTarget(coupon.getPriorityTarget())
                 .notification(coupon.getNotification())
-                .couponType(coupon.getCouponType().toString())
                 .expiredAt(coupon.getExpiredAt())
                 .images(imageUrls)
-                .validCount(coupon.getValidCount())
-                .validPeriod(coupon.getValidPeriod())
-                .validDate(coupon.getValidDate())
                 .build();
     }
 }

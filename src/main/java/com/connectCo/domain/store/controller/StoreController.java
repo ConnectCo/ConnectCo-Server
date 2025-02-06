@@ -68,13 +68,17 @@ public class StoreController {
     ) {
         return BaseResponse.onSuccess(storeService.likeStore(principal.profileId(), storeId));
     }
-//
-//    @Operation(summary = "가게 상세조회 API")
-//    @GetMapping("/{storeId}")
-//    public BaseResponse<StoreDetailInquiryResponse> inquiryStoreDetail(
-//            @Parameter(description = "조회할 가게 id") @PathVariable Long storeId) {
-//        return BaseResponse.onSuccess(storeService.inquiryStoreDetail(storeId));
-//    }
+
+    @Operation(summary = "가게 상세조회 API")
+    @GetMapping("/{storeId}")
+    public BaseResponse<StoreDetailInquiryResponse> inquiryStoreDetail(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Parameter(description = "조회할 가게 id") @PathVariable Long storeId
+    ) {
+        return BaseResponse.onSuccess(
+            storeService.inquiryStoreDetail(principal.profileId(), principal.profileType(), storeId)
+        );
+    }
 //
 //
 //    @Operation(summary = "내 가게 조회 API")

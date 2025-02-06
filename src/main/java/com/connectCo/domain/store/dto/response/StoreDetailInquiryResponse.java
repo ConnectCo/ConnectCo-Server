@@ -1,6 +1,5 @@
 package com.connectCo.domain.store.dto.response;
 
-import com.connectCo.domain.address.entity.Address;
 import com.connectCo.global.common.dto.AddressResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -26,7 +25,7 @@ public class StoreDetailInquiryResponse {
     private AddressResponse address;
 
     @Schema(description = "가게 연락처", example = "123-456-7890")
-    private String number;
+    private String phoneNumber;
 
     @Schema(description = "가게 운영 시간", example = "09:00 - 18:00")
     private String operatingTime;
@@ -37,6 +36,15 @@ public class StoreDetailInquiryResponse {
     @Schema(description = "가게 쿠폰 목록(2개만)")
     private List<StoreCoupon> coupons;
 
+    @Schema(description = "신청 이벤트 개수")
+    private Integer appliedEventCount;
+
+    @Schema(description = "좋아요 여부")
+    Boolean isLike;
+
+    @Schema(description = "내 가게 여부")
+    Boolean isMine;
+
     @Getter
     @Builder
     public static class StoreCoupon {
@@ -46,7 +54,10 @@ public class StoreDetailInquiryResponse {
         @Schema(description = "쿠폰 이름", example = "할인 쿠폰")
         private String name;
 
-        @Schema(description = "쿠폰 만료 날짜", example = "2023-12-31")
+        @Schema(description = "쿠폰 썸네일 이미지")
+        private String couponThumbnail;
+
+        @Schema(description = "신청 마감일", example = "2023-12-31")
         private LocalDate expiredAt;
     }
 }

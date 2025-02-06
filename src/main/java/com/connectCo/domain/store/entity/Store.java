@@ -10,15 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicInsert;
 
 @Getter
 @Entity
 @SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@DynamicInsert
 public class Store extends Profile {
 
     private String description;
@@ -33,9 +36,12 @@ public class Store extends Profile {
     @JoinColumn
     private Address address;
 
-
     @OneToMany(mappedBy = "store")
     private List<Coupon> coupons = new ArrayList<>();
+
+    @Column(nullable = false)
+    @Builder.Default
+    private int appliedEventCount = 0;
 
     public void updateStoreInfo(StoreUpdateRequest request) {
         this.name = request.getName();

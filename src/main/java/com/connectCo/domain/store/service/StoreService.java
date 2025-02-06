@@ -2,6 +2,7 @@ package com.connectCo.domain.store.service;
 
 
 import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.request.StoreUpdateRequest;
 import com.connectCo.domain.store.dto.response.*;
@@ -20,7 +21,9 @@ public interface StoreService {
     );
     StoreIdResponse deleteStore(Member member, Long storeId);
     Boolean likeStore(Long organizationId, Long storeId);
-//    StoreDetailInquiryResponse inquiryStoreDetail(Long storeId);
+    StoreDetailInquiryResponse inquiryStoreDetail(
+        Long profileId, ProfileType profileType, Long storeId
+    );
 //    StorePagingResponse<StoreSummaryInquiryResponse> inquiryStoreByLike(int page, int size);
 //    StorePagingResponse<StoreSummaryInquiryResponse> inquiryStoreByMember(int page, int size);
 //    StorePagingResponse<StoreLocationInquiryResponse> inquiryStoreByLocation(double latitude, double longitude, int radius, int page, int size);

@@ -1,6 +1,8 @@
 package com.connectCo.domain.store.service;
 
 import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.entity.Profile;
+import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.member.service.AuthService;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.address.service.AddressService;
@@ -125,18 +127,29 @@ public class StoreServiceImpl implements StoreService {
         Store store = loadStore(storeId);
         return storeLikeService.likeStore(profileId, store);
     }
-//
-//    /*
-//     * 특정 가게 상세 조회
-//     */
-//    @Override
-//    public StoreDetailInquiryResponse inquiryStoreDetail(Long storeId) {
-//        Store store = loadStore(storeId);
-//
-//        return storeMapper.toStoreDetailInquiryResponse(store,
-//                store.getImages().stream().map(StoreImage::getUrl).toList(),
-//                store.getCoupons().stream().limit(2).map(storeMapper::toStoreCoupon).toList());
-//    }
+
+    /*
+     * 특정 가게 상세 조회
+     */
+    @Override
+    public StoreDetailInquiryResponse inquiryStoreDetail(
+        Long profileId, ProfileType profileType, Long storeId
+    ) {
+        // 본인 여부 확인
+        Boolean isMine = profileId.equals(storeId);
+        Store store = loadStore(storeId);
+
+        // 찜 여부 확인
+        Boolean isLiked = Boolean.FALSE;
+        if (profileType.equals(ProfileType.ORGANIZATION)) {
+            isLiked = storeLikeService.isLikeStore(profileId, store);
+        }
+
+        return storeMapper.toStoreDetailInquiryResponse(
+            store, storeImageService.getStoreImageUrls(store), isLiked, isMine,
+            store.getCoupons().stream().limit(2).map(storeMapper::toStoreCoupon).toList()
+        );
+    }
 //
 //    /*
 //     * 내가 찜한 가게 조회
