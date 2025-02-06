@@ -62,15 +62,6 @@ public class CouponController {
         return BaseResponse.onSuccess(couponService.deleteCoupon(principal.profileId(), couponId));
     }
 
-
-    @Operation(summary = "나의 쿠폰 조회 API", description = "가게 프로필만 조회 가능")
-    @GetMapping("/mine")
-    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByMember(
-        @AuthenticationPrincipal PrincipalDetails principal
-    ) {
-        return BaseResponse.onSuccess(couponService.inquiryCouponByStore(principal.profileId()));
-    }
-
     @Operation(summary = "쿠폰 찜하기 API", description = "조직 프로필만 가능")
     @PostMapping("/{couponId}/like")
     public BaseResponse<Boolean> likeCoupon(
@@ -108,17 +99,35 @@ public class CouponController {
     ) {
         return BaseResponse.onSuccess(couponService.inquiryCouponByLike(principal.profileId(), page, size));
     }
+
+    @Operation(summary = "나의 쿠폰 조회 API", description = "가게 프로필만 조회 가능")
+    @GetMapping("/mine")
+    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByMember(
+        @AuthenticationPrincipal PrincipalDetails principal
+    ) {
+        return BaseResponse.onSuccess(couponService.inquiryMyCoupon(principal.profileId()));
+    }
+
+    @Operation(summary = "특정 가게의 쿠폰 조회 API", description = "비로그인 시도 가능")
+    @Parameters(value = {
+        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping("/store/{storeId}")
+    public BaseResponse<CouponPagingResponse<CouponSummaryInquiryResponse>> inquiryCouponByStore(
+        @PathVariable Long storeId,
+        @RequestParam int page,
+        @RequestParam int size
+    ) {
+        return BaseResponse.onSuccess(couponService.inquiryCouponByStore(storeId, page, size));
+    }
 //
 //    @Operation(summary = "쿠폰 조회 API(최신순)")
 //    @GetMapping("/recent")
 //    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByRecent() {
 //        return BaseResponse.onSuccess(couponService.inquiryCouponByRecent());
 //    }
-//    @Operation(summary = "특정 가게의 쿠폰 조회 API")
-//    @GetMapping("/store/{storeId}")
-//    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByEachStore(@PathVariable Long storeId) {
-//        return BaseResponse.onSuccess(couponService.inquiryCouponByEachStore(storeId));
-//    }
+
 
     // TODO: 위치에 따른 쿠폰 조회 추가
 }

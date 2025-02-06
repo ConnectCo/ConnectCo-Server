@@ -10,7 +10,8 @@ public class SecurityConstant {
     // 비로그인 허용 API
     public static final String[] PUBLIC_URLS = {
         "/auth/login", "/auth/refresh",
-        "/stores/*/detail", "/coupons/*/detail",
+        "/stores/*/detail",
+        "/coupons/*/detail", "/coupons/store/*",
         "/v3/**", "/swagger-ui/**",
         "/test/**",
         "/ws/**"

@@ -24,12 +24,11 @@ public interface CouponService {
         Long profileId, ProfileType profileType, Long couponId
     );
     CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByLike(Long profileId, int page, int size);
+    List<CouponSummaryInquiryResponse> inquiryMyCoupon(Long profileId);
+    CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByStore(Long storeId, int page, int size);
 
-    List<CouponSummaryInquiryResponse> inquiryCouponByStore(Long profileId);
 //    List<CouponSummaryInquiryResponse> inquiryCouponByRecent();
-//    List<CouponSummaryInquiryResponse> inquiryCouponByEachStore(Long storeId);
 //
-//    List<Coupon> inquiryCouponByStore(Store store);
 //
 
 }

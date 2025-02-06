@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -154,13 +155,28 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<CouponSummaryInquiryResponse> inquiryCouponByStore(Long profileId) {
+    public List<CouponSummaryInquiryResponse> inquiryMyCoupon(Long profileId) {
         Store store = storeService.loadStore(profileId);
 
         return store.getCoupons().stream()
             .map(couponMapper::toCouponSummaryInquiryResponse)
             .toList();
     }
+
+    @Override
+    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByStore(
+        Long storeId, int page, int size
+    ) {
+        Store store = storeService.loadStore(storeId);
+
+        return couponMapper.toCouponPagingResponse(
+            inquiryCouponByStore(store, PageRequest.of(page, size))
+                .map(couponMapper::toCouponSummaryInquiryResponse)
+        );
+    }
+
+//
+//
 //
 //    @Override
 //    public List<CouponSummaryInquiryResponse> inquiryCouponByRecent() {
@@ -171,20 +187,6 @@ public class CouponServiceImpl implements CouponService {
 //                .map(couponMapper::toCouponSummaryInquiryResponse)
 //                .toList();
 //    }
-//
-//    @Override
-//    public List<CouponSummaryInquiryResponse> inquiryCouponByEachStore(Long storeId) {
-//        Store store=storeService.loadStore(storeId);
-//        return inquiryCouponByStore(store).stream()
-//                .map(couponMapper::toCouponSummaryInquiryResponse)
-//                .toList();
-//    }
-//    public List<Coupon> inquiryCouponByStore(Store store) {
-//        return couponRepository.findAllByStore(store);
-//    }
-//
-//
-
 
     private Coupon createAndSaveCoupon(Store store, CouponCreateRequest request) {
         Coupon coupon = couponMapper.toCoupon(store, request);
@@ -244,5 +246,9 @@ public class CouponServiceImpl implements CouponService {
         return couponLikeRepository.findByOrganizationAndCoupon(organization, coupon)
             .map(CouponLike::getIsActive)
             .orElse(false);
+    }
+
+    private Page<Coupon> inquiryCouponByStore(Store store, Pageable pageable) {
+        return couponRepository.findAllByStore(store, pageable);
     }
 }
