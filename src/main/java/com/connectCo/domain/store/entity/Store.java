@@ -51,7 +51,11 @@ public class Store extends Profile {
         this.operatingTime = request.getOperatingTime();
     }
 
-    public void updateCoupon(List<Coupon> coupons) {
-        this.coupons = coupons;
+    public void addCoupon(Coupon coupon) {
+        this.coupons.add(coupon);
+    }
+
+    public void removeCoupon(Coupon coupon) {
+        this.coupons.remove(coupon);
     }
 }

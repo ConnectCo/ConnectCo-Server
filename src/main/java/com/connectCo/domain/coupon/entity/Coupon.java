@@ -2,6 +2,7 @@ package com.connectCo.domain.coupon.entity;
 
 
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
+import com.connectCo.domain.coupon.dto.request.CouponUpdateRequest;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -49,19 +50,11 @@ public class Coupon extends BaseEntity {
     private List<CouponImage> images = new ArrayList<>();
 
     public void changeImages(List<CouponImage> couponImages) {
-        // 기존 이미지가 있다면 삭제
-        if (this.images != null) removeImages();
-
         // 새로운 이미지로 변경
         this.images = couponImages;
     }
 
-    private void removeImages() {
-        this.images.forEach(BaseEntity::delete);
-        this.images.clear();
-    }
-
-    public void updateDetails(CouponCreateRequest request) {
+    public void updateDetails(CouponUpdateRequest request) {
         this.name = request.getName();
         this.description = request.getDescription();
         this.priorityTarget = request.getPriorityTarget();

@@ -112,7 +112,7 @@ public class StoreMapper {
         return StoreDetailInquiryResponse.StoreCoupon.builder()
             .couponId(coupon.getId())
             .name(coupon.getName())
-            .expiredAt(coupon.getExpiredAt())
+            .expiredAt(coupon.getExpiredAt().toLocalDate())
             .couponThumbnail(couponThumbnail)
             .build();
     }

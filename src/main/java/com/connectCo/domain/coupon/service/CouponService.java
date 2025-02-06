@@ -1,6 +1,7 @@
 package com.connectCo.domain.coupon.service;
 
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
+import com.connectCo.domain.coupon.dto.request.CouponUpdateRequest;
 import com.connectCo.domain.coupon.dto.response.CouponDetailResponse;
 import com.connectCo.domain.coupon.dto.response.CouponIdResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
@@ -15,11 +16,11 @@ public interface CouponService {
     CouponIdResponse createCoupon(
         Long profileId, List<MultipartFile> couponImages, CouponCreateRequest request
     );
-//
-//
+    CouponIdResponse updateCoupon(
+        Long profileId, Long couponId, List<MultipartFile> couponImages, CouponUpdateRequest request
+    );
 //    CouponIdResponse deleteCoupon(Long couponId);
 //
-//    CouponIdResponse updateCoupon(Long couponId, @Nullable List<MultipartFile> couponImages, CouponCreateRequest request);
 //
 //
 //

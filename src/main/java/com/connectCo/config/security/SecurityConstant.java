@@ -25,7 +25,7 @@ public class SecurityConstant {
 
     // 가게 프로필 전용 API
     public static final String[] STORE_URLS = {
-        "/coupons/mine"
+        "coupons", "coupons/*", "/coupons/mine"
     };
 
     // 조직 프로필 전용 API

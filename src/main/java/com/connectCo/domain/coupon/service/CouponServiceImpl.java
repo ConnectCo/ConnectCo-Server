@@ -1,5 +1,6 @@
 package com.connectCo.domain.coupon.service;
 
+import com.connectCo.domain.coupon.dto.request.CouponUpdateRequest;
 import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.member.service.AuthService;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
@@ -17,8 +18,10 @@ import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
+import com.connectCo.global.validation.ParamValidator;
 import com.connectCo.utils.S3FileComponent;
 import jakarta.annotation.Nullable;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -50,6 +53,7 @@ public class CouponServiceImpl implements CouponService {
         Store store = storeService.loadStore(profileId);
 
         Coupon newCoupon = createAndSaveCoupon(store, request);
+        store.addCoupon(newCoupon);
         if (couponImages != null) {
             List<CouponImage> newCouponImages = createAndSaveCouponImages(newCoupon, couponImages);
             newCoupon.changeImages(newCouponImages);
@@ -57,6 +61,31 @@ public class CouponServiceImpl implements CouponService {
 
         return new CouponIdResponse(newCoupon.getId());
     }
+
+    /*
+
+     */
+    @Override
+    @Transactional
+    public CouponIdResponse updateCoupon(
+        Long profileId, Long couponId, List<MultipartFile> couponImages, CouponUpdateRequest request
+    ) {
+        Store store = storeService.loadStore(profileId);
+        // 수정 권한 유효성 검사(가게 주인만 수정 가능)
+        Coupon coupon = couponRepository.getCoupon(couponId);
+        ParamValidator.validModify(coupon.getStore().getId(), store.getId());
+
+        // 쿠폰의 정보를 업데이트
+        coupon.updateDetails(request);
+
+        // 이미지 업데이트
+        if (couponImages != null && !couponImages.isEmpty()) {
+            updateCouponImages(coupon, request.getExistingImages(), couponImages);
+        }
+
+        return new CouponIdResponse(coupon.getId());
+    }
+
 //
 //
 //    @Override
@@ -75,40 +104,7 @@ public class CouponServiceImpl implements CouponService {
 //    }
 //
 //
-//
-//    @Override
-//    @Transactional
-//    public CouponIdResponse updateCoupon(Long couponId, @Nullable List<MultipartFile> couponImages, CouponCreateRequest request) {
-//        Member member = authService.getLoginMember();
-//
-//        // 쿠폰을 찾아서 권한 확인
-//        Coupon coupon = couponRepository.findById(couponId).orElseThrow(() -> new CustomApiException(ErrorCode.COUPON_NOT_FOUND));
-//        if (!coupon.getStore().getMember().equals(member)) {
-//            throw new CustomApiException(ErrorCode.INVALID_PERMISSION);
-//        }
-//
-//        // 쿠폰의 정보를 업데이트
-//        coupon.updateDetails(request);
-//
-//        // 새로운 이미지가 제공되었을 경우
-//        if (couponImages != null && !couponImages.isEmpty()) {
-//            // 기존 이미지 삭제
-//            List<CouponImage> existingImages = couponImageRepository.findAllByCoupon(coupon);
-//            for (CouponImage image : existingImages) {
-//                couponImageRepository.delete(image);
-//                s3FileComponent.deleteFile(image.getUrl());
-//            }
-//
-//            // 새로운 이미지 업로드 및 저장
-//            List<CouponImage> newCouponImages = createAndSaveCouponImages(coupon, couponImages);
-//            coupon.changeImages(newCouponImages);
-//        }
-//
-//        // 쿠폰 저장
-//        couponRepository.save(coupon);
-//
-//        return new CouponIdResponse(coupon.getId());
-//    }
+
 
     @Override
     public List<CouponSummaryInquiryResponse> inquiryCouponByMember(Long profileId) {
@@ -174,5 +170,36 @@ public class CouponServiceImpl implements CouponService {
                 .map(couponUrl -> couponMapper.toCouponImage(newCoupon, couponUrl))
                 .map(couponImageRepository::save)
                 .toList();
+    }
+
+    private void updateCouponImages(Coupon coupon, List<String> existingImageUrls, List<MultipartFile> newImages) {
+        // 기존 이미지를 유지하거나 삭제
+        List<CouponImage> existingImages = couponImageRepository.findAllByCoupon(coupon);
+        List<CouponImage> existingImagesToKeep = existingImages.stream()
+                .filter(image -> existingImageUrls.contains(image.getUrl()))
+                .collect(Collectors.toList());
+
+        List<CouponImage> imagesToRemove = existingImages.stream()
+                .filter(image -> !existingImageUrls.contains(image.getUrl()))
+                .toList();
+
+        // 새로운 이미지 추가
+        List<CouponImage> newCouponImages = (newImages != null)
+                ? createAndSaveCouponImages(coupon, newImages) : List.of();
+
+        // 기존 이미지와 새로운 이미지를 합침
+        existingImagesToKeep.addAll(newCouponImages);
+
+        // 삭제할 기존 이미지 삭제
+        deleteCouponImages(imagesToRemove);
+
+        coupon.changeImages(existingImagesToKeep);
+    }
+
+    private void deleteCouponImages(List<CouponImage> imagesToRemove) {
+        for (CouponImage image : imagesToRemove) {
+            s3FileComponent.deleteFile(image.getUrl());
+            couponImageRepository.delete(image);
+        }
     }
 }
