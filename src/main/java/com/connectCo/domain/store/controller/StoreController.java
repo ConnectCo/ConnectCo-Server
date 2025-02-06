@@ -93,22 +93,4 @@ public class StoreController {
             storeService.inquiryStoresByLike(principal.profileId(), page, size)
         );
     }
-//
-//    @Operation(summary = "내 주변 가게 조회 API")
-//    @Parameters(value = {
-//            @Parameter(name = "latitude", description = "현재 유저 위도 위치입니다. (-90 ~ 90)"),
-//            @Parameter(name = "longitude", description = "현재 유저의 경도 위치입니다. (-180 ~ 180)"),
-//            @Parameter(name = "radius", description = "조회할 위치 반경입니다. (0보다 큰 정수)"),
-//            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
-//            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
-//    })
-//    @GetMapping("/location")
-//    public BaseResponse<StorePagingResponse<StoreLocationInquiryResponse>> inquiryStoreByLocation(
-//            @RequestParam(value = "latitude") double latitude,
-//            @RequestParam(value = "longitude") double longitude,
-//            @RequestParam(value = "radius") int radius,
-//            @RequestParam(name = "page") int page,
-//            @RequestParam(name = "size") int size) {
-//        return BaseResponse.onSuccess(storeService.inquiryStoreByLocation(latitude, longitude, radius, page, size));
-//    }
 }

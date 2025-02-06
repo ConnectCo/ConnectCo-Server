@@ -15,15 +15,4 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     boolean existsByName(String name);
     boolean existsStoreByName(String name);
     long countByMember(Member member);
-
-//    @Query(value = "SELECT s.*, " +
-//            "ST_Distance_Sphere(POINT(:longitude, :latitude), a.location) / 1000 AS distance " +
-//            "FROM Store s " +
-//            "JOIN Address a ON s.address.id = a.id " +
-//            "WHERE ST_DWithin(a.location, POINT(:longitude, :latitude), :radius * 1000) " +
-//            "ORDER BY distance", nativeQuery = true)
-//    Page<Object[]> findStoresByLocationWithDistance(@Param("latitude") double latitude,
-//                                                    @Param("longitude") double longitude,
-//                                                    @Param("radius") double radius,
-//                                                    Pageable pageable);
 }

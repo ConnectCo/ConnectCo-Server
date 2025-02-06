@@ -6,6 +6,7 @@ import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.request.StoreUpdateRequest;
 import com.connectCo.domain.store.dto.response.*;
+import com.connectCo.domain.store.entity.Store;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -24,9 +25,5 @@ public interface StoreService {
         Long profileId, ProfileType profileType, Long storeId
     );
     StorePagingResponse<StoreSummaryInquiryResponse> inquiryStoresByLike(Long profileId, int page, int size);
-//    StorePagingResponse<StoreLocationInquiryResponse> inquiryStoreByLocation(double latitude, double longitude, int radius, int page, int size);
-//    List<Store> getStoresByMember(Member member);
-//    Store loadStore(Long storeId);
-
-    
+    Store loadStore(Long storeId);
 }

@@ -37,6 +37,7 @@ public class Store extends Profile {
     private Address address;
 
     @OneToMany(mappedBy = "store")
+    @Builder.Default
     private List<Coupon> coupons = new ArrayList<>();
 
     @Column(nullable = false)

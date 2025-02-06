@@ -7,6 +7,7 @@ import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
+import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
 import com.connectCo.domain.store.dto.response.StorePagingResponse;
 import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.entity.Store;
@@ -87,22 +88,22 @@ public class StoreMapper {
                 .isMine(isMine)
                 .build();
     }
-//
-//    public StoreLocationInquiryResponse toStoreLocationInquiryResponse(Object[] storeWithDistance) {
-//        Store store = (Store) storeWithDistance[0];
-//        double distance = (double) storeWithDistance[1];
-//        return StoreLocationInquiryResponse.builder()
-//                .storeId(store.getId())
-//                .name(store.getName())
-//                .description(store.getDescription())
-//                .thumbnail(store.getThumbnail())
-//                .latitude(store.getAddress().getLatitude())
-//                .longitude(store.getAddress().getLongitude())
-//                .couponCount(store.getCouponCount())
-//                .distance(distance)
-//                .build();
-//    }
-//
+
+    public StoreLocationInquiryResponse toStoreLocationInquiryResponse(Object[] storeWithDistance) {
+        Store store = (Store) storeWithDistance[0];
+        double distance = (double) storeWithDistance[1];
+        return StoreLocationInquiryResponse.builder()
+                .storeId(store.getId())
+                .name(store.getName())
+                .description(store.getDescription())
+                .thumbnail(store.getProfileImage())
+                .latitude(store.getAddress().getLatitude())
+                .longitude(store.getAddress().getLongitude())
+                .couponCount(store.getCoupons().size())
+                .distance(distance)
+                .build();
+    }
+
     public StoreDetailInquiryResponse.StoreCoupon toStoreCoupon(Coupon coupon) {
         String couponThumbnail = (coupon.getImages() != null && !coupon.getImages().isEmpty())
             ? coupon.getImages().get(0).getUrl()

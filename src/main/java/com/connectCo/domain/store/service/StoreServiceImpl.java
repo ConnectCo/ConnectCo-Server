@@ -164,24 +164,7 @@ public class StoreServiceImpl implements StoreService {
             storePage.map(storeMapper::toStoreSummaryInquiryResponse)
         );
     }
-//
-//    /*
-//     * 내 주변 가게 목록 조회
-//     */
-//    @Override
-//    public StorePagingResponse<StoreLocationInquiryResponse> inquiryStoreByLocation(
-//            double latitude, double longitude, int radius, int page, int size) {
-//        // 위도, 경도, 반경 값 유효성 검사
-//        ParamValidator.validLocation(latitude, longitude);
-//        ParamValidator.validRadius(radius);
-//
-//        Pageable pageable = PageRequest.of(page, size);
-//
-//        Page<Object[]> storePage = storeRepository.findStoresByLocationWithDistance(latitude, longitude, radius, pageable);
-//        Page<StoreLocationInquiryResponse> mappedPage = storePage.map(storeMapper::toStoreLocationInquiryResponse);
-//        return storeMapper.toStorePagingResponse(mappedPage);
-//    }
-//
+
     private Store createAndSaveStore(Member member, StoreCreateRequest request, Address address) {
         Store store = storeMapper.toStore(member, request, address);
         return storeRepository.save(store);
