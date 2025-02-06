@@ -3,6 +3,7 @@ package com.connectCo.domain.coupon.controller;
 import com.connectCo.config.security.auth.PrincipalDetails;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.request.CouponUpdateRequest;
+import com.connectCo.domain.coupon.dto.response.CouponDetailInquiryResponse;
 import com.connectCo.domain.coupon.dto.response.CouponIdResponse;
 import com.connectCo.domain.coupon.dto.response.CouponPagingResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
@@ -79,13 +80,20 @@ public class CouponController {
         return BaseResponse.onSuccess(couponService.likeCoupon(principal.profileId(), couponId));
     }
 
-    //
-//    @Operation(summary = "쿠폰 상세 조회 API")
-//    @GetMapping("/{couponId}/detail")
-//    public BaseResponse<CouponDetailResponse> inquiryCouponDetail(@PathVariable Long couponId) {
-//        return BaseResponse.onSuccess(couponService.inquiryCouponDetail(couponId));
-//    }
-//
+
+    @Operation(summary = "쿠폰 상세 조회 API", description = "비로그인 시도 가능")
+    @GetMapping("/{couponId}/detail")
+    public BaseResponse<CouponDetailInquiryResponse> inquiryCouponDetail(
+        @AuthenticationPrincipal PrincipalDetails principal,
+        @Parameter(description = "조회할 쿠폰 id") @PathVariable Long couponId
+    ) {
+        if (principal == null) {
+            return BaseResponse.onSuccess(couponService.inquiryCouponDetail(null, null, couponId));
+        }
+        return BaseResponse.onSuccess(couponService.inquiryCouponDetail(
+            principal.profileId(), principal.profileType(), couponId)
+        );
+    }
 
     @Operation(summary = "내가 찜한 쿠폰 조회 API", description = "조직 프로필만 가능")
     @Parameters(value = {

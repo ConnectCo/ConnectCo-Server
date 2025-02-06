@@ -2,9 +2,11 @@ package com.connectCo.domain.coupon.service;
 
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.request.CouponUpdateRequest;
+import com.connectCo.domain.coupon.dto.response.CouponDetailInquiryResponse;
 import com.connectCo.domain.coupon.dto.response.CouponIdResponse;
 import com.connectCo.domain.coupon.dto.response.CouponPagingResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
+import com.connectCo.domain.member.entity.ProfileType;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -18,7 +20,9 @@ public interface CouponService {
     );
     CouponIdResponse deleteCoupon(Long profileId, Long couponId);
     Boolean likeCoupon(Long profileId, Long couponId);
-    //    CouponDetailResponse inquiryCouponDetail(Long couponId);
+    CouponDetailInquiryResponse inquiryCouponDetail(
+        Long profileId, ProfileType profileType, Long couponId
+    );
     CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByLike(Long profileId, int page, int size);
 
     List<CouponSummaryInquiryResponse> inquiryCouponByStore(Long profileId);

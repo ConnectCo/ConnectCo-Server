@@ -1,11 +1,9 @@
 package com.connectCo.domain.coupon.service;
 
 import com.connectCo.domain.coupon.dto.request.CouponUpdateRequest;
+import com.connectCo.domain.coupon.dto.response.CouponDetailInquiryResponse;
 import com.connectCo.domain.coupon.dto.response.CouponPagingResponse;
-import com.connectCo.domain.member.entity.Member;
-import com.connectCo.domain.member.service.AuthService;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
-import com.connectCo.domain.coupon.dto.response.CouponDetailResponse;
 import com.connectCo.domain.coupon.dto.response.CouponIdResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.entity.Coupon;
@@ -15,22 +13,19 @@ import com.connectCo.domain.coupon.mapper.CouponMapper;
 import com.connectCo.domain.coupon.repository.CouponImageRepository;
 import com.connectCo.domain.coupon.repository.CouponLikeRepository;
 import com.connectCo.domain.coupon.repository.CouponRepository;
+import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.repository.StoreLikeRepository;
 import com.connectCo.domain.store.service.StoreService;
-import com.connectCo.global.exception.CustomApiException;
-import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.global.validation.ParamValidator;
 import com.connectCo.utils.S3FileComponent;
-import jakarta.annotation.Nullable;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,7 +44,6 @@ public class CouponServiceImpl implements CouponService {
     private final StoreService storeService;
     private final OrganizationService organizationService;
     private final S3FileComponent s3FileComponent;
-    private final StoreLikeRepository storeLikeRepository;
 
     /*
      * 새로운 쿠폰을 등록하는 서비스 함수
@@ -125,14 +119,24 @@ public class CouponServiceImpl implements CouponService {
         return likeCoupon(organization, coupon);
     }
 
-    //    @Override
-//    @Transactional(readOnly = true)
-//    public CouponDetailResponse inquiryCouponDetail(Long couponId) {
-//        Coupon coupon = couponRepository.findById(couponId)
-//                .orElseThrow(() -> new CustomApiException(ErrorCode.COUPON_NOT_FOUND));
-//
-//        return couponMapper.toCouponDetailResponse(coupon);
-//    }
+    @Override
+    @Transactional(readOnly = true)
+    public CouponDetailInquiryResponse inquiryCouponDetail(
+        Long profileId, ProfileType profileType, Long couponId
+    ) {
+        Coupon coupon = couponRepository.getCoupon(couponId);
+
+        // 본인 여부 확인
+        Boolean isMine = coupon.getStore().getId().equals(profileId);
+
+        // 찜 여부 확인
+        Boolean isLiked = Boolean.FALSE;
+        if (profileId != null && profileType != null && profileType.equals(ProfileType.ORGANIZATION)) {
+            isLiked = isLikeCoupon(organizationService.loadOrganization(profileId), coupon);
+        }
+
+        return couponMapper.toCouponDetailResponse(coupon, isLiked, isMine);
+    }
 
     @Override
     public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByLike(
@@ -234,5 +238,11 @@ public class CouponServiceImpl implements CouponService {
 
         couponLikeRepository.save(couponMapper.toCouponLike(coupon, organization));
         return true;
+    }
+
+    private Boolean isLikeCoupon(Organization organization, Coupon coupon) {
+        return couponLikeRepository.findByOrganizationAndCoupon(organization, coupon)
+            .map(CouponLike::getIsActive)
+            .orElse(false);
     }
 }
