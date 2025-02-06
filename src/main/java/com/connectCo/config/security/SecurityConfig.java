@@ -1,5 +1,6 @@
 package com.connectCo.config.security;
 
+import com.connectCo.config.security.jwt.CustomAccessDeniedHandler;
 import com.connectCo.config.security.jwt.JwtAuthorizationFilter;
 import com.connectCo.config.security.jwt.JwtTokenProvider;
 import com.connectCo.domain.member.repository.MemberRepository;
@@ -23,6 +24,7 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -41,6 +43,9 @@ public class SecurityConfig {
                 .requestMatchers(SecurityConstant.ADMIN_URLS).hasRole("ADMIN") // 관리자 권한
                 .anyRequest().authenticated() // 기타 모든 요청은 인증 필요
             )
+            .exceptionHandling(exception -> exception
+                .accessDeniedHandler(customAccessDeniedHandler)           // 인가 실패 처리
+            )
             .addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -55,6 +60,5 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class).build();
     }
-
 }
 
