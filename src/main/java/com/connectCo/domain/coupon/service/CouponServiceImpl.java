@@ -140,7 +140,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByLike(
+    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponsByLike(
         Long profileId, int page, int size
     ) {
         Organization organization = organizationService.loadOrganization(profileId);
@@ -155,7 +155,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<CouponSummaryInquiryResponse> inquiryMyCoupon(Long profileId) {
+    public List<CouponSummaryInquiryResponse> inquiryMyCoupons(Long profileId) {
         Store store = storeService.loadStore(profileId);
 
         return store.getCoupons().stream()
@@ -164,7 +164,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByStore(
+    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponsByStore(
         Long storeId, int page, int size
     ) {
         Store store = storeService.loadStore(storeId);
@@ -175,18 +175,14 @@ public class CouponServiceImpl implements CouponService {
         );
     }
 
-//
-//
-//
-//    @Override
-//    public List<CouponSummaryInquiryResponse> inquiryCouponByRecent() {
-//        Pageable pageable= PageRequest.of(0,10);
-//        List<Coupon> couponList=couponRepository.findAllByOrderByCreatedAtDesc(pageable).getContent();
-//
-//        return couponList.stream()
-//                .map(couponMapper::toCouponSummaryInquiryResponse)
-//                .toList();
-//    }
+    @Override
+    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponsByRecent(int page, int size) {
+        Page<Coupon> couponList = couponRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(page, size));
+
+        return couponMapper.toCouponPagingResponse(
+            couponList.map(couponMapper::toCouponSummaryInquiryResponse)
+        );
+    }
 
     private Coupon createAndSaveCoupon(Store store, CouponCreateRequest request) {
         Coupon coupon = couponMapper.toCoupon(store, request);

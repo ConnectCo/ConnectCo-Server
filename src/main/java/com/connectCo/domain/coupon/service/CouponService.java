@@ -23,12 +23,8 @@ public interface CouponService {
     CouponDetailInquiryResponse inquiryCouponDetail(
         Long profileId, ProfileType profileType, Long couponId
     );
-    CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByLike(Long profileId, int page, int size);
-    List<CouponSummaryInquiryResponse> inquiryMyCoupon(Long profileId);
-    CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByStore(Long storeId, int page, int size);
-
-//    List<CouponSummaryInquiryResponse> inquiryCouponByRecent();
-//
-//
-
+    CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponsByLike(Long profileId, int page, int size);
+    List<CouponSummaryInquiryResponse> inquiryMyCoupons(Long profileId);
+    CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponsByStore(Long storeId, int page, int size);
+    CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponsByRecent(int page, int size);
 }

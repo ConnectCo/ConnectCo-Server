@@ -97,7 +97,7 @@ public class CouponController {
         @RequestParam int page,
         @RequestParam int size
     ) {
-        return BaseResponse.onSuccess(couponService.inquiryCouponByLike(principal.profileId(), page, size));
+        return BaseResponse.onSuccess(couponService.inquiryCouponsByLike(principal.profileId(), page, size));
     }
 
     @Operation(summary = "나의 쿠폰 조회 API", description = "가게 프로필만 조회 가능")
@@ -105,7 +105,7 @@ public class CouponController {
     public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByMember(
         @AuthenticationPrincipal PrincipalDetails principal
     ) {
-        return BaseResponse.onSuccess(couponService.inquiryMyCoupon(principal.profileId()));
+        return BaseResponse.onSuccess(couponService.inquiryMyCoupons(principal.profileId()));
     }
 
     @Operation(summary = "특정 가게의 쿠폰 조회 API", description = "비로그인 시도 가능")
@@ -119,15 +119,55 @@ public class CouponController {
         @RequestParam int page,
         @RequestParam int size
     ) {
-        return BaseResponse.onSuccess(couponService.inquiryCouponByStore(storeId, page, size));
+        return BaseResponse.onSuccess(couponService.inquiryCouponsByStore(storeId, page, size));
     }
-//
-//    @Operation(summary = "쿠폰 조회 API(최신순)")
-//    @GetMapping("/recent")
-//    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByRecent() {
-//        return BaseResponse.onSuccess(couponService.inquiryCouponByRecent());
-//    }
+
+    @Operation(summary = "쿠폰 목록 조회 API(생성순)", description = "비로그인 시도 가능")
+    @GetMapping("/recent")
+    @Parameters(value = {
+        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    public BaseResponse<CouponPagingResponse<CouponSummaryInquiryResponse>> inquiryCouponByRecent(
+        @RequestParam int page,
+        @RequestParam int size
+    ) {
+        return BaseResponse.onSuccess(couponService.inquiryCouponsByRecent(page, size));
+    }
 
 
     // TODO: 위치에 따른 쿠폰 조회 추가
+    @Operation(summary = "쿠폰 목록 조회 API(거리순)", description = "비로그인 시도 가능(비로그인 시 현재 위치 기준)")
+    @GetMapping("/distance")
+    @Parameters(value = {
+        @Parameter(name = "latitude", description = "위도, 비로그인 시만 사용"),
+        @Parameter(name = "longitude", description = "경도, 비로그인 시만 사용"),
+        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    public BaseResponse<CouponPagingResponse<CouponSummaryInquiryResponse>> inquiryCouponByDistance(
+        @AuthenticationPrincipal PrincipalDetails principal,
+        @RequestParam(required = false) double latitude,
+        @RequestParam(required = false) double longitude,
+        @RequestParam int page,
+        @RequestParam int size
+    ) {
+        return BaseResponse.onSuccess(null);
+    }
+
+    // TODO: 신청마감일 임박한 쿠폰 조회 추가
+    @Operation(summary = "쿠폰 목록 조회 API(신청마감일 임박순)", description = "비로그인 시도 가능")
+    @GetMapping("/deadline")
+    @Parameters(value = {
+        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    public BaseResponse<CouponPagingResponse<CouponSummaryInquiryResponse>> inquiryCouponByDeadline(
+        @RequestParam int page,
+        @RequestParam int size
+    ) {
+        return BaseResponse.onSuccess(null);
+    }
+
+    // TODO: 쿠폰 추천 조회 추가
 }

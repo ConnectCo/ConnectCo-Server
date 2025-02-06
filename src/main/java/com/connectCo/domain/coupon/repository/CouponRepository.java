@@ -16,10 +16,7 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
         return findById(couponId)
             .orElseThrow(() -> new CustomApiException(ErrorCode.COUPON_NOT_FOUND));
     }
-
-    List<Coupon> findAllByStore(Store store);
     Page<Coupon> findAllByStore(Store store, Pageable pageable);
-
     Page<Coupon> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
 }
