@@ -30,8 +30,8 @@ public class SecurityConstant {
 
     // 조직 프로필 전용 API
     public static final String[] ORGANIZATION_URLS = {
-        "/stores/*/like",
-        "/stores/like"
+        "/stores/*/like", "/stores/like",
+        "/coupons/*/like", "/coupons/like"
     };
 
     // 관리자 전용 API

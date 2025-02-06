@@ -3,15 +3,14 @@ package com.connectCo.domain.coupon.controller;
 import com.connectCo.config.security.auth.PrincipalDetails;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.request.CouponUpdateRequest;
-import com.connectCo.domain.coupon.dto.response.CouponDetailResponse;
 import com.connectCo.domain.coupon.dto.response.CouponIdResponse;
+import com.connectCo.domain.coupon.dto.response.CouponPagingResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.service.CouponService;
-import com.connectCo.domain.store.entity.Store;
-import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -68,14 +67,32 @@ public class CouponController {
     public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByMember(
         @AuthenticationPrincipal PrincipalDetails principal
     ) {
-        return BaseResponse.onSuccess(couponService.inquiryCouponByMember(principal.profileId()));
+        return BaseResponse.onSuccess(couponService.inquiryCouponByStore(principal.profileId()));
     }
-//
-//    @Operation(summary = "내가 찜한 쿠폰 조회 API")
-//    @GetMapping("/like")
-//    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByLike() {
-//        return BaseResponse.onSuccess(couponService.inquiryCouponByLike());
+
+    // TODO: 특정 쿠폰 찜하기 추가
+
+    //
+//    @Operation(summary = "쿠폰 상세 조회 API")
+//    @GetMapping("/{couponId}/detail")
+//    public BaseResponse<CouponDetailResponse> inquiryCouponDetail(@PathVariable Long couponId) {
+//        return BaseResponse.onSuccess(couponService.inquiryCouponDetail(couponId));
 //    }
+//
+
+    @Operation(summary = "내가 찜한 쿠폰 조회 API", description = "조직 프로필만 가능")
+    @Parameters(value = {
+        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping("/like")
+    public BaseResponse<CouponPagingResponse<CouponSummaryInquiryResponse>> inquiryCouponByLike(
+        @AuthenticationPrincipal PrincipalDetails principal,
+        @RequestParam int page,
+        @RequestParam int size
+    ) {
+        return BaseResponse.onSuccess(couponService.inquiryCouponByLike(principal.profileId(), page, size));
+    }
 //
 //    @Operation(summary = "쿠폰 조회 API(최신순)")
 //    @GetMapping("/recent")
@@ -87,13 +104,6 @@ public class CouponController {
 //    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByEachStore(@PathVariable Long storeId) {
 //        return BaseResponse.onSuccess(couponService.inquiryCouponByEachStore(storeId));
 //    }
-//
-//    @Operation(summary = "쿠폰 상세 조회 API")
-//    @GetMapping("/{couponId}/detail")
-//    public BaseResponse<CouponDetailResponse> inquiryCouponDetail(@PathVariable Long couponId) {
-//        return BaseResponse.onSuccess(couponService.inquiryCouponDetail(couponId));
-//    }
-//
 
-
+    // TODO: 위치에 따른 쿠폰 조회 추가
 }

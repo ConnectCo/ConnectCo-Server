@@ -1,6 +1,7 @@
 package com.connectCo.domain.coupon.service;
 
 import com.connectCo.domain.coupon.dto.request.CouponUpdateRequest;
+import com.connectCo.domain.coupon.dto.response.CouponPagingResponse;
 import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.member.service.AuthService;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
@@ -14,6 +15,8 @@ import com.connectCo.domain.coupon.mapper.CouponMapper;
 import com.connectCo.domain.coupon.repository.CouponImageRepository;
 import com.connectCo.domain.coupon.repository.CouponLikeRepository;
 import com.connectCo.domain.coupon.repository.CouponRepository;
+import com.connectCo.domain.organization.entity.Organization;
+import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.exception.CustomApiException;
@@ -23,6 +26,7 @@ import com.connectCo.utils.S3FileComponent;
 import jakarta.annotation.Nullable;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,12 +39,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CouponServiceImpl implements CouponService {
 
-    private final StoreService storeService;
     private final CouponRepository couponRepository;
-//    private final CouponLikeRepository couponLikeRepository;
+    private final CouponLikeRepository couponLikeRepository;
     private final CouponMapper couponMapper;
-    private final S3FileComponent s3FileComponent;
     private final CouponImageRepository couponImageRepository;
+
+    private final StoreService storeService;
+    private final OrganizationService organizationService;
+    private final S3FileComponent s3FileComponent;
 
     /*
      * 새로운 쿠폰을 등록하는 서비스 함수
@@ -109,26 +115,28 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<CouponSummaryInquiryResponse> inquiryCouponByMember(Long profileId) {
+    public List<CouponSummaryInquiryResponse> inquiryCouponByStore(Long profileId) {
         Store store = storeService.loadStore(profileId);
 
         return store.getCoupons().stream()
             .map(couponMapper::toCouponSummaryInquiryResponse)
             .toList();
     }
-//
-//    @Override
-//    public List<CouponSummaryInquiryResponse> inquiryCouponByLike() {
-//        Member member = authService.getLoginMember();
-//
-//        List<Coupon> couponList = couponLikeRepository.findAllByMemberAndIsChecked(member, true).stream()
-//                .map(CouponLike::getCoupon)
-//                .toList();
-//
-//        return couponList.stream()
-//                .map(couponMapper::toCouponSummaryInquiryResponse)
-//                .toList();
-//    }
+
+    @Override
+    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByLike(
+        Long profileId, int page, int size
+    ) {
+        Organization organization = organizationService.loadOrganization(profileId);
+
+        Page<Coupon> couponList =
+            couponLikeRepository.findAllByOrganizationAndIsActiveTrue(organization, PageRequest.of(page, size))
+                .map(CouponLike::getCoupon);
+
+        return couponMapper.toCouponPagingResponse(
+            couponList.map(couponMapper::toCouponSummaryInquiryResponse)
+        );
+    }
 //
 //    @Override
 //    public List<CouponSummaryInquiryResponse> inquiryCouponByRecent() {

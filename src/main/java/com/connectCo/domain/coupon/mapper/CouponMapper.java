@@ -2,10 +2,14 @@ package com.connectCo.domain.coupon.mapper;
 
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.response.CouponDetailResponse;
+import com.connectCo.domain.coupon.dto.response.CouponPagingResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.coupon.entity.CouponImage;
+import com.connectCo.domain.coupon.entity.CouponLike;
+import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.store.entity.Store;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -32,6 +36,25 @@ public class CouponMapper {
                 .coupon(coupon)
                 .url(url)
                 .build();
+    }
+
+    public CouponLike toCouponLike(Coupon coupon, Organization organization) {
+        return CouponLike.builder()
+                .coupon(coupon)
+                .organization(organization)
+                .isActive(true)
+                .build();
+    }
+
+    public <T>CouponPagingResponse<T> toCouponPagingResponse(Page<T> coupons) {
+        return CouponPagingResponse.<T>builder()
+            .coupons(coupons.getContent())
+            .page(coupons.getNumber())
+            .totalPages(coupons.getTotalPages())
+            .totalElements((int) coupons.getTotalElements())
+            .isFirst(coupons.isFirst())
+            .isLast(coupons.isLast())
+            .build();
     }
 
     public CouponSummaryInquiryResponse toCouponSummaryInquiryResponse(Coupon coupon) {
