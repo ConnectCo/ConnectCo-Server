@@ -9,8 +9,6 @@ import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -79,31 +77,22 @@ public class StoreController {
             storeService.inquiryStoreDetail(principal.profileId(), principal.profileType(), storeId)
         );
     }
-//
-//
-//    @Operation(summary = "내 가게 조회 API")
-//    @Parameters(value = {
-//            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
-//            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
-//    })
-//    @GetMapping("/mine")
-//    public BaseResponse<StorePagingResponse<StoreSummaryInquiryResponse>> inquiryStoreByMember(
-//            @RequestParam(name = "page") int page,
-//            @RequestParam(name = "size") int size) {
-//        return BaseResponse.onSuccess(storeService.inquiryStoreByMember(page, size));
-//    }
-//
-//    @Operation(summary = "내가 찜한 가게 조회 API")
-//    @Parameters(value = {
-//            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
-//            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
-//    })
-//    @GetMapping("/like")
-//    public BaseResponse<StorePagingResponse<StoreSummaryInquiryResponse>> inquiryStoreByLike(
-//            @RequestParam(name = "page") int page,
-//            @RequestParam(name = "size") int size) {
-//        return BaseResponse.onSuccess(storeService.inquiryStoreByLike(page, size));
-//    }
+
+    @Operation(summary = "내가 찜한 가게 조회 API", description = "조직 프로필만 가능")
+    @Parameters(value = {
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping("/like")
+    public BaseResponse<StorePagingResponse<StoreSummaryInquiryResponse>> inquiryStoresByLike(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "size") int size
+    ) {
+        return BaseResponse.onSuccess(
+            storeService.inquiryStoresByLike(principal.profileId(), page, size)
+        );
+    }
 //
 //    @Operation(summary = "내 주변 가게 조회 API")
 //    @Parameters(value = {

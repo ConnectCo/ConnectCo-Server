@@ -150,29 +150,20 @@ public class StoreServiceImpl implements StoreService {
             store.getCoupons().stream().limit(2).map(storeMapper::toStoreCoupon).toList()
         );
     }
-//
-//    /*
-//     * 내가 찜한 가게 조회
-//     */
-//    @Override
-//    public StorePagingResponse<StoreSummaryInquiryResponse> inquiryStoreByLike(int page, int size) {
-//        Member member = authService.getLoginMember();
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Store> storePage = storeLikeRepository.findAllByMemberAndIsChecked(member, true, pageable)
-//                .map(StoreLike::getStore);
-//        return storeMapper.toStorePagingResponse(storePage.map(storeMapper::toStoreSummaryInquiryResponse));
-//    }
-//
-//    /*
-//     * 나의 가게 조회
-//     */
-//    @Override
-//    public StorePagingResponse<StoreSummaryInquiryResponse> inquiryStoreByMember(int page, int size) {
-//        Member member = authService.getLoginMember();
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Store> storePage = storeRepository.findAllByMember(member, pageable);
-//        return storeMapper.toStorePagingResponse(storePage.map(storeMapper::toStoreSummaryInquiryResponse));
-//    }
+
+    /*
+     * 내가 찜한 가게 조회
+     */
+    @Override
+    public StorePagingResponse<StoreSummaryInquiryResponse> inquiryStoresByLike(
+        Long profileId, int page, int size
+    ) {
+        Page<Store> storePage = storeLikeService.getStoresByLike(profileId, page, size);
+
+        return storeMapper.toStorePagingResponse(
+            storePage.map(storeMapper::toStoreSummaryInquiryResponse)
+        );
+    }
 //
 //    /*
 //     * 내 주변 가게 목록 조회
@@ -191,17 +182,6 @@ public class StoreServiceImpl implements StoreService {
 //        return storeMapper.toStorePagingResponse(mappedPage);
 //    }
 //
-//    /*
-//     * 특정 member의 가게 목록을 조회
-//     */
-//    @Override
-//    public List<Store> getStoresByMember(Member member) {
-//        return storeRepository.findAllByMember(member);
-//    }
-//
-    /*
-     * Store 객체를 생성하고 DB에 저장
-     */
     private Store createAndSaveStore(Member member, StoreCreateRequest request, Address address) {
         Store store = storeMapper.toStore(member, request, address);
         return storeRepository.save(store);

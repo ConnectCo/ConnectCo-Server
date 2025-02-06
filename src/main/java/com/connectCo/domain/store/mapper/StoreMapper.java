@@ -7,10 +7,13 @@ import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
+import com.connectCo.domain.store.dto.response.StorePagingResponse;
+import com.connectCo.domain.store.dto.response.StoreSummaryInquiryResponse;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.entity.StoreImage;
 import com.connectCo.domain.store.entity.StoreLike;
 import com.connectCo.global.common.mapper.CommonMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -44,29 +47,28 @@ public class StoreMapper {
                 .isActive(true)
                 .build();
     }
-//
-//    public <T>StorePagingResponse<T> toStorePagingResponse(Page<T> stores) {
-//        return StorePagingResponse.<T>builder()
-//                .stores(stores.getContent())
-//                .page(stores.getNumber())
-//                .totalPages(stores.getTotalPages())
-//                .totalElements((int) stores.getTotalElements())
-//                .isFirst(stores.isFirst())
-//                .isLast(stores.isLast())
-//                .build();
-//    }
-//
-//    public StoreSummaryInquiryResponse toStoreSummaryInquiryResponse(Store store) {
-//
-//        return StoreSummaryInquiryResponse.builder()
-//                .storeId(store.getId())
-//                .name(store.getName())
-//                .description(store.getDescription())
-//                .thumbnail(store.getThumbnail())
-//                .couponCount(store.getCouponCount())
-//                .build();
-//    }
-//
+
+    public <T> StorePagingResponse<T> toStorePagingResponse(Page<T> stores) {
+        return StorePagingResponse.<T>builder()
+                .stores(stores.getContent())
+                .page(stores.getNumber())
+                .totalPages(stores.getTotalPages())
+                .totalElements((int) stores.getTotalElements())
+                .isFirst(stores.isFirst())
+                .isLast(stores.isLast())
+                .build();
+    }
+
+    public StoreSummaryInquiryResponse toStoreSummaryInquiryResponse(Store store) {
+        return StoreSummaryInquiryResponse.builder()
+                .storeId(store.getId())
+                .name(store.getName())
+                .description(store.getDescription())
+                .thumbnail(store.getProfileImage())
+                .couponCount(store.getCoupons().size())
+                .build();
+    }
+
     public StoreDetailInquiryResponse toStoreDetailInquiryResponse(
             Store store, List<String> images, Boolean isLike,
             Boolean isMine, List<StoreDetailInquiryResponse.StoreCoupon> coupons

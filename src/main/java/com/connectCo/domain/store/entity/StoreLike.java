@@ -20,7 +20,7 @@ public class StoreLike extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private boolean isActive;
+    private Boolean isActive;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn

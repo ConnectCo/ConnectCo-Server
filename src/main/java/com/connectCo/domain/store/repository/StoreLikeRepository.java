@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public interface StoreLikeRepository extends JpaRepository<StoreLike, Long> {
 
-//    Page<StoreLike> findAllByMemberAndIsChecked(Member member, boolean isChecked, Pageable pageable);
     Optional<StoreLike> findByOrganizationAndStore(Organization organization, Store store);
+    Page<StoreLike> findAllByOrganizationAndIsActiveTrue(Organization organization, Pageable pageable);
+
 }
