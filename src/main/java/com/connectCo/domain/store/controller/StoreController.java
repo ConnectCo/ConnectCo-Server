@@ -27,7 +27,7 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    @Operation(summary = "가게 등록 API")
+    @Operation(summary = "가게 등록 API", description = "로그인한 회원만 가능")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<StoreIdResponse> createStore(
             @AuthenticationPrincipal PrincipalDetails principal,
@@ -67,12 +67,17 @@ public class StoreController {
         return BaseResponse.onSuccess(storeService.likeStore(principal.profileId(), storeId));
     }
 
-    @Operation(summary = "가게 상세조회 API")
-    @GetMapping("/{storeId}")
+    @Operation(summary = "가게 상세조회 API", description = "비로그인 시도 가능")
+    @GetMapping("/{storeId}/detail")
     public BaseResponse<StoreDetailInquiryResponse> inquiryStoreDetail(
             @AuthenticationPrincipal PrincipalDetails principal,
             @Parameter(description = "조회할 가게 id") @PathVariable Long storeId
     ) {
+        if (principal == null) {
+            return BaseResponse.onSuccess(
+                storeService.inquiryStoreDetail(null, null, storeId)
+            );
+        }
         return BaseResponse.onSuccess(
             storeService.inquiryStoreDetail(principal.profileId(), principal.profileType(), storeId)
         );

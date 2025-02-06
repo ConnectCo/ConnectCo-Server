@@ -136,12 +136,12 @@ public class StoreServiceImpl implements StoreService {
         Long profileId, ProfileType profileType, Long storeId
     ) {
         // 본인 여부 확인
-        Boolean isMine = profileId.equals(storeId);
+        Boolean isMine = profileId != null && profileId.equals(storeId);
         Store store = loadStore(storeId);
 
         // 찜 여부 확인
         Boolean isLiked = Boolean.FALSE;
-        if (profileType.equals(ProfileType.ORGANIZATION)) {
+        if (profileId != null && profileType != null && profileType.equals(ProfileType.ORGANIZATION)) {
             isLiked = storeLikeService.isLikeStore(profileId, store);
         }
 
