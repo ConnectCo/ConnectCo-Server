@@ -63,7 +63,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     /*
-
+     * 쿠폰을 수정하는 서비스 함수
      */
     @Override
     @Transactional
@@ -86,25 +86,27 @@ public class CouponServiceImpl implements CouponService {
         return new CouponIdResponse(coupon.getId());
     }
 
-//
-//
-//    @Override
-//    @Transactional
-//    public CouponIdResponse deleteCoupon(Long couponId) {
-//        Member member= authService.getLoginMember();
-//
-//        Coupon coupon=couponRepository.findById(couponId).orElseThrow(() -> new CustomApiException(ErrorCode.COUPON_NOT_FOUND));
-//        if(!coupon.getStore().getMember().equals(member)){
-//            throw new CustomApiException(ErrorCode.INVALID_PERMISSION);
-//        }
-//
-//        Long deletedCouponId= coupon.getId();
-//        couponRepository.deleteById(deletedCouponId);
-//        return new CouponIdResponse(deletedCouponId);
-//    }
-//
-//
+    /*
+     * 쿠폰을 삭제하는 서비스 함수
+     */
+    @Override
+    @Transactional
+    public CouponIdResponse deleteCoupon(Long profileId, Long couponId) {
+        Store store = storeService.loadStore(profileId);
+        // 삭제 권한 유효성 검사(가게 주인만 수정 가능)
+        Coupon coupon = couponRepository.getCoupon(couponId);
+        ParamValidator.validModify(coupon.getStore().getId(), store.getId());
 
+        // 쿠폰 이미지 삭제
+        deleteCouponImages(coupon.getImages());
+        store.removeCoupon(coupon);
+
+        // TODO: 관련된 찜 기록, 협찬 기록 등 삭제 로직 추가
+
+        // 쿠폰은 hard delete
+        couponRepository.delete(coupon);
+        return new CouponIdResponse(couponId);
+    }
 
     @Override
     public List<CouponSummaryInquiryResponse> inquiryCouponByMember(Long profileId) {

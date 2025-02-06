@@ -19,7 +19,7 @@ public interface CouponService {
     CouponIdResponse updateCoupon(
         Long profileId, Long couponId, List<MultipartFile> couponImages, CouponUpdateRequest request
     );
-//    CouponIdResponse deleteCoupon(Long couponId);
+    CouponIdResponse deleteCoupon(Long profileId, Long couponId);
 //
 //
 //

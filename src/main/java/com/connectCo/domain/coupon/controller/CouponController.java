@@ -52,13 +52,16 @@ public class CouponController {
             couponService.updateCoupon(principal.profileId(), couponId, couponImages, request)
         );
     }
-//
-//    @Operation(summary = "쿠폰 삭제 API")
-//    @DeleteMapping("/{couponId}")
-//    public BaseResponse<CouponIdResponse> deleteCoupon(@PathVariable Long couponId) {
-//        return BaseResponse.onSuccess(couponService.deleteCoupon(couponId));
-//    }
-//
+
+    @Operation(summary = "쿠폰 삭제 API", description = "가게 프로필만 삭제 가능")
+    @DeleteMapping("/{couponId}")
+    public BaseResponse<CouponIdResponse> deleteCoupon(
+        @AuthenticationPrincipal PrincipalDetails principal,
+        @PathVariable Long couponId
+    ) {
+        return BaseResponse.onSuccess(couponService.deleteCoupon(principal.profileId(), couponId));
+    }
+
 
     @Operation(summary = "나의 쿠폰 조회 API", description = "가게 프로필만 조회 가능")
     @GetMapping("/mine")
