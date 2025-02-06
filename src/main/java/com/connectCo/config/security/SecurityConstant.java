@@ -9,11 +9,8 @@ public class SecurityConstant {
 
     // 비로그인 허용 API
     public static final String[] PUBLIC_URLS = {
-        "/auth/login",
-        "/auth/refresh",
-        "/public/**",
-        "/v3/**",
-        "/swagger-ui/**",
+        "/auth/login", "/auth/refresh",
+        "/v3/**", "/swagger-ui/**",
         "/test/**",
         "/ws/**"
     };
@@ -27,7 +24,7 @@ public class SecurityConstant {
 
     // 가게 프로필 전용 API
     public static final String[] STORE_URLS = {
-
+        "/coupons/mine"
     };
 
     // 조직 프로필 전용 API
