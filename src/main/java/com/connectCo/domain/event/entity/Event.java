@@ -83,10 +83,4 @@ public class Event extends BaseEntity {
                 .map(EventImage::getUrl)
                 .orElse(null);
     }
-
-    public String getOrganizationName() {
-        return Optional.ofNullable(organization)
-                .map(Organization::getName)
-                .orElse(null);
-    }
 }

@@ -40,15 +40,20 @@ public class EventController {
             eventService.createEvent(principal.profileId(), eventImages, request)
         );
     }
-//
-//    @Operation(summary = "이벤트 수정 API")
-//    @PatchMapping(value = "/{eventId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public BaseResponse <EventIdResponse> updateEvent (
-//            @Parameter(description = "수정할 이벤트 id") @PathVariable Long eventId,
-//            @RequestPart(value = "eventImages", required = false) List<MultipartFile> newImages,
-//            @Valid @RequestPart("request") EventUpdateRequest request){
-//        return BaseResponse.onSuccess(eventService.updateEvent(eventId, newImages, request));
-//    }
+
+    @Operation(summary = "이벤트 수정 API", description = "조직 프로필만 수정 가능")
+    @PatchMapping(value = "/{eventId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BaseResponse<EventIdResponse> updateEvent (
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Parameter(description = "수정할 이벤트 id") @PathVariable Long eventId,
+            @Parameter(description = "이벤트 이미지 파일들(없을 시 사용 x)") @RequestPart(value = "eventImages", required = false) List<MultipartFile> eventImages,
+            @RequestPart(value = "eventImages", required = false) List<MultipartFile> newImages,
+            @Parameter(description = "이벤트 수정 요청 json") @Valid @RequestPart("request") EventUpdateRequest request
+        ){
+        return BaseResponse.onSuccess(
+            eventService.updateEvent(principal.profileId(), eventId, newImages, request)
+        );
+    }
 //
 //    @Operation(summary = "이벤트 삭제 API")
 //    @DeleteMapping("/{eventId}")

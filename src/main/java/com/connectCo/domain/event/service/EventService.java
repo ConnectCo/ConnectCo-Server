@@ -11,16 +11,20 @@ import java.util.List;
 
 public interface EventService {
 
-    EventIdResponse createEvent(List<MultipartFile> eventImages, EventCreateRequest request);
-    EventIdResponse updateEvent(Long eventId, List<MultipartFile> newImages, EventUpdateRequest request);
-    EventIdResponse deleteEvent(Long eventId);
-    Boolean likeEvent(Long eventId);
-    EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId);
-
-    EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword, int page, int size);
-    EventPagingResponse<EventSummaryInquiryResponse> inquiryEvents(InquiryType type, Long organizationId, double latitude, double longitude, int page, int size);
-    EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByMember(int page, int size);
-    EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByLike(int page, int size);
-    EventPagingResponse<EventLocationInquiryResponse> inquiryEventByLocation(double latitude, double longitude, int radius, int page, int size);
-    Event loadEvent(Long eventId);
+    EventIdResponse createEvent(
+        Long profileId, List<MultipartFile> eventImages, EventCreateRequest request
+    );
+    EventIdResponse updateEvent(
+        Long profileId, Long eventId, List<MultipartFile> newImages, EventUpdateRequest request
+    );
+//    EventIdResponse deleteEvent(Long eventId);
+//    Boolean likeEvent(Long eventId);
+//    EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId);
+//
+//    EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword, int page, int size);
+//    EventPagingResponse<EventSummaryInquiryResponse> inquiryEvents(InquiryType type, Long organizationId, double latitude, double longitude, int page, int size);
+//    EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByMember(int page, int size);
+//    EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByLike(int page, int size);
+//    EventPagingResponse<EventLocationInquiryResponse> inquiryEventByLocation(double latitude, double longitude, int radius, int page, int size);
+//    Event loadEvent(Long eventId);
 }

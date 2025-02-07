@@ -55,7 +55,7 @@ public class EventMapper {
     public EventDetailInquiryResponse toEventDetailInquiryResponse(Event event) {
         return EventDetailInquiryResponse.builder()
                 .eventId(event.getId())
-                .organizationName(event.getOrganizationName())
+                .organizationName(event.getOrganization().getName())
                 .name(event.getName())
                 .expiredAt(event.getExpiredAt())
                 .description(event.getDescription())
@@ -73,7 +73,7 @@ public class EventMapper {
     public EventSummaryInquiryResponse toEventSummaryInquiryResponse(Event event) {
         return EventSummaryInquiryResponse.builder()
                 .eventId(event.getId())
-                .organizationName(event.getOrganizationName())
+                .organizationName(event.getOrganization().getName())
                 .name(event.getName())
                 .startAt(event.getStartAt())
                 .endAt(event.getEndAt())
@@ -86,7 +86,7 @@ public class EventMapper {
         Double distance = (Double) eventWithDistance[1];
         return EventLocationInquiryResponse.builder()
                 .eventId(event.getId())
-                .organizationName(event.getOrganizationName())
+                .organizationName(event.getOrganization().getName())
                 .name(event.getName())
                 .startAt(event.getStartAt())
                 .endAt(event.getEndAt())

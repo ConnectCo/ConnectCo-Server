@@ -32,6 +32,7 @@ public class SecurityConstant {
 
     // 조직 프로필 전용 API
     public static final String[] ORGANIZATION_URLS = {
+        "events", "events/*",
         "/stores/*/like", "/stores/like",
         "/coupons/*/like", "/coupons/like"
     };
