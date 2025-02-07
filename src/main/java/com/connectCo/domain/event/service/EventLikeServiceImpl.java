@@ -9,6 +9,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,8 +39,8 @@ public class EventLikeServiceImpl implements EventLikeService {
     }
 
     @Override
-    public Page<Event> getEventsByLike(Store store, int page, int size) {
-        return eventLikeRepository.findAllByStoreAndIsActiveTrue(store, PageRequest.of(page, size))
+    public Page<Event> getEventsByLike(Store store, Pageable pageable) {
+        return eventLikeRepository.findAllByStoreAndIsActiveTrue(store, pageable)
             .map(EventLike::getEvent);
     }
 }

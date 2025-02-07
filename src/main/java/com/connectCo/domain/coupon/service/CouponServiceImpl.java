@@ -145,12 +145,12 @@ public class CouponServiceImpl implements CouponService {
     ) {
         Organization organization = organizationService.loadOrganization(profileId);
 
-        Page<Coupon> couponList =
+        Page<Coupon> couponPage =
             couponLikeRepository.findAllByOrganizationAndIsActiveTrue(organization, PageRequest.of(page, size))
                 .map(CouponLike::getCoupon);
 
         return couponMapper.toCouponPagingResponse(
-            couponList.map(couponMapper::toCouponSummaryInquiryResponse)
+            couponPage.map(couponMapper::toCouponSummaryInquiryResponse)
         );
     }
 

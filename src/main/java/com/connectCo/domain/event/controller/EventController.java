@@ -8,6 +8,7 @@ import com.connectCo.domain.event.service.EventService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -83,6 +84,20 @@ public class EventController {
             eventService.inquiryEventDetail(principal.profileId(), principal.profileType(), eventId)
         );
     }
+
+    @Operation(summary = "내가 찜한 이벤트 조회 API", description = "가게 프로필만 가능")
+    @Parameters(value = {
+        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping("/like")
+    public BaseResponse<EventPagingResponse<EventSummaryInquiryResponse>> inquiryEventByLike(
+        @AuthenticationPrincipal PrincipalDetails principal,
+        @RequestParam(name = "page") int page,
+        @RequestParam(name = "size") int size
+    ) {
+        return BaseResponse.onSuccess(eventService.inquiryEventByLike(principal.profileId(), page, size));
+    }
 //
 //    @Operation(summary = "이벤트 검색 API", description = "학교 이름, 이벤트 이름, 세부 설명에서 키워드 검색")
 //    @Parameters(value = {
@@ -131,17 +146,7 @@ public class EventController {
 //        return BaseResponse.onSuccess(eventService.inquiryEventByMember(page, size));
 //    }
 //
-//    @Operation(summary = "내가 찜한 이벤트 조회 API")
-//    @Parameters(value = {
-//            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
-//            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
-//    })
-//    @GetMapping("/like")
-//    public BaseResponse<EventPagingResponse<EventSummaryInquiryResponse>> inquiryEventByLike(
-//            @RequestParam(name = "page") int page,
-//            @RequestParam(name = "size") int size) {
-//        return BaseResponse.onSuccess(eventService.inquiryEventByLike(page, size));
-//    }
+
 //
 //    @Operation(summary = "내 주변 이벤트 조회 API")
 //    @Parameters(value = {

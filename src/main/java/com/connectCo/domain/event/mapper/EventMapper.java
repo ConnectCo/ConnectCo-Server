@@ -94,29 +94,28 @@ public class EventMapper {
 
     public EventSummaryInquiryResponse toEventSummaryInquiryResponse(Event event) {
         return EventSummaryInquiryResponse.builder()
-                .eventId(event.getId())
-                .organizationName(event.getOrganization().getName())
-                .name(event.getName())
-                .startAt(event.getStartAt())
-                .endAt(event.getEndAt())
-                .thumbnail(event.getThumbnail())
-                .build();
+            .eventId(event.getId())
+            .organizationName(event.getOrganization().getName())
+            .name(event.getName())
+            .expiredAt(event.getExpiredAt())
+            .thumbnail(event.getThumbnail())
+            .build();
     }
 
     public EventLocationInquiryResponse toEventLocationInquiryResponse(Object[] eventWithDistance) {
         Event event = (Event) eventWithDistance[0];
         Double distance = (Double) eventWithDistance[1];
         return EventLocationInquiryResponse.builder()
-                .eventId(event.getId())
-                .organizationName(event.getOrganization().getName())
-                .name(event.getName())
-                .startAt(event.getStartAt())
-                .endAt(event.getEndAt())
-                .thumbnail(event.getThumbnail())
-                .latitude(event.getAddress().getLatitude())
-                .longitude(event.getAddress().getLongitude())
-                .distance(distance)
-                .build();
+            .eventId(event.getId())
+            .organizationName(event.getOrganization().getName())
+            .name(event.getName())
+            .startAt(event.getStartAt())
+            .endAt(event.getEndAt())
+            .thumbnail(event.getThumbnail())
+            .latitude(event.getAddress().getLatitude())
+            .longitude(event.getAddress().getLongitude())
+            .distance(distance)
+            .build();
     }
 
     private List<String> toImageUrls(List<EventImage> images) {

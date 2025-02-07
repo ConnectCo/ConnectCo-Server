@@ -153,6 +153,32 @@ public class EventServiceImpl implements EventService{
 
         return eventMapper.toEventDetailInquiryResponse(event, isLiked, isMine);
     }
+
+    /*
+     * 내가 찜한 이벤트 조회
+     */
+    @Override
+    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByLike(
+        Long profileId, int page, int size
+    ) {
+        Store store = storeService.loadStore(profileId);
+
+        Page<Event> eventPage = eventLikeService.getEventsByLike(store, PageRequest.of(page, size));
+        return eventMapper.toEventPagingResponse(
+            eventPage.map(eventMapper::toEventSummaryInquiryResponse)
+        );
+    }
+
+    //    /*
+//     * 나의 이벤트 조회
+//     */
+//    @Override
+//    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByMember(int page, int size) {
+//        Member member = authService.getLoginMember();
+//        Pageable pageable = PageRequest.of(page, size);
+//        Page<Event> eventPage = eventRepository.findAllByMember(member, pageable);
+//        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
+//    }
 //
 //    /*
 //     * 이벤트 검색
@@ -206,28 +232,6 @@ public class EventServiceImpl implements EventService{
 //    }
 //
 //    /*
-//     * 나의 이벤트 조회
-//     */
-//    @Override
-//    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByMember(int page, int size) {
-//        Member member = authService.getLoginMember();
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Event> eventPage = eventRepository.findAllByMember(member, pageable);
-//        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
-//    }
-//
-//    /*
-//     * 내가 찜한 이벤트 조회
-//     */
-//    @Override
-//    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByLike(int page, int size) {
-//        Member member = authService.getLoginMember();
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Event> eventPage = eventLikeRepository.findAllEventsByMemberAndIsChecked(member, true, pageable);
-//        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
-//    }
-//
-//    /*
 //     * 내 주변 이벤트 목록 조회
 //     */
 //    @Override
@@ -242,11 +246,10 @@ public class EventServiceImpl implements EventService{
 //        return eventMapper.toEventPagingResponse(mappedPage);
 //    }
 //
-//    @Override
-//    public Event loadEvent(Long eventId) {
-//        return eventRepository.findById(eventId)
-//                .orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
-//    }
+    @Override
+    public Event loadEvent(Long eventId) {
+        return eventRepository.getEvent(eventId);
+    }
 
     private Event createAndSaveEvent(Organization organization, EventCreateRequest request, Address address) {
         Event event = eventMapper.toEvent(organization, request, address);

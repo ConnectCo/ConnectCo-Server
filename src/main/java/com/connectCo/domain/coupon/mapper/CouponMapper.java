@@ -61,8 +61,8 @@ public class CouponMapper {
 
         return CouponSummaryInquiryResponse.builder()
                 .couponId(coupon.getId())
+                .storeName(coupon.getStore().getName())
                 .name(coupon.getName())
-                .description(coupon.getDescription())
                 .expiredAt(coupon.getExpiredAt())
                 .thumbnail(thumbnail)
                 .build();
