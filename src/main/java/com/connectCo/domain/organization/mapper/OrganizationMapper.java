@@ -6,6 +6,8 @@ import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationSearchResponse;
 import com.connectCo.domain.organization.entity.Organization;
+import com.connectCo.domain.organization.entity.OrganizationLike;
+import com.connectCo.domain.store.entity.Store;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,6 +20,14 @@ public class OrganizationMapper {
             .address(address)
             .member(member)
             .profileType(ProfileType.ORGANIZATION)
+            .build();
+    }
+
+    public OrganizationLike toOrganizationLike(Organization organization, Store store) {
+        return OrganizationLike.builder()
+            .organization(organization)
+            .store(store)
+            .isActive(true)
             .build();
     }
 //
