@@ -1,19 +1,16 @@
 package com.connectCo.domain.organization.service;
 
 import com.connectCo.domain.member.entity.Member;
-import com.connectCo.domain.member.entity.Role;
-import com.connectCo.domain.member.service.AuthService;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.address.service.AddressService;
+import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
 import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
+import com.connectCo.domain.organization.dto.response.OrganizationDetailInquiryResponse;
 import com.connectCo.domain.organization.dto.response.OrganizationIdResponse;
-import com.connectCo.domain.organization.dto.response.OrganizationInquiryResponse;
-import com.connectCo.domain.organization.dto.response.OrganizationSearchResponse;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.mapper.OrganizationMapper;
 import com.connectCo.domain.organization.repository.OrganizationRepository;
-import com.connectCo.global.common.dto.AddressRequest;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.global.validation.ParamValidator;
@@ -22,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -30,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class OrganizationServiceImpl implements OrganizationService {
 
     private final OrganizationRepository organizationRepository;
+    private final OrganizationLikeService organizationLikeService;
     private final OrganizationMapper organizationMapper;
     private final AddressService addressService;
     private final S3FileComponent s3FileComponent;
@@ -108,15 +105,27 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         return new OrganizationIdResponse(organizationId);
     }
-//
-//    @Override
-//    public OrganizationInquiryResponse inquiryOrganization(String organizationName) {
-//
-//        Organization organization = loadOrganizationByName(organizationName);
-//
-//        return organizationMapper.toOrganizationInquiryResponse(organization);
-//    }
-//
+
+    @Override
+    public OrganizationDetailInquiryResponse inquiryOrganizationDetail(
+        Long profileId, ProfileType profileType, Long organizationId
+    ) {
+        // 본인 여부 확인
+        Boolean isMine = organizationId.equals(profileId);
+        Organization organization = loadOrganization(organizationId);
+
+        // 찜 여부 확인
+        Boolean isLiked = Boolean.FALSE;
+        if (profileId != null && profileType == ProfileType.ORGANIZATION) {
+            isLiked = organizationLikeService.isLikeOrganization(profileId, organization);
+        }
+
+        return organizationMapper.toOrganizationDetailInquiryResponse(
+            organization, isLiked, isMine,
+            organization.getEvents().stream().limit(2).map(organizationMapper::toOrganizationEvent).toList()
+        );
+    }
+
 //    @Override
 //    public List<OrganizationSearchResponse> searchOrganization(String keyword) {
 //
@@ -124,7 +133,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 //
 //        return organizations.stream().map(organizationMapper::toOrganizationSearchResponse).toList();
 //    }
-//
+
     @Override
     public Organization loadOrganization(Long organizationId) {
         return organizationRepository.findById(organizationId)

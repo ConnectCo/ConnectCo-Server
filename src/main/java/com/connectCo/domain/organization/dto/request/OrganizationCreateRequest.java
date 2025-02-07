@@ -18,6 +18,10 @@ public class OrganizationCreateRequest {
     @ExistOrganization
     private String name;
 
+    @Schema(description = "조직 설명", example = "이것은 조직 A 입니다.")
+    @NotBlank(message = "조직 설명은 필수 입력값입니다.")
+    private String description;
+
     @Schema(description = "조직 주소", example = "주소")
     @NotBlank(message = "조직 주소는 필수 입력값입니다.")
     private String detailAddress;

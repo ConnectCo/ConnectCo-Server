@@ -4,6 +4,7 @@ import com.connectCo.config.security.auth.PrincipalDetails;
 import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
 import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationIdResponse;
+import com.connectCo.domain.organization.dto.response.OrganizationDetailInquiryResponse;
 import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,13 +57,24 @@ public class OrganizationController {
     ) {
         return BaseResponse.onSuccess(organizationService.deleteOrganization(principal.member(), organizationId));
     }
-//
-//    @Operation(summary = "조직 상세 조회 API")
-//    @GetMapping("/{organizationName}")
-//    public BaseResponse<OrganizationInquiryResponse> inquiryOrganization(
-//            @Parameter(description = "조회할 조직 이름") @PathVariable String organizationName) {
-//        return BaseResponse.onSuccess(organizationService.inquiryOrganization(organizationName));
-//    }
+
+    // TODO: 조직 찜하기
+
+    @Operation(summary = "조직 상세 조회 API", description = "비로그인 시도 가능")
+    @GetMapping("/{organizationId}/detail")
+    public BaseResponse<OrganizationDetailInquiryResponse> inquiryOrganizationDetail(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Parameter(description = "조회할 조직 이름") @PathVariable Long organizationId
+    ) {
+        if (principal == null) {
+            return BaseResponse.onSuccess(
+                organizationService.inquiryOrganizationDetail(null, null, organizationId)
+            );
+        }
+        return BaseResponse.onSuccess(
+            organizationService.inquiryOrganizationDetail(principal.profileId(), principal.profileType(), organizationId)
+        );
+    }
 //
 //    @Operation(summary = "조직 검색 API", description = "이름 오름차순으로 정렬")
 //    @Parameters(value = {
