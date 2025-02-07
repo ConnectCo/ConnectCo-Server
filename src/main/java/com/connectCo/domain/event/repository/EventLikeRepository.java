@@ -13,8 +13,8 @@ import java.util.Optional;
 
 public interface EventLikeRepository extends JpaRepository<EventLike, Long> {
 
-    @Query("SELECT el.event FROM EventLike el WHERE el.member = :member AND el.isChecked = :isChecked")
-    Page<Event> findAllEventsByMemberAndIsChecked(@Param("member") Member member, @Param("isChecked") boolean isChecked, Pageable pageable);
-
-    Optional<EventLike> findByMemberAndEvent(Member member, Event event);
+//    @Query("SELECT el.event FROM EventLike el WHERE el.member = :member AND el.isChecked = :isChecked")
+//    Page<Event> findAllEventsByMemberAndIsChecked(@Param("member") Member member, @Param("isChecked") boolean isChecked, Pageable pageable);
+//
+//    Optional<EventLike> findByMemberAndEvent(Member member, Event event);
 }

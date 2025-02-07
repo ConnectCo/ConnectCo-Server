@@ -9,6 +9,7 @@ import com.connectCo.domain.event.dto.response.EventPagingResponse;
 import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
 import com.connectCo.domain.event.entity.Event;
 import com.connectCo.domain.event.entity.EventImage;
+import com.connectCo.domain.organization.entity.Organization;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -17,19 +18,19 @@ import java.util.List;
 @Component
 public class EventMapper {
 
-    public Event toEvent(Member member, EventCreateRequest request, Address address){
+    public Event toEvent(Organization organization, EventCreateRequest request, Address address){
         return Event.builder()
-                .name(request.getName())
-                .startAt(request.getStartAt())
-                .endAt(request.getEndAt())
-                .expiredAt(request.getExpiredAt())
-                .benefitTarget(request.getBenefitTarget())
-                .notification(request.getNotification())
-                .description(request.getDescription())
-                .priorityTarget(request.getPriorityTarget())
-                .address(address)
-                .member(member)
-                .build();
+            .name(request.getName())
+            .startAt(request.getStartAt())
+            .endAt(request.getEndAt())
+            .expiredAt(request.getExpiredAt())
+            .benefitTarget(request.getBenefitTarget())
+            .notification(request.getNotification())
+            .description(request.getDescription())
+            .priorityTarget(request.getPriorityTarget())
+            .address(address)
+            .organization(organization)
+            .build();
     }
 
     public EventImage toEventImage(Event event, String url) {

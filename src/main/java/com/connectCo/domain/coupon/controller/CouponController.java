@@ -35,7 +35,8 @@ public class CouponController {
     public BaseResponse<CouponIdResponse> createCoupon(
         @AuthenticationPrincipal PrincipalDetails principal,
         @Parameter(description = "쿠폰 이미지 파일들(없을 시 사용 x)") @RequestPart(value = "couponImages", required = false) List<MultipartFile> couponImages,
-        @Parameter(description = "쿠폰 생성 요청 json") @RequestPart("request") @Valid CouponCreateRequest request) {
+        @Parameter(description = "쿠폰 생성 요청 json") @RequestPart("request") @Valid CouponCreateRequest request
+    ) {
         return BaseResponse.onSuccess(
             couponService.createCoupon(principal.profileId(), couponImages, request)
         );
@@ -47,7 +48,8 @@ public class CouponController {
         @AuthenticationPrincipal PrincipalDetails principal,
         @Parameter(description = "수정할 쿠폰 id") @PathVariable Long couponId,
         @Parameter(description = "추가된 쿠폰 이미지 파일들(없을 시 사용 x)") @RequestPart(value = "couponImages", required = false) List<MultipartFile> couponImages,
-        @Parameter(description = "쿠폰 수정 요청 json") @RequestPart("request") @Valid CouponUpdateRequest request) {
+        @Parameter(description = "쿠폰 수정 요청 json") @RequestPart("request") @Valid CouponUpdateRequest request
+    ) {
         return BaseResponse.onSuccess(
             couponService.updateCoupon(principal.profileId(), couponId, couponImages, request)
         );
