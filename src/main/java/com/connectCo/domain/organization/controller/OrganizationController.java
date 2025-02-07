@@ -47,22 +47,15 @@ public class OrganizationController {
             organizationService.updateOrganization(principal.member(), organizationId, profileImage, request)
         );
     }
-//
-//    @Operation(summary = "조직 주소 정보 수정 API(관리자용)", description = "주소 정보만 수정 가능")
-//    @PatchMapping("/{organizationId}/address")
-//    public BaseResponse<OrganizationIdResponse> updateOrganizationAddress(
-//            @Parameter(description = "수정할 조직 id") @PathVariable Long organizationId,
-//            @RequestBody AddressRequest request ) {
-//        return BaseResponse.onSuccess(organizationService.updateOrganizationAddress(organizationId, request));
-//
-//    }
-//
-//    @Operation(summary = "조직 삭제 API(관리자용)")
-//    @DeleteMapping("/{organizationId}")
-//    public BaseResponse<OrganizationIdResponse> deleteOrganization(
-//            @Parameter(description = "삭제할 조직 id") @PathVariable Long organizationId) {
-//        return BaseResponse.onSuccess(organizationService.deleteOrganization(organizationId));
-//    }
+
+    @Operation(summary = "조직 삭제 API", description = "본인만 가능")
+    @DeleteMapping("/{organizationId}")
+    public BaseResponse<OrganizationIdResponse> deleteOrganization(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Parameter(description = "삭제할 조직 id") @PathVariable Long organizationId
+    ) {
+        return BaseResponse.onSuccess(organizationService.deleteOrganization(principal.member(), organizationId));
+    }
 //
 //    @Operation(summary = "조직 상세 조회 API")
 //    @GetMapping("/{organizationName}")

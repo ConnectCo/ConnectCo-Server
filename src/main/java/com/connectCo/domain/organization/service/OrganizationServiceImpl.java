@@ -92,33 +92,22 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         return new OrganizationIdResponse(organization.getId());
     }
-//
-//    @Override
-//    @Transactional
-//    public OrganizationIdResponse updateOrganizationAddress(Long organizationId, AddressRequest request) {
-//
-//        validateAdmin();
-//
-//        Organization organization = loadOrganization(organizationId);
-//        organization.getAddress().updateAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
-//
-//        return new OrganizationIdResponse(organization.getId());
-//    }
-//
-//    @Override
-//    @Transactional
-//    public OrganizationIdResponse deleteOrganization(Long organizationId) {
-//
-//        validateAdmin();
-//
-//        Organization organization = loadOrganization(organizationId);
-//
-//        //TODO 관련된 Event들 다 삭제 처리되는지 확인 필요
-//
-//        organization.delete();
-//
-//        return new OrganizationIdResponse(organization.getId());
-//    }
+
+    @Override
+    @Transactional
+    public OrganizationIdResponse deleteOrganization(Member member, Long organizationId) {
+        Organization organization = loadOrganization(organizationId);
+
+        ParamValidator.validModify(member.getId(), organization.getMember().getId());
+
+        // TODO 관련된 이벤트, 찜 기록, 협찬 기록, 채팅 기록 등 삭제 로직 추가
+
+        organization.delete();
+        s3FileComponent.deleteFile(organization.getProfileImage());
+        organization.updateProfileImage(null);
+
+        return new OrganizationIdResponse(organizationId);
+    }
 //
 //    @Override
 //    public OrganizationInquiryResponse inquiryOrganization(String organizationName) {

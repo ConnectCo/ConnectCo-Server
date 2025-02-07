@@ -110,7 +110,7 @@ public class StoreServiceImpl implements StoreService {
 
         // 가게 이미지 삭제
         storeImageService.deleteImages(store);
-        // TODO: 관련된 쿠폰, 찜 기록, 협찬 기록 등 삭제 로직 추가
+        // TODO: 관련된 쿠폰, 찜 기록, 협찬 기록, 채팅 기록 등 삭제 로직 추가
 
         store.delete();
         store.updateProfileImage(null);
