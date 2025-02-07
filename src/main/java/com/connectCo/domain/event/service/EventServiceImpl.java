@@ -241,6 +241,9 @@ public class EventServiceImpl implements EventService{
 //        return eventMapper.toEventPagingResponse(mappedPage);
 //    }
 //
+
+    // TODO: 추천 이벤트 조회 추가
+
     @Override
     public Event loadEvent(Long eventId) {
         return eventRepository.getEvent(eventId);
