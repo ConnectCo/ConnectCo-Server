@@ -17,7 +17,7 @@ public interface EventService {
     EventIdResponse updateEvent(
         Long profileId, Long eventId, List<MultipartFile> newImages, EventUpdateRequest request
     );
-//    EventIdResponse deleteEvent(Long eventId);
+    EventIdResponse deleteEvent(Long profileId, Long eventId);
 //    Boolean likeEvent(Long eventId);
 //    EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId);
 //

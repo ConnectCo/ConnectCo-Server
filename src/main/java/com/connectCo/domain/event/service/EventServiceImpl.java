@@ -94,30 +94,30 @@ public class EventServiceImpl implements EventService{
 
         return new EventIdResponse(event.getId());
     }
-//
-//    /*
-//     * 특정 이벤트 삭제
-//     */
-//    @Override
-//    @Transactional
-//    public EventIdResponse deleteEvent(Long eventId){
-//        Member member = authService.getLoginMember();
-//        Event event = loadEvent(eventId);
-//
-//        // 삭제 권한 유효성 검사(본인이 아닌 경우 삭제 불가)
-//        ParamValidator.validModify(member.getId(), event.getMember().getId());
-//
-//        // 이벤트 이미지 삭제
-//        eventImageService.deleteExistingImages(event.getImages());
-//        event.changeImages(List.of());
-//
-//        Long deletedEventId = event.getId();
-//        // 이벤트 soft 삭제
-//        event.delete();
-//
-//        return new EventIdResponse(deletedEventId);
-//    }
-//
+
+    /*
+     * 특정 이벤트 삭제
+     */
+    @Override
+    @Transactional
+    public EventIdResponse deleteEvent(Long profileId, Long eventId) {
+        Organization organization = organizationService.loadOrganization(profileId);
+        // 삭제 권한 유효성 검사(본인이 아닌 경우 삭제 불가)
+        Event event = eventRepository.getEvent(eventId);
+        ParamValidator.validModify(event.getOrganization().getId(), organization.getId());
+
+        // 이벤트 이미지 삭제
+        eventImageService.deleteExistingImages(event.getImages());
+        organization.removeEvent(event);
+
+        // TODO: 관련된 찜 기록, 협찬 기록 등 삭제 로직 추가
+
+        // 이벤트 hard delete
+        eventRepository.delete(event);
+
+        return new EventIdResponse(eventId);
+    }
+
 //    /*
 //     * 특정 가게 찜하기
 //     */

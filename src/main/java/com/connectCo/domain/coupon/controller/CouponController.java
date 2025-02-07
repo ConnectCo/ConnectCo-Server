@@ -59,7 +59,7 @@ public class CouponController {
     @DeleteMapping("/{couponId}")
     public BaseResponse<CouponIdResponse> deleteCoupon(
         @AuthenticationPrincipal PrincipalDetails principal,
-        @PathVariable Long couponId
+        @Parameter(description = "삭제할 쿠폰 id") @PathVariable Long couponId
     ) {
         return BaseResponse.onSuccess(couponService.deleteCoupon(principal.profileId(), couponId));
     }
