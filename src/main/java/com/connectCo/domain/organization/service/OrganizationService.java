@@ -18,10 +18,10 @@ public interface OrganizationService {
         Member member, Long organizationId, MultipartFile profileImage, OrganizationUpdateRequest request
     );
     OrganizationIdResponse deleteOrganization(Member member, Long organizationId);
+    Boolean likeOrganization(Long storeId, Long organizationId);
     OrganizationDetailInquiryResponse inquiryOrganizationDetail(
         Long profileId, ProfileType profileType, Long organizationId
     );
 //    List<OrganizationSearchResponse> searchOrganization(String keyword);
     Organization loadOrganization(Long organizationId);
-//    Organization loadOrganizationByName(String name);
 }

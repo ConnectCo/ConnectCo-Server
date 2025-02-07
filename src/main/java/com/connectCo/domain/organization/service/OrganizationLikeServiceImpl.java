@@ -5,7 +5,7 @@ import com.connectCo.domain.organization.entity.OrganizationLike;
 import com.connectCo.domain.organization.mapper.OrganizationMapper;
 import com.connectCo.domain.organization.repository.OrganizationLikeRepository;
 import com.connectCo.domain.store.entity.Store;
-import com.connectCo.domain.store.service.StoreService;
+import com.connectCo.domain.store.repository.StoreRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,13 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OrganizationLikeServiceImpl implements OrganizationLikeService {
     private final OrganizationLikeRepository organizationLikeRepository;
-    private final StoreService storeService;
+    private final StoreRepository storeRepository;
     private final OrganizationMapper organizationMapper;
 
     @Override
     @Transactional
     public Boolean likeOrganization(Long storeId, Organization organization) {
-        Store store = storeService.loadStore(storeId);
+        Store store = storeRepository.getStore(storeId);
         Optional<OrganizationLike> organizationLikeOpt
             = organizationLikeRepository.findByOrganizationAndStore(organization, store);
         if (organizationLikeOpt.isPresent()) {
@@ -35,7 +35,7 @@ public class OrganizationLikeServiceImpl implements OrganizationLikeService {
 
     @Override
     public Boolean isLikeOrganization(Long storeId, Organization organization) {
-        Store store = storeService.loadStore(storeId);
+        Store store = storeRepository.getStore(storeId);
         return organizationLikeRepository.findByOrganizationAndStore(organization, store)
             .map(OrganizationLike::getIsActive)
             .orElse(false);
@@ -43,7 +43,7 @@ public class OrganizationLikeServiceImpl implements OrganizationLikeService {
 
     @Override
     public Page<Organization> getOrganizationsByLike(Long storeId, int page, int size) {
-        Store store = storeService.loadStore(storeId);
+        Store store = storeRepository.getStore(storeId);
         return organizationLikeRepository.findAllByStoreAndIsActiveTrue(store, PageRequest.of(page, size))
             .map(OrganizationLike::getOrganization);
     }

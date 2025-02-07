@@ -171,7 +171,6 @@ public class StoreServiceImpl implements StoreService {
     }
 
     public Store loadStore(Long storeId) {
-        return storeRepository.findById(storeId)
-                .orElseThrow(() -> new CustomApiException(ErrorCode.STORE_NOT_FOUND));
+        return storeRepository.getStore(storeId);
     }
 }

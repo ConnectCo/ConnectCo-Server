@@ -107,6 +107,13 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    @Transactional
+    public Boolean likeOrganization(Long storeId, Long organizationId) {
+        Organization organization = loadOrganization(organizationId);
+        return organizationLikeService.likeOrganization(storeId, organization);
+    }
+
+    @Override
     public OrganizationDetailInquiryResponse inquiryOrganizationDetail(
         Long profileId, ProfileType profileType, Long organizationId
     ) {
@@ -136,15 +143,8 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public Organization loadOrganization(Long organizationId) {
-        return organizationRepository.findById(organizationId)
-                .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
+        return organizationRepository.getOrganization(organizationId);
     }
-//
-//    @Override
-//    public Organization loadOrganizationByName(String name) {
-//        return organizationRepository.findOrganizationByName(name)
-//                .orElseThrow(() -> new CustomApiException(ErrorCode.ORGANIZATION_NOT_FOUND));
-//    }
 
     private Organization createAndSaveOrganization(Member member, OrganizationCreateRequest request, Address address) {
         Organization organization = organizationMapper.toOrganization(member, request, address);
