@@ -155,12 +155,15 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<CouponSummaryInquiryResponse> inquiryMyCoupons(Long profileId) {
+    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryMyCoupons(
+        Long profileId, int page, int size
+    ) {
         Store store = storeService.loadStore(profileId);
+        Page<Coupon> couponPage = inquiryCouponByStore(store, PageRequest.of(page, size));
 
-        return store.getCoupons().stream()
-            .map(couponMapper::toCouponSummaryInquiryResponse)
-            .toList();
+        return couponMapper.toCouponPagingResponse(
+            couponPage.map(couponMapper::toCouponSummaryInquiryResponse)
+        );
     }
 
     @Override

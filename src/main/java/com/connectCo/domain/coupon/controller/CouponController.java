@@ -103,11 +103,17 @@ public class CouponController {
     }
 
     @Operation(summary = "나의 쿠폰 조회 API", description = "가게 프로필만 조회 가능")
+    @Parameters(value = {
+        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
     @GetMapping("/mine")
-    public BaseResponse<List<CouponSummaryInquiryResponse>> inquiryCouponByMember(
-        @AuthenticationPrincipal PrincipalDetails principal
+    public BaseResponse<CouponPagingResponse<CouponSummaryInquiryResponse>> inquiryMyCoupon(
+        @AuthenticationPrincipal PrincipalDetails principal,
+        @RequestParam(name = "page") int page,
+        @RequestParam(name = "size") int size
     ) {
-        return BaseResponse.onSuccess(couponService.inquiryMyCoupons(principal.profileId()));
+        return BaseResponse.onSuccess(couponService.inquiryMyCoupons(principal.profileId(), page, size));
     }
 
     @Operation(summary = "특정 가게의 쿠폰 조회 API", description = "비로그인 시도 가능")

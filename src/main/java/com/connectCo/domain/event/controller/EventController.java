@@ -98,6 +98,20 @@ public class EventController {
     ) {
         return BaseResponse.onSuccess(eventService.inquiryEventByLike(principal.profileId(), page, size));
     }
+
+    @Operation(summary = "나의 이벤트 조회 API", description = "조직 프로필만 가능")
+    @Parameters(value = {
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping("/mine")
+    public BaseResponse<EventPagingResponse<EventSummaryInquiryResponse>> inquiryMyEvents(
+        @AuthenticationPrincipal PrincipalDetails principal,
+        @RequestParam(name = "page") int page,
+        @RequestParam(name = "size") int size
+    ) {
+        return BaseResponse.onSuccess(eventService.inquiryMyEvents(principal.profileId(), page, size));
+    }
 //
 //    @Operation(summary = "이벤트 검색 API", description = "학교 이름, 이벤트 이름, 세부 설명에서 키워드 검색")
 //    @Parameters(value = {
@@ -132,21 +146,6 @@ public class EventController {
 //            @RequestParam(name = "size") int size) {
 //        return BaseResponse.onSuccess(eventService.inquiryEvents(type, organizationId, latitude, longitude, page, size));
 //    }
-//
-//
-//    @Operation(summary = "나의 이벤트 조회 API")
-//    @Parameters(value = {
-//            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
-//            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
-//    })
-//    @GetMapping("/mine")
-//    public BaseResponse<EventPagingResponse<EventSummaryInquiryResponse>> inquiryEventByMember(
-//            @RequestParam(name = "page") int page,
-//            @RequestParam(name = "size") int size) {
-//        return BaseResponse.onSuccess(eventService.inquiryEventByMember(page, size));
-//    }
-//
-
 //
 //    @Operation(summary = "내 주변 이벤트 조회 API")
 //    @Parameters(value = {

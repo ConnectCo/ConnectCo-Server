@@ -2,6 +2,7 @@ package com.connectCo.domain.event.repository;
 
 import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.event.entity.Event;
+import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 import org.springframework.data.domain.Page;
@@ -19,7 +20,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             .orElseThrow(() -> new CustomApiException(ErrorCode.EVENT_NOT_FOUND));
     }
 
-//    Page<Event> findAllByMember(Member member, Pageable pageable);
+    Page<Event> findAllByOrganization(Organization organization, Pageable pageable);
+
 //    // 키워드로 이벤트 조회
 //    @Query("SELECT DISTINCT e FROM Event e JOIN e.organization o WHERE " +
 //            "(e.name LIKE%:keyword% OR o.name LIKE%:keyword% OR e.description LIKE %:keyword%) AND e.expiredAt >= :currentDate")

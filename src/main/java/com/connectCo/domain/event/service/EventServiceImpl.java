@@ -2,7 +2,6 @@ package com.connectCo.domain.event.service;
 
 import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.member.entity.ProfileType;
-import com.connectCo.domain.member.service.AuthService;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.address.service.AddressService;
 import com.connectCo.domain.event.dto.request.EventCreateRequest;
@@ -10,17 +9,12 @@ import com.connectCo.domain.event.dto.request.EventUpdateRequest;
 import com.connectCo.domain.event.dto.response.*;
 import com.connectCo.domain.event.entity.Event;
 import com.connectCo.domain.event.entity.EventImage;
-import com.connectCo.domain.event.entity.EventLike;
 import com.connectCo.domain.event.mapper.EventMapper;
-import com.connectCo.domain.event.repository.EventLikeRepository;
 import com.connectCo.domain.event.repository.EventRepository;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.service.StoreService;
-import com.connectCo.global.common.enums.InquiryType;
-import com.connectCo.global.exception.CustomApiException;
-import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.global.validation.ParamValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,9 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -169,16 +161,19 @@ public class EventServiceImpl implements EventService{
         );
     }
 
-    //    /*
-//     * 나의 이벤트 조회
-//     */
-//    @Override
-//    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByMember(int page, int size) {
-//        Member member = authService.getLoginMember();
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Event> eventPage = eventRepository.findAllByMember(member, pageable);
-//        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
-//    }
+    /*
+     * 나의 이벤트 조회
+     */
+    public EventPagingResponse<EventSummaryInquiryResponse> inquiryMyEvents(
+        Long profileId, int page, int size
+    ) {
+        Organization organization = organizationService.loadOrganization(profileId);
+        Page<Event> eventPage = eventRepository.findAllByOrganization(organization, PageRequest.of(page, size));
+
+        return eventMapper.toEventPagingResponse(
+            eventPage.map(eventMapper::toEventSummaryInquiryResponse)
+        );
+    }
 //
 //    /*
 //     * 이벤트 검색

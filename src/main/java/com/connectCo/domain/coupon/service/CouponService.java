@@ -24,7 +24,7 @@ public interface CouponService {
         Long profileId, ProfileType profileType, Long couponId
     );
     CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponsByLike(Long profileId, int page, int size);
-    List<CouponSummaryInquiryResponse> inquiryMyCoupons(Long profileId);
+    CouponPagingResponse<CouponSummaryInquiryResponse> inquiryMyCoupons(Long profileId, int page, int size);
     CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponsByStore(Long storeId, int page, int size);
     CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponsByRecent(int page, int size);
 }
