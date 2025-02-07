@@ -6,6 +6,7 @@ import com.connectCo.domain.coupon.dto.request.CouponUpdateRequest;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -39,7 +40,7 @@ public class Coupon extends BaseEntity {
     private String notification;
 
     @Column(nullable = false)
-    private LocalDateTime expiredAt;
+    private LocalDate expiredAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn

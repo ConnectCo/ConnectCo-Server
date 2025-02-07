@@ -63,7 +63,7 @@ public class CouponMapper {
                 .couponId(coupon.getId())
                 .name(coupon.getName())
                 .description(coupon.getDescription())
-                .expiredAt(coupon.getExpiredAt().toLocalDate())
+                .expiredAt(coupon.getExpiredAt())
                 .thumbnail(thumbnail)
                 .build();
     }
@@ -78,7 +78,7 @@ public class CouponMapper {
             .description(coupon.getDescription())
             .priorityTarget(coupon.getPriorityTarget())
             .notification(coupon.getNotification())
-            .expiredAt(coupon.getExpiredAt().toLocalDate())
+            .expiredAt(coupon.getExpiredAt())
             .createdAt(coupon.getCreatedAt().toLocalDate())
             .images(coupon.getImages().stream()
                 .map(CouponImage::getUrl)

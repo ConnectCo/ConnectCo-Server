@@ -2,6 +2,7 @@ package com.connectCo.domain.coupon.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ public class CouponUpdateRequest {
     private String name;
 
     @NotBlank(message = "쿠폰 신청 마감일은 필수 입력값입니다.")
-    private LocalDateTime expiredAt;
+    private LocalDate expiredAt;
 
     @NotBlank(message = "쿠폰 세부 설명은 필수 입력값입니다.")
     private String description;
