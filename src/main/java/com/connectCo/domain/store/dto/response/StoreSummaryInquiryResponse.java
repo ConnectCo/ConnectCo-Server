@@ -19,6 +19,6 @@ public class StoreSummaryInquiryResponse {
     @Schema(description = "가게 썸네일 URL", example = "thumbnail-url")
     private String thumbnail;
 
-    @Schema(description = "보유 쿠폰 개수", example = "5")
-    private int couponCount;
+    @Schema(description = "신청 가능한 쿠폰 개수", example = "5")
+    private long couponCount;
 }

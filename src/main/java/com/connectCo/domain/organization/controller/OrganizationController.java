@@ -5,10 +5,13 @@ import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
 import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationIdResponse;
 import com.connectCo.domain.organization.dto.response.OrganizationDetailInquiryResponse;
+import com.connectCo.domain.organization.dto.response.OrganizationPagingResponse;
+import com.connectCo.domain.organization.dto.response.OrganizationSummaryInquiryResponse;
 import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -58,7 +61,14 @@ public class OrganizationController {
         return BaseResponse.onSuccess(organizationService.deleteOrganization(principal.member(), organizationId));
     }
 
-    // TODO: 조직 찜하기
+    @Operation(summary = "조직 찜하기 API", description = "가게 프로필만 가능")
+    @PostMapping("/{organizationId}/like")
+    public BaseResponse<Boolean> likeOrganization(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Parameter(description = "찜할 조직 id") @PathVariable Long organizationId
+    ) {
+        return BaseResponse.onSuccess(organizationService.likeOrganization(principal.profileId(), organizationId));
+    }
 
     @Operation(summary = "조직 상세 조회 API", description = "비로그인 시도 가능")
     @GetMapping("/{organizationId}/detail")
@@ -75,14 +85,21 @@ public class OrganizationController {
             organizationService.inquiryOrganizationDetail(principal.profileId(), principal.profileType(), organizationId)
         );
     }
-//
-//    @Operation(summary = "조직 검색 API", description = "이름 오름차순으로 정렬")
-//    @Parameters(value = {
-//            @Parameter(name = "keyword", description = "이름에 포함되는 키워드로 한글자 이상 입력"),
-//    })
-//    @GetMapping("/search")
-//    public BaseResponse<List<OrganizationSearchResponse>> searchOrganization(
-//            @RequestParam(name = "keyword") String keyword) {
-//        return BaseResponse.onSuccess(organizationService.searchOrganization(keyword));
-//    }
+
+    @Operation(summary = "내가 찜한 조직 조회 API", description = "가게 프로필만 가능")
+    @Parameters(value = {
+        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping("/like")
+    public BaseResponse<OrganizationPagingResponse<OrganizationSummaryInquiryResponse>> inquiryOrganizationsByLike(
+        @AuthenticationPrincipal PrincipalDetails principal,
+        @RequestParam(name = "page") int page,
+        @RequestParam(name = "size") int size
+    ) {
+        return BaseResponse.onSuccess(
+            organizationService.inquiryOrganizationsByLike(principal.profileId(), page, size)
+        );
+    }
+
 }

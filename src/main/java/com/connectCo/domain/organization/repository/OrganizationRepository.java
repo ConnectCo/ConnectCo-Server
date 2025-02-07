@@ -17,10 +17,6 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
     }
 
     long countByMember(Member member);
-
-    // 키워드로 조직을 검색
-    List<Organization> findAllByNameContainingIgnoreCaseOrderByNameAsc(String keyword);
-    Optional<Organization> findOrganizationByName(String name);
-
     boolean existsOrganizationByName(String name);
+
 }

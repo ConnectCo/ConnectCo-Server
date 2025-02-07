@@ -14,6 +14,8 @@ import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.entity.StoreImage;
 import com.connectCo.domain.store.entity.StoreLike;
 import com.connectCo.global.common.mapper.CommonMapper;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -61,12 +63,19 @@ public class StoreMapper {
     }
 
     public StoreSummaryInquiryResponse toStoreSummaryInquiryResponse(Store store) {
+        // 유효한 쿠폰 개수
+        long validCouponCount = store.getCoupons().stream()
+            .filter(coupon ->
+                coupon.getExpiredAt().isAfter(LocalDate.now()) ||
+                coupon.getExpiredAt().isEqual(LocalDate.now())
+            ).count();
+
         return StoreSummaryInquiryResponse.builder()
                 .storeId(store.getId())
                 .name(store.getName())
                 .description(store.getDescription())
                 .thumbnail(store.getProfileImage())
-                .couponCount(store.getCoupons().size())
+                .couponCount(validCouponCount)
                 .build();
     }
 
@@ -97,7 +106,7 @@ public class StoreMapper {
         return StoreDetailInquiryResponse.StoreCoupon.builder()
             .couponId(coupon.getId())
             .name(coupon.getName())
-            .expiredAt(coupon.getExpiredAt().toLocalDate())
+            .expiredAt(coupon.getExpiredAt())
             .couponThumbnail(couponThumbnail)
             .build();
     }

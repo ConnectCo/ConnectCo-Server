@@ -6,12 +6,16 @@ import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationDetailInquiryResponse;
-import com.connectCo.domain.organization.dto.response.OrganizationSearchResponse;
+import com.connectCo.domain.organization.dto.response.OrganizationPagingResponse;
+import com.connectCo.domain.organization.dto.response.OrganizationSummaryInquiryResponse;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.entity.OrganizationLike;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.mapper.CommonMapper;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -35,16 +39,31 @@ public class OrganizationMapper {
             .build();
     }
 
-    public OrganizationDetailInquiryResponse.OrganizationEvent toOrganizationEvent(Event event) {
-        String eventThumbnail = (event.getImages() != null && !event.getImages().isEmpty())
-            ? event.getImages().get(0).getUrl()
-            : null;
+    public <T>OrganizationPagingResponse<T> tOrganizationPagingResponse(Page<T> organizations) {
+        return OrganizationPagingResponse.<T>builder()
+            .organizations(organizations.getContent())
+            .page(organizations.getNumber())
+            .totalPages(organizations.getTotalPages())
+            .totalElements((int) organizations.getTotalElements())
+            .isFirst(organizations.isFirst())
+            .isLast(organizations.isLast())
+            .build();
+    }
 
-        return OrganizationDetailInquiryResponse.OrganizationEvent.builder()
-            .eventId(event.getId())
-            .name(event.getName())
-            .eventThumbnail(eventThumbnail)
-            .expiredAt(event.getExpiredAt())
+    public OrganizationSummaryInquiryResponse toOrganizationSummaryInquiryResponse(Organization organization) {
+        // 유효한 이벤트 개수
+        long validEventCount = organization.getEvents().stream()
+            .filter(event->
+                event.getExpiredAt().isAfter(LocalDate.now()) ||
+                event.getExpiredAt().isEqual(LocalDate.now())
+            ).count();
+
+        return OrganizationSummaryInquiryResponse.builder()
+            .organizationId(organization.getId())
+            .name(organization.getName())
+            .description(organization.getDescription())
+            .thumbnail(organization.getProfileImage())
+            .eventCount(validEventCount)
             .build();
     }
 
@@ -67,8 +86,16 @@ public class OrganizationMapper {
     }
 
 
+    public OrganizationDetailInquiryResponse.OrganizationEvent toOrganizationEvent(Event event) {
+        String eventThumbnail = (event.getImages() != null && !event.getImages().isEmpty())
+            ? event.getImages().get(0).getUrl()
+            : null;
 
-    public OrganizationSearchResponse toOrganizationSearchResponse(Organization organization) {
-        return new OrganizationSearchResponse(organization.getId(), organization.getName());
+        return OrganizationDetailInquiryResponse.OrganizationEvent.builder()
+            .eventId(event.getId())
+            .name(event.getName())
+            .eventThumbnail(eventThumbnail)
+            .expiredAt(event.getExpiredAt())
+            .build();
     }
 }

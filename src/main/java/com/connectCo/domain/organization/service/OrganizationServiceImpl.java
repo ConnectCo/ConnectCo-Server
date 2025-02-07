@@ -8,6 +8,8 @@ import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
 import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationDetailInquiryResponse;
 import com.connectCo.domain.organization.dto.response.OrganizationIdResponse;
+import com.connectCo.domain.organization.dto.response.OrganizationPagingResponse;
+import com.connectCo.domain.organization.dto.response.OrganizationSummaryInquiryResponse;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.mapper.OrganizationMapper;
 import com.connectCo.domain.organization.repository.OrganizationRepository;
@@ -16,6 +18,7 @@ import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.global.validation.ParamValidator;
 import com.connectCo.utils.S3FileComponent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -133,13 +136,16 @@ public class OrganizationServiceImpl implements OrganizationService {
         );
     }
 
-//    @Override
-//    public List<OrganizationSearchResponse> searchOrganization(String keyword) {
-//
-//        List<Organization> organizations = organizationRepository.findAllByNameContainingIgnoreCaseOrderByNameAsc(keyword);
-//
-//        return organizations.stream().map(organizationMapper::toOrganizationSearchResponse).toList();
-//    }
+    @Override
+    public OrganizationPagingResponse<OrganizationSummaryInquiryResponse> inquiryOrganizationsByLike(
+        Long profileId, int page, int size
+    ) {
+        Page<Organization> organizationPage = organizationLikeService.getOrganizationsByLike(profileId, page, size);
+
+        return organizationMapper.tOrganizationPagingResponse(
+            organizationPage.map(organizationMapper::toOrganizationSummaryInquiryResponse)
+        );
+    }
 
     @Override
     public Organization loadOrganization(Long organizationId) {
