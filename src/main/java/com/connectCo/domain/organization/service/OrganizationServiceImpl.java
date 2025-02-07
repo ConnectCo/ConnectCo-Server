@@ -16,6 +16,7 @@ import com.connectCo.domain.organization.repository.OrganizationRepository;
 import com.connectCo.global.common.dto.AddressRequest;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
+import com.connectCo.global.validation.ParamValidator;
 import com.connectCo.utils.S3FileComponent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -59,18 +60,38 @@ public class OrganizationServiceImpl implements OrganizationService {
 
         return new OrganizationIdResponse(newOrganization.getId());
     }
-//
-//    @Override
-//    @Transactional
-//    public OrganizationIdResponse updateOrganizationInfo(Long organizationId, OrganizationUpdateRequest request) {
-//
-//        validateAdmin();
-//
-//        Organization organization = loadOrganization(organizationId);
-//        organization.updateOrganizationInfo(request);
-//
-//        return new OrganizationIdResponse(organization.getId());
-//    }
+
+    @Override
+    @Transactional
+    public OrganizationIdResponse updateOrganization(
+        Member member, Long organizationId, MultipartFile profileImage, OrganizationUpdateRequest request
+    ) {
+        Organization organization = loadOrganization(organizationId);
+        // 수정 권한 유효성 검사(본인이 아닌 경우 수정 불가)
+        ParamValidator.validModify(organization.getMember().getId(), member.getId());
+        if (organizationRepository.existsOrganizationByName(request.getName()) && !organization.getName().equals(request.getName())) {
+            throw new CustomApiException(ErrorCode.ORGANIZATION_NAME_DUPLICATION);
+        }
+
+        // 주소 정보 업데이트
+        organization.getAddress().updateAddress(
+            request.getDetailAddress(), request.getLatitude(), request.getLongitude()
+        );
+
+        // 정보 수정
+        organization.updateOrganizationInfo(request);
+
+        // 프로필 이미지 업데이트(이미지가 있을 경우)
+        if (profileImage != null) {
+            if (organization.getProfileImage() != null) {
+                s3FileComponent.deleteFile(organization.getProfileImage());
+            }
+            String profileUrl = s3FileComponent.uploadFile("organization", profileImage);
+            organization.updateProfileImage(profileUrl);
+        }
+
+        return new OrganizationIdResponse(organization.getId());
+    }
 //
 //    @Override
 //    @Transactional

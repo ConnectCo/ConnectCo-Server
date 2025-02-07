@@ -2,6 +2,7 @@ package com.connectCo.domain.organization.controller;
 
 import com.connectCo.config.security.auth.PrincipalDetails;
 import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
+import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationIdResponse;
 import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.global.common.BaseResponse;
@@ -23,7 +24,7 @@ public class OrganizationController {
 
     private final OrganizationService organizationService;
 
-    @Operation(summary = "조직 등록 API")
+    @Operation(summary = "조직 등록 API", description = "로그인한 회원만 가능")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<OrganizationIdResponse> createOrganization(
             @AuthenticationPrincipal PrincipalDetails principal,
@@ -34,14 +35,18 @@ public class OrganizationController {
             organizationService.createOrganization(principal.member(), profileImage, request)
         );
     }
-//
-//    @Operation(summary = "조직 기본 정보 수정 API(관리자용)", description = "이름, url 정보만 수정 가능")
-//    @PatchMapping("/{organizationId}")
-//    public BaseResponse<OrganizationIdResponse> updateOrganizationInfo(
-//            @Parameter(description = "수정할 조직 id") @PathVariable Long organizationId,
-//            @RequestBody OrganizationUpdateRequest request) {
-//        return BaseResponse.onSuccess(organizationService.updateOrganizationInfo(organizationId, request));
-//    }
+
+    @Operation(summary = "조직 기본 정보 수정 API", description = "본인만 가능")
+    @PatchMapping("/{organizationId}")
+    public BaseResponse<OrganizationIdResponse> updateOrganization(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Parameter(description = "수정할 조직 id") @PathVariable Long organizationId,
+            @Parameter(description = "조직 프로필 이미지 파일(없을 시 사용 x)") @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+            @Parameter(description = "조직 수정 요청 json") @RequestPart("request") OrganizationUpdateRequest request) {
+        return BaseResponse.onSuccess(
+            organizationService.updateOrganization(principal.member(), organizationId, profileImage, request)
+        );
+    }
 //
 //    @Operation(summary = "조직 주소 정보 수정 API(관리자용)", description = "주소 정보만 수정 가능")
 //    @PatchMapping("/{organizationId}/address")

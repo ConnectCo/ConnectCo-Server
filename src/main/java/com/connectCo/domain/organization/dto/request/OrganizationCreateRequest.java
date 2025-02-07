@@ -28,8 +28,8 @@ public class OrganizationCreateRequest {
     @Schema(description = "경도", example = "126.9780")
     private double longitude;
 
-    @Schema(description = "조직 번호", example = "010-1234-5678")
-    private String organizationNumber;
+    @Schema(description = "조직 전화번호", example = "010-1234-5678")
+    private String phoneNumber;
 
     @Schema(description = "인증 이메일")
     @Email(message = "이메일 형식이 아닙니다.")

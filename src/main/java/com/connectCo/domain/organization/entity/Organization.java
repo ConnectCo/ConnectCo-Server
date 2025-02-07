@@ -30,5 +30,6 @@ public class Organization extends Profile {
 
     public void updateOrganizationInfo(OrganizationUpdateRequest request) {
         this.name = request.getName();
+        this.phoneNumber = request.getPhoneNumber();
     }
 }

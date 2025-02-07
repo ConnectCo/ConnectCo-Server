@@ -4,7 +4,6 @@ import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
-import com.connectCo.domain.organization.dto.response.OrganizationInquiryResponse;
 import com.connectCo.domain.organization.dto.response.OrganizationSearchResponse;
 import com.connectCo.domain.organization.entity.Organization;
 import org.springframework.stereotype.Component;
@@ -14,7 +13,7 @@ public class OrganizationMapper {
     public Organization toOrganization(Member member, OrganizationCreateRequest request, Address address) {
         return Organization.builder()
             .name(request.getName())
-            .phoneNumber(request.getOrganizationNumber())
+            .phoneNumber(request.getPhoneNumber())
             .email(request.getEmail())
             .address(address)
             .member(member)
