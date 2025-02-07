@@ -39,10 +39,10 @@ public class CouponDetailInquiryResponse {
     private List<String> images;
 
     @Schema(description = "좋아요 여부")
-    Boolean isLike;
+    private Boolean isLike;
 
     @Schema(description = "내 쿠폰 여부")
-    Boolean isMine;
+    private Boolean isMine;
 
     @Getter
     @AllArgsConstructor

@@ -1,6 +1,7 @@
 package com.connectCo.domain.event.service;
 
 import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.member.service.AuthService;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.address.service.AddressService;
@@ -130,15 +131,28 @@ public class EventServiceImpl implements EventService{
 
         return eventLikeService.likeEvent(event, store);
     }
-//
-//    /*
-//     * 특정 이벤트 상세 조회
-//     */
-//    @Override
-//    public EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId){
-//        Event event = loadEvent(eventId);
-//        return eventMapper.toEventDetailInquiryResponse(event);
-//    }
+
+    /*
+     * 특정 이벤트 상세 조회
+     */
+    @Override
+    public EventDetailInquiryResponse inquiryEventDetail(
+        Long profileId, ProfileType profileType, Long eventId
+    ){
+        Event event = eventRepository.getEvent(eventId);
+
+        // 본인 여부 확인
+        Boolean isMine = event.getOrganization().getId().equals(profileId);
+
+        // 찜 여부 확인
+        Boolean isLiked = Boolean.FALSE;
+        if (profileId != null && profileType != null && profileType.equals(ProfileType.STORE)) {
+            Store store = storeService.loadStore(profileId);
+            isLiked = eventLikeService.isLikeEvent(event, store);
+        }
+
+        return eventMapper.toEventDetailInquiryResponse(event, isLiked, isMine);
+    }
 //
 //    /*
 //     * 이벤트 검색

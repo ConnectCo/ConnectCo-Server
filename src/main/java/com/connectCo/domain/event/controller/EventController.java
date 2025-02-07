@@ -5,12 +5,9 @@ import com.connectCo.domain.event.dto.request.EventCreateRequest;
 import com.connectCo.domain.event.dto.request.EventUpdateRequest;
 import com.connectCo.domain.event.dto.response.*;
 import com.connectCo.domain.event.service.EventService;
-import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
 import com.connectCo.global.common.BaseResponse;
-import com.connectCo.global.common.enums.InquiryType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -72,13 +69,20 @@ public class EventController {
     ){
         return BaseResponse.onSuccess(eventService.likeEvent(principal.profileId(), eventId));
     }
-//
-//    @Operation(summary = "이벤트 상세 조회 API")
-//    @GetMapping("/{eventId}")
-//    public BaseResponse<EventDetailInquiryResponse> inquiryEventByEventId (
-//            @Parameter(description = "상세 조회할 이벤트 id") @PathVariable("eventId") Long eventId) {
-//        return BaseResponse.onSuccess(eventService.inquiryEventDetailByEventId(eventId));
-//    }
+
+    @Operation(summary = "이벤트 상세 조회 API", description = "비로그인 시도 가능")
+    @GetMapping("/{eventId}/detail")
+    public BaseResponse<EventDetailInquiryResponse> inquiryEventDetail(
+        @AuthenticationPrincipal PrincipalDetails principal,
+        @Parameter(description = "조회할 이벤트 id") @PathVariable("eventId") Long eventId
+    ) {
+        if (principal == null) {
+            return BaseResponse.onSuccess(eventService.inquiryEventDetail(null, null, eventId));
+        }
+        return BaseResponse.onSuccess(
+            eventService.inquiryEventDetail(principal.profileId(), principal.profileType(), eventId)
+        );
+    }
 //
 //    @Operation(summary = "이벤트 검색 API", description = "학교 이름, 이벤트 이름, 세부 설명에서 키워드 검색")
 //    @Parameters(value = {

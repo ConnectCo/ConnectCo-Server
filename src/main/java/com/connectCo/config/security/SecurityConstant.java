@@ -12,6 +12,7 @@ public class SecurityConstant {
         "/auth/login", "/auth/refresh",
         "/stores/*/detail", "/organizations/*/detail",
         "/coupons/*/detail", "/coupons/store/*", "/coupons/recent", "/coupons/distance", "/coupons/deadline",
+        "/events/*/detail",
         "/v3/**", "/swagger-ui/**",
         "/test/**",
         "/ws/**"

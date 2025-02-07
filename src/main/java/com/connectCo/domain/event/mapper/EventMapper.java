@@ -12,6 +12,7 @@ import com.connectCo.domain.event.entity.Event;
 import com.connectCo.domain.event.entity.EventImage;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.store.entity.Store;
+import com.connectCo.global.common.mapper.CommonMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -62,21 +63,32 @@ public class EventMapper {
     }
 
 
-    public EventDetailInquiryResponse toEventDetailInquiryResponse(Event event) {
+    public EventDetailInquiryResponse toEventDetailInquiryResponse(
+        Event event, boolean isLike, boolean isMine
+    ) {
         return EventDetailInquiryResponse.builder()
-                .eventId(event.getId())
-                .organizationName(event.getOrganization().getName())
-                .name(event.getName())
-                .expiredAt(event.getExpiredAt())
-                .description(event.getDescription())
-                .startAt(event.getStartAt())
-                .endAt(event.getEndAt())
-                .benefitTarget(event.getBenefitTarget())
-                .priorityTarget(event.getPriorityTarget())
-                .detailAddress(event.getAddress().getDetailAddress())
-                .notification(event.getNotification())
-                .images(toImageUrls(event.getImages()))
-                .build();
+            .eventId(event.getId())
+            .organization(toOrganizationInfo(event.getOrganization()))
+            .name(event.getName())
+            .description(event.getDescription())
+            .startAt(event.getStartAt())
+            .endAt(event.getEndAt())
+            .expiredAt(event.getExpiredAt())
+            .benefitTarget(event.getBenefitTarget())
+            .priorityTarget(event.getPriorityTarget())
+            .address(CommonMapper.toAddressResponse(event.getAddress()))
+            .notification(event.getNotification())
+            .images(toImageUrls(event.getImages()))
+            .isLike(isLike)
+            .isMine(isMine)
+            .build();
+    }
+
+    private EventDetailInquiryResponse.OrganizationInfo toOrganizationInfo(Organization organization) {
+        return new EventDetailInquiryResponse.OrganizationInfo(
+            organization.getId(),
+            organization.getName()
+        );
     }
 
 
