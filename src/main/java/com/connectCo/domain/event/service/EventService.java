@@ -18,7 +18,7 @@ public interface EventService {
         Long profileId, Long eventId, List<MultipartFile> newImages, EventUpdateRequest request
     );
     EventIdResponse deleteEvent(Long profileId, Long eventId);
-//    Boolean likeEvent(Long eventId);
+    Boolean likeEvent(Long profileId, Long eventId);
 //    EventDetailInquiryResponse inquiryEventDetailByEventId(Long eventId);
 //
 //    EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword, int page, int size);

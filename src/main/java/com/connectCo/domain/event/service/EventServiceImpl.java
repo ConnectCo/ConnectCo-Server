@@ -10,12 +10,13 @@ import com.connectCo.domain.event.dto.response.*;
 import com.connectCo.domain.event.entity.Event;
 import com.connectCo.domain.event.entity.EventImage;
 import com.connectCo.domain.event.entity.EventLike;
-import com.connectCo.domain.event.mapper.EventLikeMapper;
 import com.connectCo.domain.event.mapper.EventMapper;
 import com.connectCo.domain.event.repository.EventLikeRepository;
 import com.connectCo.domain.event.repository.EventRepository;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.service.OrganizationService;
+import com.connectCo.domain.store.entity.Store;
+import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.common.enums.InquiryType;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
@@ -36,13 +37,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService{
 
-//    private final EventLikeRepository eventLikeRepository;
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
-//    private final EventLikeMapper eventLikeMapper;
-//
     private final EventImageService eventImageService;
+    private final EventLikeService eventLikeService;
+
     private final AddressService addressService;
+    private final StoreService storeService;
     private final OrganizationService organizationService;
 //
     /*
@@ -118,20 +119,17 @@ public class EventServiceImpl implements EventService{
         return new EventIdResponse(eventId);
     }
 
-//    /*
-//     * 특정 가게 찜하기
-//     */
-//    @Override
-//    @Transactional
-//    public Boolean likeEvent(Long eventId){
-//        Member member = authService.getLoginMember();
-//        Event event = loadEvent(eventId);
-//
-//        Optional <EventLike> eventLike = eventLikeRepository.findByMemberAndEvent(member, event);
-//
-//        return eventLike.map(EventLike::changeIsChecked)
-//                .orElseGet(() -> eventLikeRepository.save(eventLikeMapper.toEventLike(member, event)).isChecked());
-//    }
+    /*
+     * 특정 이벤트 찜하기
+     */
+    @Override
+    @Transactional
+    public Boolean likeEvent(Long profileId, Long eventId){
+        Store store = storeService.loadStore(profileId);
+        Event event = eventRepository.getEvent(eventId);
+
+        return eventLikeService.likeEvent(event, store);
+    }
 //
 //    /*
 //     * 특정 이벤트 상세 조회

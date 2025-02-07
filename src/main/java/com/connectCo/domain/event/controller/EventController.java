@@ -63,13 +63,15 @@ public class EventController {
     ) {
         return BaseResponse.onSuccess(eventService.deleteEvent(principal.profileId(), eventId));
     }
-//
-//    @Operation(summary = "이벤트 찜하기 API")
-//    @PostMapping("/{eventId}/like")
-//    public BaseResponse<Boolean> likeEvent(
-//            @Parameter(description = "찜할 이벤트 id") @PathVariable("eventId") Long eventId){
-//        return BaseResponse.onSuccess(eventService.likeEvent(eventId));
-//    }
+
+    @Operation(summary = "이벤트 찜하기 API", description = "가게 프로필만 가능")
+    @PostMapping("/{eventId}/like")
+    public BaseResponse<Boolean> likeEvent(
+        @AuthenticationPrincipal PrincipalDetails principal,
+        @Parameter(description = "찜할 이벤트 id") @PathVariable("eventId") Long eventId
+    ){
+        return BaseResponse.onSuccess(eventService.likeEvent(principal.profileId(), eventId));
+    }
 //
 //    @Operation(summary = "이벤트 상세 조회 API")
 //    @GetMapping("/{eventId}")

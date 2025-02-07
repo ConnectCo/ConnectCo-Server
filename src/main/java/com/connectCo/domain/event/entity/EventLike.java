@@ -1,6 +1,6 @@
 package com.connectCo.domain.event.entity;
 
-import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,19 +19,19 @@ public class EventLike extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private boolean isChecked;
+    private Boolean isActive;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private Member member;
+    private Store store;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Event event;
 
-    public boolean changeIsChecked(){
-        this.isChecked = !this.isChecked;
-        return isChecked;
+    public boolean changeLike(){
+        this.isActive = !this.isActive;
+        return isActive;
     }
 
 }

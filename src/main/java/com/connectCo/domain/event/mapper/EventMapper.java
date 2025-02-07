@@ -1,5 +1,6 @@
 package com.connectCo.domain.event.mapper;
 
+import com.connectCo.domain.event.entity.EventLike;
 import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.event.dto.request.EventCreateRequest;
@@ -10,6 +11,7 @@ import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
 import com.connectCo.domain.event.entity.Event;
 import com.connectCo.domain.event.entity.EventImage;
 import com.connectCo.domain.organization.entity.Organization;
+import com.connectCo.domain.store.entity.Store;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -35,9 +37,17 @@ public class EventMapper {
 
     public EventImage toEventImage(Event event, String url) {
         return EventImage.builder()
-                .event(event)
-                .url(url)
-                .build();
+            .event(event)
+            .url(url)
+            .build();
+    }
+
+    public EventLike toEventLike(Store store, Event event) {
+        return EventLike.builder()
+            .event(event)
+            .store(store)
+            .isActive(true)
+            .build();
     }
 
     public <T> EventPagingResponse<T> toEventPagingResponse(Page<T> events) {
