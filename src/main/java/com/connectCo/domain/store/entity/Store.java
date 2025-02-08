@@ -1,78 +1,61 @@
 package com.connectCo.domain.store.entity;
 
-import com.connectCo.domain.Member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.coupon.entity.Coupon;
+import com.connectCo.domain.member.entity.Profile;
 import com.connectCo.domain.store.dto.request.StoreUpdateRequest;
-import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicInsert;
 
 @Getter
 @Entity
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Where(clause = "deleted_at is null")
-public class Store extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
-    private String name;
+@DynamicInsert
+public class Store extends Profile {
 
     private String description;
 
     @Column(nullable = false)
-    private String storeNumber;
+    private String phoneNumber;
 
     @Column(nullable = false)
     private String operatingTime;
-
-    @Column(nullable = false)
-    private int couponCount;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn
     private Address address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Member member;
-
     @OneToMany(mappedBy = "store")
-    private List<StoreImage> images = new ArrayList<>();
-
-    @OneToMany(mappedBy = "store")
+    @Builder.Default
     private List<Coupon> coupons = new ArrayList<>();
+
+    @Column(nullable = false)
+    @Builder.Default
+    private int appliedEventCount = 0;
 
     public void updateStoreInfo(StoreUpdateRequest request) {
         this.name = request.getName();
         this.description = request.getDescription();
-        this.storeNumber = request.getStoreNumber();
+        this.phoneNumber = request.getStoreNumber();
         this.operatingTime = request.getOperatingTime();
     }
 
-    public void changeImages(List<StoreImage> storeImages) {
-        // 새로운 이미지로 변경
-        this.images = storeImages;
+    public void addCoupon(Coupon coupon) {
+        this.coupons.add(coupon);
     }
 
-    public void updateCoupon(List<Coupon> coupons) {
-        this.coupons = coupons;
-    }
-
-    public String getThumbnail() {
-        return this.images.stream()
-                .findFirst()
-                .map(StoreImage::getUrl)
-                .orElse(null);
+    public void removeCoupon(Coupon coupon) {
+        this.coupons.remove(coupon);
     }
 }

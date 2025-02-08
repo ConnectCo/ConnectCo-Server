@@ -1,6 +1,6 @@
 package com.connectCo.domain.coupon.entity;
 
-import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,13 +19,18 @@ public class CouponLike extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private boolean isChecked;
+    private Boolean isActive;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private Member member;
+    private Organization organization;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Coupon coupon;
+
+    public boolean changeLike() {
+        this.isActive = !this.isActive;
+        return isActive;
+    }
 }

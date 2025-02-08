@@ -2,6 +2,8 @@ package com.connectCo.domain.coupon.repository;
 
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.store.entity.Store;
+import com.connectCo.global.exception.CustomApiException;
+import com.connectCo.global.exception.ErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,8 +12,11 @@ import java.util.List;
 
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
 
-    List<Coupon> findAllByStore(Store store);
-
+    default Coupon getCoupon(Long couponId) {
+        return findById(couponId)
+            .orElseThrow(() -> new CustomApiException(ErrorCode.COUPON_NOT_FOUND));
+    }
+    Page<Coupon> findAllByStore(Store store, Pageable pageable);
     Page<Coupon> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
 }

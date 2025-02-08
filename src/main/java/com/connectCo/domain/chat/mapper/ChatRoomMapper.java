@@ -1,6 +1,6 @@
 package com.connectCo.domain.chat.mapper;
 
-import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.chat.dto.response.ChatRoomSummaryResponse;
 import com.connectCo.domain.chat.entity.ChatRoom;
 import org.springframework.stereotype.Component;
@@ -22,8 +22,8 @@ public class ChatRoomMapper {
                         ? chatRoom.getReceiver().getId()
                         : chatRoom.getSender().getId())
                 .otherMemberName(chatRoom.getSender().getId().equals(loginMemberId)
-                        ? chatRoom.getReceiver().getName()
-                        : chatRoom.getSender().getName())
+                        ? chatRoom.getReceiver().getClientId()
+                        : chatRoom.getSender().getClientId())
                 .recentMessage(chatRoom.getRecentMessage())
                 .recentMessageTime(chatRoom.getRecentMessageTime())
                 .build();

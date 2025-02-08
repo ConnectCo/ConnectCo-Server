@@ -1,7 +1,7 @@
 package com.connectCo.domain.chat.entity;
 
 
-import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.member.entity.Member;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;

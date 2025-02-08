@@ -1,41 +1,62 @@
 package com.connectCo.domain.organization.entity;
 
 import com.connectCo.domain.address.entity.Address;
+import com.connectCo.domain.event.entity.Event;
+import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.entity.Profile;
 import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
-import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.Where;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicInsert;
 
 @Getter
 @Entity
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Where(clause = "deleted_at is null")
-public class Organization extends BaseEntity {
+@DynamicInsert
+public class Organization extends Profile {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(nullable = false)
+    private String description;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+    @Column(nullable = false)
+    private String phoneNumber;
+
+    @Column(nullable = false)
+    private String email;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn
     private Address address;
 
-    @Column(nullable = false)
-    private String homepageUrl;
+    @OneToMany(mappedBy = "organization")
+    @Builder.Default
+    private List<Event> events = new ArrayList<>();
 
     @Column(nullable = false)
-    private String academicDayUrl;
+    @Builder.Default
+    private int appliedCouponCount = 0;
 
 
     public void updateOrganizationInfo(OrganizationUpdateRequest request) {
         this.name = request.getName();
-        this.homepageUrl = request.getHomepageUrl();
-        this.academicDayUrl = request.getAcademicDayUrl();
+        this.description = request.getDescription();
+        this.phoneNumber = request.getPhoneNumber();
+    }
+
+    public void addEvent(Event event) {
+        this.events.add(event);
+    }
+
+    public void removeEvent(Event event) {
+        this.events.remove(event);
     }
 }

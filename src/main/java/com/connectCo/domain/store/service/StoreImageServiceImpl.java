@@ -37,6 +37,17 @@ public class StoreImageServiceImpl implements StoreImageService {
      * 삭제할 기존 이미지를 S3와 DB에서 삭제
      */
     @Override
+    @Transactional
+    public void deleteImages(Store store) {
+        List<StoreImage> imagesToRemove = storeImageRepository.findAllByStore(store);
+        deleteExistingImages(imagesToRemove);
+    }
+
+    /*
+     * 기존 이미지를 S3와 DB에서 삭제
+     */
+    @Override
+    @Transactional
     public void deleteExistingImages(List<StoreImage> imagesToRemove) {
         for (StoreImage image : imagesToRemove) {
             s3FileComponent.deleteFile(image.getUrl());
@@ -49,9 +60,9 @@ public class StoreImageServiceImpl implements StoreImageService {
      */
     @Override
     @Transactional
-    public void updateStoreImages(Store store, List<String> existingImageUrls, List<MultipartFile> newImages) {
+    public String updateStoreImages(Store store, List<String> existingImageUrls, List<MultipartFile> newImages) {
         // 기존 이미지를 유지하거나 삭제
-        List<StoreImage> existingImages = store.getImages();
+        List<StoreImage> existingImages = storeImageRepository.findAllByStore(store);
         List<StoreImage> existingImagesToKeep = existingImages.stream()
                 .filter(image -> existingImageUrls.contains(image.getUrl()))
                 .collect(Collectors.toList());
@@ -66,9 +77,17 @@ public class StoreImageServiceImpl implements StoreImageService {
 
         // 기존 이미지와 새로운 이미지를 합침
         existingImagesToKeep.addAll(newStoreImages);
-        store.changeImages(existingImagesToKeep);
 
         // 삭제할 기존 이미지 삭제
         deleteExistingImages(imagesToRemove);
+
+        return existingImagesToKeep.get(0).getUrl();
+    }
+
+    @Override
+    public List<String> getStoreImageUrls(Store store) {
+        return storeImageRepository.findAllByStore(store).stream()
+                .map(StoreImage::getUrl)
+                .toList();
     }
 }

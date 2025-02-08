@@ -1,10 +1,9 @@
 package com.connectCo.domain.event.entity;
 
-import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.event.dto.request.EventUpdateRequest;
 import com.connectCo.domain.organization.entity.Organization;
-import com.connectCo.domain.sponsorship.entity.Sponsorship;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -51,31 +50,16 @@ public class Event extends BaseEntity {
     @Column(nullable = false)
     private String priorityTarget;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private Integer likeCount = 0;
-
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn
     private Address address;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
     private Organization organization;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<EventCoupon> coupons = new ArrayList<>();
-
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private List<EventImage> images = new ArrayList<>();
-
-    public void setOrganization(Organization organization) {
-        this.organization = organization;
-    }
 
     public void updateEventInfo(EventUpdateRequest request) {
         this.name = request.getName();
@@ -98,21 +82,5 @@ public class Event extends BaseEntity {
                 .findFirst()
                 .map(EventImage::getUrl)
                 .orElse(null);
-    }
-
-    public String getOrganizationName() {
-        return Optional.ofNullable(organization)
-                .map(Organization::getName)
-                .orElse(null);
-    }
-
-    public void increaseLikeCount() {
-        this.likeCount++;
-    }
-
-    public void decreaseLikeCount() {
-        if (this.likeCount > 0) {
-            this.likeCount--;
-        }
     }
 }

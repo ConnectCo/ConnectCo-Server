@@ -1,21 +1,24 @@
 package com.connectCo.domain.organization.controller;
 
+import com.connectCo.config.security.auth.PrincipalDetails;
 import com.connectCo.domain.organization.dto.request.OrganizationCreateRequest;
 import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import com.connectCo.domain.organization.dto.response.OrganizationIdResponse;
-import com.connectCo.domain.organization.dto.response.OrganizationInquiryResponse;
-import com.connectCo.domain.organization.dto.response.OrganizationSearchResponse;
+import com.connectCo.domain.organization.dto.response.OrganizationDetailInquiryResponse;
+import com.connectCo.domain.organization.dto.response.OrganizationPagingResponse;
+import com.connectCo.domain.organization.dto.response.OrganizationSummaryInquiryResponse;
 import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.global.common.BaseResponse;
-import com.connectCo.global.common.dto.AddressRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "조직 API", description = "조직 관련 API")
 @RestController
@@ -25,51 +28,78 @@ public class OrganizationController {
 
     private final OrganizationService organizationService;
 
-    @Operation(summary = "조직 등록 API(관리자용)")
-    @PostMapping
+    @Operation(summary = "조직 등록 API", description = "로그인한 회원만 가능")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public BaseResponse<OrganizationIdResponse> createOrganization(
-            @RequestBody OrganizationCreateRequest request) {
-        return BaseResponse.onSuccess(organizationService.createOrganization(request));
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Parameter(description = "조직 프로필 이미지 파일(없을 시 사용 x)") @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+            @Parameter(description = "조직 생성 요청 json") @RequestPart OrganizationCreateRequest request
+    ) {
+        return BaseResponse.onSuccess(
+            organizationService.createOrganization(principal.member(), profileImage, request)
+        );
     }
 
-    @Operation(summary = "조직 기본 정보 수정 API(관리자용)", description = "이름, url 정보만 수정 가능")
+    @Operation(summary = "조직 기본 정보 수정 API", description = "본인만 가능")
     @PatchMapping("/{organizationId}")
-    public BaseResponse<OrganizationIdResponse> updateOrganizationInfo(
+    public BaseResponse<OrganizationIdResponse> updateOrganization(
+            @AuthenticationPrincipal PrincipalDetails principal,
             @Parameter(description = "수정할 조직 id") @PathVariable Long organizationId,
-            @RequestBody OrganizationUpdateRequest request) {
-        return BaseResponse.onSuccess(organizationService.updateOrganizationInfo(organizationId, request));
+            @Parameter(description = "조직 프로필 이미지 파일(없을 시 사용 x)") @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+            @Parameter(description = "조직 수정 요청 json") @RequestPart("request") OrganizationUpdateRequest request) {
+        return BaseResponse.onSuccess(
+            organizationService.updateOrganization(principal.member(), organizationId, profileImage, request)
+        );
     }
 
-    @Operation(summary = "조직 주소 정보 수정 API(관리자용)", description = "주소 정보만 수정 가능")
-    @PatchMapping("/{organizationId}/address")
-    public BaseResponse<OrganizationIdResponse> updateOrganizationAddress(
-            @Parameter(description = "수정할 조직 id") @PathVariable Long organizationId,
-            @RequestBody AddressRequest request ) {
-        return BaseResponse.onSuccess(organizationService.updateOrganizationAddress(organizationId, request));
-
-    }
-
-    @Operation(summary = "조직 삭제 API(관리자용)")
+    @Operation(summary = "조직 삭제 API", description = "본인만 가능")
     @DeleteMapping("/{organizationId}")
     public BaseResponse<OrganizationIdResponse> deleteOrganization(
-            @Parameter(description = "삭제할 조직 id") @PathVariable Long organizationId) {
-        return BaseResponse.onSuccess(organizationService.deleteOrganization(organizationId));
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Parameter(description = "삭제할 조직 id") @PathVariable Long organizationId
+    ) {
+        return BaseResponse.onSuccess(organizationService.deleteOrganization(principal.member(), organizationId));
     }
 
-    @Operation(summary = "조직 상세 조회 API")
-    @GetMapping("/{organizationName}")
-    public BaseResponse<OrganizationInquiryResponse> inquiryOrganization(
-            @Parameter(description = "조회할 조직 이름") @PathVariable String organizationName) {
-        return BaseResponse.onSuccess(organizationService.inquiryOrganization(organizationName));
+    @Operation(summary = "조직 찜하기 API", description = "가게 프로필만 가능")
+    @PostMapping("/{organizationId}/like")
+    public BaseResponse<Boolean> likeOrganization(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Parameter(description = "찜할 조직 id") @PathVariable Long organizationId
+    ) {
+        return BaseResponse.onSuccess(organizationService.likeOrganization(principal.profileId(), organizationId));
     }
 
-    @Operation(summary = "조직 검색 API", description = "이름 오름차순으로 정렬")
+    @Operation(summary = "조직 상세 조회 API", description = "비로그인 시도 가능")
+    @GetMapping("/{organizationId}/detail")
+    public BaseResponse<OrganizationDetailInquiryResponse> inquiryOrganizationDetail(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Parameter(description = "조회할 조직 이름") @PathVariable Long organizationId
+    ) {
+        if (principal == null) {
+            return BaseResponse.onSuccess(
+                organizationService.inquiryOrganizationDetail(null, null, organizationId)
+            );
+        }
+        return BaseResponse.onSuccess(
+            organizationService.inquiryOrganizationDetail(principal.profileId(), principal.profileType(), organizationId)
+        );
+    }
+
+    @Operation(summary = "내가 찜한 조직 조회 API", description = "가게 프로필만 가능")
     @Parameters(value = {
-            @Parameter(name = "keyword", description = "이름에 포함되는 키워드로 한글자 이상 입력"),
+        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
     })
-    @GetMapping("/search")
-    public BaseResponse<List<OrganizationSearchResponse>> searchOrganization(
-            @RequestParam(name = "keyword") String keyword) {
-        return BaseResponse.onSuccess(organizationService.searchOrganization(keyword));
+    @GetMapping("/like")
+    public BaseResponse<OrganizationPagingResponse<OrganizationSummaryInquiryResponse>> inquiryOrganizationsByLike(
+        @AuthenticationPrincipal PrincipalDetails principal,
+        @RequestParam(name = "page") int page,
+        @RequestParam(name = "size") int size
+    ) {
+        return BaseResponse.onSuccess(
+            organizationService.inquiryOrganizationsByLike(principal.profileId(), page, size)
+        );
     }
+
 }

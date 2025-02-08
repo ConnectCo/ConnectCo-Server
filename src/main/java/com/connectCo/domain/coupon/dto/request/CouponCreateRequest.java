@@ -2,6 +2,8 @@ package com.connectCo.domain.coupon.dto.request;
 
 import com.connectCo.global.validation.annotation.ExistStore;
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,19 +13,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CouponCreateRequest {
     @NotBlank(message = "쿠폰 이름은 필수 입력값입니다.")
-//    @ExistStore 추후 CouponValidation 처리 해야함.
     private String name;
 
-    @NotBlank(message = "가게 ID는 필수 입력값입니다.")
-    @ExistStore // 해당 어노테이션으로 가게의 존재 여부를 확인할 수 있습니다.
-    private Long storeId;
+    @NotBlank(message = "쿠폰 신청 마감일은 필수 입력값입니다.")
+    private LocalDate expiredAt;
 
-    @NotBlank(message = "쿠폰 만료 날짜는 필수 입력값입니다.")
-    private String expiredAt; // ISO 8601 형식의 날짜와 시간 문자열을 받습니다.
-
-    @NotBlank(message = "쿠폰 설명은 필수 입력값입니다.")
+    @NotBlank(message = "쿠폰 세부 설명은 필수 입력값입니다.")
     private String description;
-
 
     private String priorityTarget;
 

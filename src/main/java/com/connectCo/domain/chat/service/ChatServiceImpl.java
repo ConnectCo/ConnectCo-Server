@@ -1,7 +1,7 @@
 package com.connectCo.domain.chat.service;
 
-import com.connectCo.domain.Member.entity.Member;
-import com.connectCo.domain.Member.repository.MemberRepository;
+import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.repository.MemberRepository;
 import com.connectCo.domain.chat.dto.request.CreateChatRequest;
 import com.connectCo.domain.chat.dto.response.ChatResponse;
 import com.connectCo.domain.chat.entity.Chat;

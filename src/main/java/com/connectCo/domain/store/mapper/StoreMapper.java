@@ -1,8 +1,10 @@
 package com.connectCo.domain.store.mapper;
 
-import com.connectCo.domain.Member.entity.Member;
-import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.coupon.entity.Coupon;
+import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.address.entity.Address;
+import com.connectCo.domain.member.entity.ProfileType;
+import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
 import com.connectCo.domain.store.dto.response.StoreDetailInquiryResponse;
 import com.connectCo.domain.store.dto.response.StoreLocationInquiryResponse;
@@ -12,6 +14,8 @@ import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.entity.StoreImage;
 import com.connectCo.domain.store.entity.StoreLike;
 import com.connectCo.global.common.mapper.CommonMapper;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -22,14 +26,14 @@ public class StoreMapper {
 
     public Store toStore(Member member, StoreCreateRequest request, Address address) {
         return Store.builder()
-                .name(request.getName())
-                .address(address)
-                .storeNumber(request.getStoreNumber())
-                .operatingTime(request.getOperatingTime())
-                .description(request.getDescription())
-                .couponCount(0)
-                .member(member)
-                .build();
+            .name(request.getName())
+            .description(request.getDescription())
+            .phoneNumber(request.getStoreNumber())
+            .operatingTime(request.getOperatingTime())
+            .address(address)
+            .member(member)
+            .profileType(ProfileType.STORE)
+            .build();
     }
 
     public StoreImage toStoreImage(Store store, String url) {
@@ -39,15 +43,15 @@ public class StoreMapper {
                 .build();
     }
 
-    public StoreLike toStoreLike(Store store, Member member) {
+    public StoreLike toStoreLike(Organization organization, Store store) {
         return StoreLike.builder()
                 .store(store)
-                .member(member)
-                .isChecked(true)
+                .organization(organization)
+                .isActive(true)
                 .build();
     }
 
-    public <T>StorePagingResponse<T> toStorePagingResponse(Page<T> stores) {
+    public <T> StorePagingResponse<T> toStorePagingResponse(Page<T> stores) {
         return StorePagingResponse.<T>builder()
                 .stores(stores.getContent())
                 .page(stores.getNumber())
@@ -59,50 +63,51 @@ public class StoreMapper {
     }
 
     public StoreSummaryInquiryResponse toStoreSummaryInquiryResponse(Store store) {
+        // 유효한 쿠폰 개수
+        long validCouponCount = store.getCoupons().stream()
+            .filter(coupon ->
+                coupon.getExpiredAt().isAfter(LocalDate.now()) ||
+                coupon.getExpiredAt().isEqual(LocalDate.now())
+            ).count();
 
         return StoreSummaryInquiryResponse.builder()
                 .storeId(store.getId())
                 .name(store.getName())
                 .description(store.getDescription())
-                .thumbnail(store.getThumbnail())
-                .couponCount(store.getCouponCount())
+                .thumbnail(store.getProfileImage())
+                .couponCount(validCouponCount)
                 .build();
     }
 
     public StoreDetailInquiryResponse toStoreDetailInquiryResponse(
-            Store store, List<String> images, List<StoreDetailInquiryResponse.StoreCoupon> coupons) {
+            Store store, List<String> images, Boolean isLike,
+            Boolean isMine, List<StoreDetailInquiryResponse.StoreCoupon> coupons
+    ) {
         return StoreDetailInquiryResponse.builder()
                 .storeId(store.getId())
                 .name(store.getName())
                 .description(store.getDescription())
                 .address(CommonMapper.toAddressResponse(store.getAddress()))
-                .number(store.getStoreNumber())
+                .phoneNumber(store.getPhoneNumber())
                 .operatingTime(store.getOperatingTime())
                 .images(images)
                 .coupons(coupons)
-                .build();
-    }
-
-    public StoreLocationInquiryResponse toStoreLocationInquiryResponse(Object[] storeWithDistance) {
-        Store store = (Store) storeWithDistance[0];
-        double distance = (double) storeWithDistance[1];
-        return StoreLocationInquiryResponse.builder()
-                .storeId(store.getId())
-                .name(store.getName())
-                .description(store.getDescription())
-                .thumbnail(store.getThumbnail())
-                .latitude(store.getAddress().getLatitude())
-                .longitude(store.getAddress().getLongitude())
-                .couponCount(store.getCouponCount())
-                .distance(distance)
+                .appliedEventCount(store.getAppliedEventCount())
+                .isLike(isLike)
+                .isMine(isMine)
                 .build();
     }
 
     public StoreDetailInquiryResponse.StoreCoupon toStoreCoupon(Coupon coupon) {
+        String couponThumbnail = (coupon.getImages() != null && !coupon.getImages().isEmpty())
+            ? coupon.getImages().get(0).getUrl()
+            : null;
+
         return StoreDetailInquiryResponse.StoreCoupon.builder()
-                .couponId(coupon.getId())
-                .name(coupon.getName())
-                .expiredAt(coupon.getExpiredAt())
-                .build();
+            .couponId(coupon.getId())
+            .name(coupon.getName())
+            .expiredAt(coupon.getExpiredAt())
+            .couponThumbnail(couponThumbnail)
+            .build();
     }
 }

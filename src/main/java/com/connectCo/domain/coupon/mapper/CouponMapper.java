@@ -1,16 +1,16 @@
 package com.connectCo.domain.coupon.mapper;
 
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
-import com.connectCo.domain.coupon.dto.response.CouponDetailResponse;
+import com.connectCo.domain.coupon.dto.response.CouponDetailInquiryResponse;
+import com.connectCo.domain.coupon.dto.response.CouponPagingResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.coupon.entity.CouponImage;
+import com.connectCo.domain.coupon.entity.CouponLike;
+import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.store.entity.Store;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class CouponMapper {
@@ -18,7 +18,7 @@ public class CouponMapper {
     public Coupon toCoupon(Store store, CouponCreateRequest request){
         return Coupon.builder()
                 .name(request.getName())
-                .expiredAt(LocalDate.parse(request.getExpiredAt()))
+                .expiredAt(request.getExpiredAt())
                 .description(request.getDescription())
                 .priorityTarget(request.getPriorityTarget())
                 .notification(request.getNotification())
@@ -34,6 +34,24 @@ public class CouponMapper {
                 .build();
     }
 
+    public CouponLike toCouponLike(Coupon coupon, Organization organization) {
+        return CouponLike.builder()
+                .coupon(coupon)
+                .organization(organization)
+                .isActive(true)
+                .build();
+    }
+
+    public <T>CouponPagingResponse<T> toCouponPagingResponse(Page<T> coupons) {
+        return CouponPagingResponse.<T>builder()
+            .coupons(coupons.getContent())
+            .page(coupons.getNumber())
+            .totalPages(coupons.getTotalPages())
+            .totalElements((int) coupons.getTotalElements())
+            .isFirst(coupons.isFirst())
+            .isLast(coupons.isLast())
+            .build();
+    }
 
     public CouponSummaryInquiryResponse toCouponSummaryInquiryResponse(Coupon coupon) {
         String thumbnail = coupon.getImages().stream()
@@ -43,32 +61,35 @@ public class CouponMapper {
 
         return CouponSummaryInquiryResponse.builder()
                 .couponId(coupon.getId())
+                .storeName(coupon.getStore().getName())
                 .name(coupon.getName())
-                .description(coupon.getDescription())
                 .expiredAt(coupon.getExpiredAt())
                 .thumbnail(thumbnail)
                 .build();
     }
 
-    public CouponDetailResponse toCouponDetailResponse(Coupon coupon) {
-        List<String> imageUrls = coupon.getImages().stream()
+    public CouponDetailInquiryResponse toCouponDetailResponse(
+        Coupon coupon, Boolean isLiked, Boolean isMine
+    ) {
+        return CouponDetailInquiryResponse.builder()
+            .id(coupon.getId())
+            .store(toStoreInfo(coupon.getStore()))
+            .name(coupon.getName())
+            .description(coupon.getDescription())
+            .priorityTarget(coupon.getPriorityTarget())
+            .notification(coupon.getNotification())
+            .expiredAt(coupon.getExpiredAt())
+            .createdAt(coupon.getCreatedAt().toLocalDate())
+            .images(coupon.getImages().stream()
                 .map(CouponImage::getUrl)
-                .collect(Collectors.toList());
+                .toList()
+            )
+            .isLike(isLiked)
+            .isMine(isMine)
+            .build();
+    }
 
-
-        return CouponDetailResponse.builder()
-                .id(coupon.getId())
-                .storeId(coupon.getStore().getId())
-                .name(coupon.getName())
-                .description(coupon.getDescription())
-                .priorityTarget(coupon.getPriorityTarget())
-                .notification(coupon.getNotification())
-                .couponType(coupon.getCouponType().toString())
-                .expiredAt(coupon.getExpiredAt())
-                .images(imageUrls)
-                .validCount(coupon.getValidCount())
-                .validPeriod(coupon.getValidPeriod())
-                .validDate(coupon.getValidDate())
-                .build();
+    private CouponDetailInquiryResponse.StoreInfo toStoreInfo(Store store) {
+        return new CouponDetailInquiryResponse.StoreInfo(store.getId(), store.getName());
     }
 }

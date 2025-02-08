@@ -1,6 +1,8 @@
 package com.connectCo.domain.organization.dto.request;
 
 import com.connectCo.global.validation.annotation.ExistOrganization;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,9 +17,25 @@ public class OrganizationCreateRequest {
     @NotBlank(message = "조직 이름은 필수 입력값입니다.")
     @ExistOrganization
     private String name;
+
+    @Schema(description = "조직 설명", example = "이것은 조직 A 입니다.")
+    @NotBlank(message = "조직 설명은 필수 입력값입니다.")
+    private String description;
+
+    @Schema(description = "조직 주소", example = "주소")
+    @NotBlank(message = "조직 주소는 필수 입력값입니다.")
     private String detailAddress;
+
+    @Schema(description = "위도", example = "37.5665")
     private double latitude;
+
+    @Schema(description = "경도", example = "126.9780")
     private double longitude;
-    private String homepageUrl;
-    private String academicDayUrl;
+
+    @Schema(description = "조직 전화번호", example = "010-1234-5678")
+    private String phoneNumber;
+
+    @Schema(description = "인증 이메일")
+    @Email(message = "이메일 형식이 아닙니다.")
+    private String email;
 }

@@ -1,6 +1,7 @@
 package com.connectCo.domain.store.entity;
 
-import com.connectCo.domain.Member.entity.Member;
+import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,18 +20,18 @@ public class StoreLike extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private boolean isChecked;
+    private Boolean isActive;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private Member member;
+    private Organization organization;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Store store;
 
     public boolean changeLike() {
-        this.isChecked = !this.isChecked;
-        return isChecked;
+        this.isActive = !this.isActive;
+        return isActive;
     }
 }

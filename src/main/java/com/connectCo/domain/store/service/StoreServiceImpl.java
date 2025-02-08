@@ -1,7 +1,9 @@
 package com.connectCo.domain.store.service;
 
-import com.connectCo.domain.Member.entity.Member;
-import com.connectCo.domain.Member.service.AuthService;
+import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.entity.Profile;
+import com.connectCo.domain.member.entity.ProfileType;
+import com.connectCo.domain.member.service.AuthService;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.address.service.AddressService;
 import com.connectCo.domain.store.dto.request.StoreCreateRequest;
@@ -32,11 +34,10 @@ import java.util.Optional;
 public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
-    private final StoreLikeRepository storeLikeRepository;
     private final StoreMapper storeMapper;
     private final StoreImageService storeImageService;
+    private final StoreLikeService storeLikeService;
 
-    private final AuthService authService;
     private final AddressService addressService;
 
     /*
@@ -44,15 +45,27 @@ public class StoreServiceImpl implements StoreService {
      */
     @Override
     @Transactional
-    public StoreIdResponse createStore(List<MultipartFile> storeImages, StoreCreateRequest request) {
-        Member member = authService.getLoginMember();
+    public StoreIdResponse createStore(
+        Member member, List<MultipartFile> storeImages, MultipartFile businessLicense, StoreCreateRequest request
+    ) {
+        // 가게 등록 제한 검사
+        if (storeRepository.countByMember(member) >= 3) {
+            throw new CustomApiException(ErrorCode.STORE_LIMIT_EXCEEDED);
+        }
+
         Address newAddress = addressService.createAddress(
-                request.getDetailAddress(), request.getLatitude(), request.getLongitude());
+                request.getDetailAddress(), request.getLatitude(), request.getLongitude()
+        );
+
+        // TODO: 사업자 등록증 심사 로직 추가
+
         Store newStore = createAndSaveStore(member, request, newAddress);
 
-        List<StoreImage> newStoreImages = (storeImages != null) ?
-                storeImageService.createAndSaveStoreImages(newStore, storeImages) : List.of();
-        newStore.changeImages(newStoreImages);
+        if (storeImages != null) {
+            List<StoreImage> andSaveStoreImages = storeImageService.createAndSaveStoreImages(newStore, storeImages);
+            newStore.updateProfileImage(andSaveStoreImages.get(0).getUrl());
+        }
+
         return new StoreIdResponse(newStore.getId());
     }
 
@@ -61,11 +74,15 @@ public class StoreServiceImpl implements StoreService {
      */
     @Override
     @Transactional
-    public StoreIdResponse updateStore(Long storeId, List<MultipartFile> newImages, StoreUpdateRequest request) {
-        Member member = authService.getLoginMember();
+    public StoreIdResponse updateStore(
+        Member member, Long storeId, List<MultipartFile> newImages, StoreUpdateRequest request
+    ) {
         Store store = loadStore(storeId);
         // 수정 권한 유효성 검사(본인이 아닌 경우 수정 불가)
         ParamValidator.validModify(member.getId(), store.getMember().getId());
+        if (storeRepository.existsByName(request.getName()) && !store.getName().equals(request.getName())) {
+            throw new CustomApiException(ErrorCode.STORE_NAME_DUPLICATION);
+        }
 
         // 주소 정보 업데이트
         store.getAddress().updateAddress(request.getDetailAddress(), request.getLatitude(), request.getLongitude());
@@ -73,7 +90,10 @@ public class StoreServiceImpl implements StoreService {
         store.updateStoreInfo(request);
 
         // 이미지 업데이트
-        storeImageService.updateStoreImages(store, request.getExistingImages(), newImages);
+        if (newImages != null || !request.getExistingImages().isEmpty() ) {
+            String profileUrl = storeImageService.updateStoreImages(store, request.getExistingImages(), newImages);
+            store.updateProfileImage(profileUrl);
+        }
 
         return new StoreIdResponse(store.getId());
     }
@@ -83,18 +103,17 @@ public class StoreServiceImpl implements StoreService {
      */
     @Override
     @Transactional
-    public StoreIdResponse deleteStore(Long storeId) {
-        Member member = authService.getLoginMember();
+    public StoreIdResponse deleteStore(Member member, Long storeId) {
         Store store = loadStore(storeId);
         // 삭제 권한 유효성 검사
         ParamValidator.validModify(member.getId(), store.getMember().getId());
 
         // 가게 이미지 삭제
-        storeImageService.deleteExistingImages(store.getImages());
-        store.changeImages(List.of());
+        storeImageService.deleteImages(store);
+        // TODO: 관련된 쿠폰, 찜 기록, 협찬 기록, 채팅 기록 등 삭제 로직 추가
 
-        // 가게 soft 삭제
         store.delete();
+        store.updateProfileImage(null);
 
         return new StoreIdResponse(storeId);
     }
@@ -104,90 +123,54 @@ public class StoreServiceImpl implements StoreService {
      */
     @Override
     @Transactional
-    public Boolean likeStore(Long storeId) {
-        Member member = authService.getLoginMember();
+    public Boolean likeStore(Long profileId, Long storeId) {
         Store store = loadStore(storeId);
-
-        Optional<StoreLike> storeLike = storeLikeRepository.findByMemberAndStore(member, store);
-
-        return storeLike.map(StoreLike::changeLike)
-                .orElseGet(() -> storeLikeRepository.save(storeMapper.toStoreLike(store, member)).isChecked());
-
+        return storeLikeService.likeStore(profileId, store);
     }
 
     /*
      * 특정 가게 상세 조회
      */
     @Override
-    public StoreDetailInquiryResponse inquiryStoreDetail(Long storeId) {
+    public StoreDetailInquiryResponse inquiryStoreDetail(
+        Long profileId, ProfileType profileType, Long storeId
+    ) {
+        // 본인 여부 확인
+        Boolean isMine = storeId.equals(profileId);
         Store store = loadStore(storeId);
 
-        return storeMapper.toStoreDetailInquiryResponse(store,
-                store.getImages().stream().map(StoreImage::getUrl).toList(),
-                store.getCoupons().stream().limit(2).map(storeMapper::toStoreCoupon).toList());
+        // 찜 여부 확인
+        Boolean isLiked = Boolean.FALSE;
+        if (profileId != null && profileType != null && profileType.equals(ProfileType.ORGANIZATION)) {
+            isLiked = storeLikeService.isLikeStore(profileId, store);
+        }
+
+        return storeMapper.toStoreDetailInquiryResponse(
+            store, storeImageService.getStoreImageUrls(store), isLiked, isMine,
+            store.getCoupons().stream().limit(2).map(storeMapper::toStoreCoupon).toList()
+        );
     }
 
     /*
      * 내가 찜한 가게 조회
      */
     @Override
-    public StorePagingResponse<StoreSummaryInquiryResponse> inquiryStoreByLike(int page, int size) {
-        Member member = authService.getLoginMember();
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Store> storePage = storeLikeRepository.findAllByMemberAndIsChecked(member, true, pageable)
-                .map(StoreLike::getStore);
-        return storeMapper.toStorePagingResponse(storePage.map(storeMapper::toStoreSummaryInquiryResponse));
+    public StorePagingResponse<StoreSummaryInquiryResponse> inquiryStoresByLike(
+        Long profileId, int page, int size
+    ) {
+        Page<Store> storePage = storeLikeService.getStoresByLike(profileId, page, size);
+
+        return storeMapper.toStorePagingResponse(
+            storePage.map(storeMapper::toStoreSummaryInquiryResponse)
+        );
     }
 
-    /*
-     * 나의 가게 조회
-     */
-    @Override
-    public StorePagingResponse<StoreSummaryInquiryResponse> inquiryStoreByMember(int page, int size) {
-        Member member = authService.getLoginMember();
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Store> storePage = storeRepository.findAllByMember(member, pageable);
-        return storeMapper.toStorePagingResponse(storePage.map(storeMapper::toStoreSummaryInquiryResponse));
-    }
-
-    /*
-     * 내 주변 가게 목록 조회
-     */
-    @Override
-    public StorePagingResponse<StoreLocationInquiryResponse> inquiryStoreByLocation(
-            double latitude, double longitude, int radius, int page, int size) {
-        // 위도, 경도, 반경 값 유효성 검사
-        ParamValidator.validLocation(latitude, longitude);
-        ParamValidator.validRadius(radius);
-
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<Object[]> storePage = storeRepository.findStoresByLocationWithDistance(latitude, longitude, radius, pageable);
-        Page<StoreLocationInquiryResponse> mappedPage = storePage.map(storeMapper::toStoreLocationInquiryResponse);
-        return storeMapper.toStorePagingResponse(mappedPage);
-    }
-
-    /*
-     * 특정 member의 가게 목록을 조회
-     */
-    @Override
-    public List<Store> getStoresByMember(Member member) {
-        return storeRepository.findAllByMember(member);
-    }
-
-    /*
-     * Store 객체를 생성하고 DB에 저장
-     */
     private Store createAndSaveStore(Member member, StoreCreateRequest request, Address address) {
         Store store = storeMapper.toStore(member, request, address);
         return storeRepository.save(store);
     }
 
-    /*
-     * 가게 id로 가게 엔티티를 반환
-     */
     public Store loadStore(Long storeId) {
-        return storeRepository.findById(storeId)
-                .orElseThrow(() -> new CustomApiException(ErrorCode.STORE_NOT_FOUND));
+        return storeRepository.getStore(storeId);
     }
 }
