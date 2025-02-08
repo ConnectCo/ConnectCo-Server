@@ -26,6 +26,7 @@ public class OrganizationMapper {
             .phoneNumber(request.getPhoneNumber())
             .email(request.getEmail())
             .address(address)
+            .description(request.getDescription())
             .member(member)
             .profileType(ProfileType.ORGANIZATION)
             .build();
