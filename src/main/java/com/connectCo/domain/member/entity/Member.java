@@ -33,7 +33,10 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
+    private String fcmToken;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    public void saveFcmToken(String fcmToken) { this.fcmToken = fcmToken; }
 }

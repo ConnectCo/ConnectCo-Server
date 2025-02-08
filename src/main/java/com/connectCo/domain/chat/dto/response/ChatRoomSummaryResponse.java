@@ -11,6 +11,6 @@ public class ChatRoomSummaryResponse {
     private Long chatRoomId;
     private Long otherMemberId;
     private String otherMemberName;
-    private String lastMessage;
-    LocalDateTime lastMessageTime;
+    private String recentMessage;
+    private LocalDateTime recentMessageTime;
 }

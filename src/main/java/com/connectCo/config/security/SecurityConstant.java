@@ -15,7 +15,7 @@ public class SecurityConstant {
         "/events/*/detail",
         "/v3/**", "/swagger-ui/**",
         "/test/**",
-        "/ws/**"
+        "/ws/**", "members/fcm-token"
     };
 
     // 로그인 필요 API

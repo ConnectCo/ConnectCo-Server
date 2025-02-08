@@ -22,9 +22,10 @@ public class ChatRoomMapper {
                         ? chatRoom.getReceiver().getId()
                         : chatRoom.getSender().getId())
                 .otherMemberName(chatRoom.getSender().getId().equals(loginMemberId)
-                        ? chatRoom.getReceiver().getName()
-                        : chatRoom.getSender().getName())
-                .lastMessage("최근 메시지 구현 필요")//Todo 최근 메시지 반환 추가
+                        ? chatRoom.getReceiver().getClientId()
+                        : chatRoom.getSender().getClientId())
+                .recentMessage(chatRoom.getRecentMessage())
+                .recentMessageTime(chatRoom.getRecentMessageTime())
                 .build();
     }
 

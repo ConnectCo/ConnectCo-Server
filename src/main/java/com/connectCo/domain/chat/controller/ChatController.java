@@ -3,7 +3,6 @@ package com.connectCo.domain.chat.controller;
 import com.connectCo.domain.chat.dto.request.CreateChatRequest;
 import com.connectCo.domain.chat.dto.response.ChatResponse;
 import com.connectCo.domain.chat.dto.response.ChatRoomSummaryResponse;
-import com.connectCo.domain.chat.dto.response.CreateChatResponse;
 import com.connectCo.domain.chat.service.ChatRoomService;
 import com.connectCo.domain.chat.service.ChatService;
 import com.connectCo.global.common.BaseResponse;
@@ -29,19 +28,19 @@ public class ChatController {
     @Operation(summary = "채팅 메세지 보내기 API")
     @MessageMapping("/{roomId}")
     @SendTo("/topic/{roomId}")
-    public BaseResponse<CreateChatResponse> createChat(@DestinationVariable String roomId, CreateChatRequest request){
+    public BaseResponse<ChatResponse> createChat(@DestinationVariable String roomId, CreateChatRequest request){
         return BaseResponse.onSuccess(chatService.createChat(request));
     }
 
     @Operation(summary = "내 채팅방 목록 조회 API")
     @GetMapping("/rooms")
-    public BaseResponse<List<ChatRoomSummaryResponse>> getChatRoomsByUser(@RequestParam Long memberId) {
+    public BaseResponse<List<ChatRoomSummaryResponse>> getChatRoomsByMember(@RequestParam Long memberId) {
         return BaseResponse.onSuccess(chatRoomService.getChatRoomsByMember(memberId));
     }
 
     @Operation(summary = "채팅방 메시지 조회 API")
     @GetMapping("/room/{chatRoomId}/chats")
-    public BaseResponse<List<ChatResponse>> getChatRoomChats(@PathVariable Long chatRoomId) {
-        return BaseResponse.onSuccess(chatService.getChatsByChatRoom(chatRoomId));
+    public BaseResponse<List<ChatResponse>> getChatByChatRoom(@PathVariable Long chatRoomId) {
+        return BaseResponse.onSuccess(chatRoomService.getChatsByChatRoom(chatRoomId));
     }
 }
