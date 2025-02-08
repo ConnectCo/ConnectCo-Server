@@ -179,4 +179,6 @@ public class CouponController {
     }
 
     // TODO: 쿠폰 추천 조회 추가
+
+    // TODO: 쿠폰 검색 추가
 }
