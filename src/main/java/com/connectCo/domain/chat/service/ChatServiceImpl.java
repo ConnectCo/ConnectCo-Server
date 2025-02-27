@@ -1,6 +1,6 @@
 package com.connectCo.domain.chat.service;
 
-import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.entity.Profile;
 import com.connectCo.domain.member.repository.MemberRepository;
 import com.connectCo.domain.chat.dto.request.CreateChatRequest;
 import com.connectCo.domain.chat.dto.response.ChatResponse;
@@ -10,6 +10,7 @@ import com.connectCo.domain.chat.mapper.ChatMapper;
 import com.connectCo.domain.chat.repository.ChatRepository;
 import com.connectCo.domain.chat.repository.ChatRoomRepository;
 import com.connectCo.domain.fcm.service.FcmService;
+import com.connectCo.domain.member.repository.ProfileRepository;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 import jakarta.transaction.Transactional;
@@ -24,7 +25,7 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
     private final ChatMapper chatMapper;
     private final ChatRoomRepository chatRoomRepository;
-    private final MemberRepository memberRepository;
+    private final ProfileRepository profileRepository;
     private final FcmService fcmService;
 
     @Override
@@ -54,7 +55,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private void sendPushNotificationToReceiver(CreateChatRequest request) {
-        Member member = memberRepository.findById(request.getReceiverId()).orElseThrow(()->new CustomApiException(ErrorCode.USER_NOT_FOUND));
-        fcmService.sendPushNotification(member.getFcmToken(), "새로운 메시지", request.getMessage());
+        Profile profile = profileRepository.findById(request.getReceiverId()).orElseThrow(()->new CustomApiException(ErrorCode.USER_NOT_FOUND));
+        fcmService.sendPushNotification(profile.getFcmToken(), "새로운 메시지", request.getMessage());
     }
 }
