@@ -13,7 +13,6 @@ import com.connectCo.domain.organization.entity.OrganizationLike;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.global.common.mapper.CommonMapper;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -25,6 +24,7 @@ public class OrganizationMapper {
             .name(request.getName())
             .phoneNumber(request.getPhoneNumber())
             .email(request.getEmail())
+            .description(request.getDescription())
             .address(address)
             .description(request.getDescription())
             .member(member)

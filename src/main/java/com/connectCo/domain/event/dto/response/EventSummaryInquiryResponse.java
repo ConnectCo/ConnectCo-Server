@@ -10,13 +10,13 @@ import java.time.LocalDate;
 @Builder
 public class EventSummaryInquiryResponse {
     @Schema(description = "이벤트 ID", example = "1")
-    private Long eventId;
+    private Long id;
 
     @Schema(description = "조직 이름", example = "조직 A")
-    private String organizationName;
+    private String name;
 
     @Schema(description = "이벤트 이름", example = "이벤트 A")
-    private String name;
+    private String title;
 
     @Schema(description = "이벤트 협찬 마감일", example = "2021-12-31")
     private LocalDate expiredAt;

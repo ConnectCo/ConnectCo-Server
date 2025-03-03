@@ -11,7 +11,7 @@ public class SecurityConstant {
     public static final String[] PUBLIC_URLS = {
         "/auth/login", "/auth/refresh",
         "/stores/*/detail", "/organizations/*/detail",
-        "/coupons/*/detail", "/coupons/store/*", "/coupons/recent", "/coupons/distance", "/coupons/deadline",
+        "/coupons/*/detail", "/coupons/store/*", "/coupons",
         "/events/*/detail",
         "/v3/**", "/swagger-ui/**",
         "/test/**",

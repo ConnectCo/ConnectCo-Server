@@ -81,6 +81,7 @@ public class EventMapper {
             .images(toImageUrls(event.getImages()))
             .isLike(isLike)
             .isMine(isMine)
+            .couponCount(0) // TODO: 쿠폰 개수 조회
             .build();
     }
 
@@ -94,9 +95,9 @@ public class EventMapper {
 
     public EventSummaryInquiryResponse toEventSummaryInquiryResponse(Event event) {
         return EventSummaryInquiryResponse.builder()
-            .eventId(event.getId())
-            .organizationName(event.getOrganization().getName())
-            .name(event.getName())
+            .id(event.getId())
+            .name(event.getOrganization().getName())
+            .title(event.getName())
             .expiredAt(event.getExpiredAt())
             .thumbnail(event.getThumbnail())
             .build();

@@ -8,7 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
 
@@ -18,5 +19,14 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     }
     Page<Coupon> findAllByStore(Store store, Pageable pageable);
     Page<Coupon> findAllByOrderByCreatedAtDesc(Pageable pageable);
-
+    Page<Coupon> findAllByOrderByExpiredAtAsc(Pageable pageable);
+    @Query(value = """
+        SELECT c.* FROM coupon c
+        JOIN store s ON c.store_id = s.id
+        JOIN address a ON s.address_id = a.id
+        ORDER BY ST_Distance_Sphere(POINT(:longitude, :latitude), POINT(a.longitude, a.latitude))
+    """, nativeQuery = true)
+    Page<Coupon> findByDistance(
+        @Param("latitude") double latitude, @Param("longitude") double longitude, Pageable pageable
+    );
 }

@@ -3,6 +3,7 @@ package com.connectCo.domain.member.service;
 import com.connectCo.config.security.jwt.JwtToken;
 import com.connectCo.config.security.jwt.JwtTokenProvider;
 import com.connectCo.config.security.jwt.RefreshTokenInfo;
+import com.connectCo.domain.member.client.AppleMemberClient;
 import com.connectCo.domain.member.client.GoogleMemberClient;
 import com.connectCo.domain.member.client.KakaoMemberClient;
 import com.connectCo.domain.member.client.NaverMemberClient;
@@ -33,6 +34,7 @@ public class AuthServiceImpl implements AuthService{
     private final NaverMemberClient naverMemberClient;
     private final KakaoMemberClient kakaoMemberClient;
     private final GoogleMemberClient googleMemberClient;
+    private final AppleMemberClient appleMemberClient;
 
     private final AuthMapper authMapper;
     private final MemberRepository memberRepository;
@@ -43,8 +45,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     @Transactional
     public AuthTokenResponse login(String accessToken, LoginType provider) {
-        String clientId = UUID.randomUUID().toString();
-//        String clientId = getClientIdByProvider(accessToken, provider);
+        String clientId = getClientIdByProvider(accessToken, provider);
         Optional<Member> member = memberRepository.findByClientIdAndLoginType(clientId, provider);
 
         if (member.isPresent()) {
@@ -127,7 +128,8 @@ public class AuthServiceImpl implements AuthService{
             case NAVER -> naverMemberClient.getNaverUserId(accessToken);
             case KAKAO -> kakaoMemberClient.getKakaoUserId(accessToken);
             case GOOGLE -> googleMemberClient.getGoogleUserId(accessToken);
-            default -> throw new IllegalArgumentException("지원하지 않는 LoginType입니다: " + provider);
+            case APPLE -> appleMemberClient.getAppleUserId(accessToken);
+            default -> throw new CustomApiException(ErrorCode.INVALID_LOGIN_TYPE);
         };
     }
 
