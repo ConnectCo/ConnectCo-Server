@@ -42,10 +42,8 @@ public enum  ErrorCode {
     INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "MEMBER403", "권한이 존재하지 않습니다."),
 
     // Address
-    INVALID_LATITUDE(HttpStatus.BAD_REQUEST, "ADDRESS401", "잘못된 위도 값입니다."),
-    INVALID_LONGITUDE(HttpStatus.BAD_REQUEST, "ADDRESS402", "잘못된 경도 값입니다."),
-    IS_MUST_INPUT_LOCATION(HttpStatus.BAD_REQUEST, "ADDRESS403", "비로그인 시 위치 정보를 입력해주세요."),
-    ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "ADDRESS404", "주소를 찾을 수 없습니다."),
+    ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "ADDRESS401", "주소를 찾을 수 없습니다."),
+    IS_MUST_INPUT_LOCATION(HttpStatus.BAD_REQUEST, "ADDRESS402", "비로그인 시 위치 정보를 입력해주세요."),
 
     // Store
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE401", "가게를 찾을 수 없습니다."),

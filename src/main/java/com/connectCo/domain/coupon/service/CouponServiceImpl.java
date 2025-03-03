@@ -198,6 +198,7 @@ public class CouponServiceImpl implements CouponService {
             if (latitude == null || longitude == null) {
                 throw new CustomApiException(ErrorCode.IS_MUST_INPUT_LOCATION);
             }
+            ParamValidator.validLocation(latitude, longitude);
             return getCouponsByLocation(latitude, longitude, type, pageable);
         }
 
@@ -207,6 +208,7 @@ public class CouponServiceImpl implements CouponService {
 
         // latitude, longitude가 주어지면 해당 위치 기준으로 조회
         if (latitude != null && longitude != null) {
+            ParamValidator.validLocation(latitude, longitude);
             return getCouponsByLocation(latitude, longitude, type, pageable);
         }
 
