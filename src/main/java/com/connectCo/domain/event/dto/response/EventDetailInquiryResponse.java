@@ -54,6 +54,9 @@ public class EventDetailInquiryResponse {
     @Schema(description = "내 이벤트 여부")
     private Boolean isMine;
 
+    @Schema(description = "협찬 쿠폰 개수")
+    private Integer couponCount;
+
     @Getter
     @AllArgsConstructor
     public static class OrganizationInfo {

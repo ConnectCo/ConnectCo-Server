@@ -60,9 +60,9 @@ public class CouponMapper {
                 .orElse(null);
 
         return CouponSummaryInquiryResponse.builder()
-                .couponId(coupon.getId())
-                .storeName(coupon.getStore().getName())
-                .name(coupon.getName())
+                .id(coupon.getId())
+                .name(coupon.getStore().getName())
+                .title(coupon.getName())
                 .expiredAt(coupon.getExpiredAt())
                 .thumbnail(thumbnail)
                 .build();
@@ -86,6 +86,7 @@ public class CouponMapper {
             )
             .isLike(isLiked)
             .isMine(isMine)
+            .eventCount(0) // TODO: 이벤트 개수 조회
             .build();
     }
 
