@@ -31,10 +31,14 @@ public enum  ErrorCode {
     INVALID_LOCATION(HttpStatus.BAD_REQUEST, "MAP01", "잘못된 위치 정보입니다."),
     INVALID_RADIUS(HttpStatus.BAD_REQUEST, "MAP02", "반경은 양의 정수 값이어야 합니다."),
 
-    // Auth
+    // Login
     INVALID_GOOGLE_TOKEN(HttpStatus.BAD_REQUEST, "AUTH401", "잘못된 구글 토큰입니다."),
     INVALID_KAKAO_TOKEN(HttpStatus.BAD_REQUEST, "AUTH402", "잘못된 카카오 토큰입니다."),
     INVALID_NAVER_TOKEN(HttpStatus.BAD_REQUEST, "AUTH403", "잘못된 네이버 토큰입니다."),
+    INVALID_APPLE_TOKEN(HttpStatus.BAD_REQUEST, "AUTH404", "잘못된 애플 토큰입니다."),
+    INVALID_LOGIN_TYPE(HttpStatus.BAD_REQUEST, "AUTH405", "잘못된 로그인 타입입니다."),
+    EXPIRED_APPLE_TOKEN(HttpStatus.BAD_REQUEST, "AUTH406", "만료된 애플 토큰입니다."),
+    INVALID_APPLE_TOKEN_AUDIENCE(HttpStatus.BAD_REQUEST, "AUTH407", "잘못된 애플 토큰 audience입니다."),
 
     // Member
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER401", "사용자를 찾을 수 없습니다."),
