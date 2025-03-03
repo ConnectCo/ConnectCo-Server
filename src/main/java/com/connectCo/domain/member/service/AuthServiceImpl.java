@@ -43,8 +43,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     @Transactional
     public AuthTokenResponse login(String accessToken, LoginType provider) {
-        String clientId = UUID.randomUUID().toString();
-//        String clientId = getClientIdByProvider(accessToken, provider);
+        String clientId = getClientIdByProvider(accessToken, provider);
         Optional<Member> member = memberRepository.findByClientIdAndLoginType(clientId, provider);
 
         if (member.isPresent()) {
