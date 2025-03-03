@@ -1,5 +1,7 @@
 package com.connectCo.domain.coupon.service;
 
+import com.connectCo.config.security.auth.PrincipalDetails;
+import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.coupon.dto.request.CouponUpdateRequest;
 import com.connectCo.domain.coupon.dto.response.CouponDetailInquiryResponse;
 import com.connectCo.domain.coupon.dto.response.CouponPagingResponse;
@@ -9,16 +11,21 @@ import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
 import com.connectCo.domain.coupon.entity.Coupon;
 import com.connectCo.domain.coupon.entity.CouponImage;
 import com.connectCo.domain.coupon.entity.CouponLike;
+import com.connectCo.domain.coupon.entity.CouponSearchType;
 import com.connectCo.domain.coupon.mapper.CouponMapper;
 import com.connectCo.domain.coupon.repository.CouponImageRepository;
 import com.connectCo.domain.coupon.repository.CouponLikeRepository;
 import com.connectCo.domain.coupon.repository.CouponRepository;
+import com.connectCo.domain.member.entity.Profile;
 import com.connectCo.domain.member.entity.ProfileType;
+import com.connectCo.domain.member.repository.ProfileRepository;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.repository.StoreLikeRepository;
 import com.connectCo.domain.store.service.StoreService;
+import com.connectCo.global.exception.CustomApiException;
+import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.global.validation.ParamValidator;
 import com.connectCo.utils.S3FileComponent;
 import java.util.Optional;
@@ -41,6 +48,7 @@ public class CouponServiceImpl implements CouponService {
     private final CouponLikeRepository couponLikeRepository;
     private final CouponMapper couponMapper;
     private final CouponImageRepository couponImageRepository;
+    private final ProfileRepository profileRepository;
 
     private final StoreService storeService;
     private final OrganizationService organizationService;
@@ -179,11 +187,64 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponsByRecent(int page, int size) {
-        Page<Coupon> couponList = couponRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(page, size));
+    @Transactional(readOnly = true)
+    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCoupons(
+        PrincipalDetails principal, CouponSearchType type, Double latitude, Double longitude, int page, int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        // 비로그인 시에는 latitude, longitude가 반드시 존재해야 함.
+        if (principal == null) {
+            if (latitude == null || longitude == null) {
+                throw new CustomApiException(ErrorCode.IS_MUST_INPUT_LOCATION);
+            }
+            return getCouponsByLocation(latitude, longitude, type, pageable);
+        }
+
+        // 로그인한 경우
+        Optional<Profile> profileOptional =
+            profileRepository.findByIdAndProfileType(principal.profileId(), principal.profileType());
+
+        // latitude, longitude가 주어지면 해당 위치 기준으로 조회
+        if (latitude != null && longitude != null) {
+            return getCouponsByLocation(latitude, longitude, type, pageable);
+        }
+
+        // latitude, longitude가 없는 경우, profile에서 address 정보 가져오기
+        Address address = getAddressFromProfile(profileOptional.orElse(null));
+        if (address == null) {
+            throw new CustomApiException(ErrorCode.ADDRESS_NOT_FOUND);
+        }
+
+        return getCouponsByLocation(address.getLatitude(), address.getLongitude(), type, pageable);
+
+    }
+
+    private Address getAddressFromProfile(Profile profile) {
+        if (profile == null) {
+            return null;
+        }
+
+        if (profile instanceof Store store) {
+            return store.getAddress();
+        } else if (profile instanceof Organization organization) {
+            return organization.getAddress();
+        }
+        return null;
+    }
+
+    private CouponPagingResponse<CouponSummaryInquiryResponse> getCouponsByLocation(
+        double latitude, double longitude, CouponSearchType type, Pageable pageable) {
+
+        Page<Coupon> couponPage = switch (type) {
+            case RECENCY -> couponRepository.findAllByOrderByCreatedAtDesc(pageable);
+            case DISTANCE -> couponRepository.findByDistance(latitude, longitude, pageable);
+            case DEADLINE -> couponRepository.findAllByOrderByExpiredAtAsc(pageable);
+            default -> throw new CustomApiException(ErrorCode.COUPON_SEARCH_TYPE_INVALID);
+        };
 
         return couponMapper.toCouponPagingResponse(
-            couponList.map(couponMapper::toCouponSummaryInquiryResponse)
+            couponPage.map(couponMapper::toCouponSummaryInquiryResponse)
         );
     }
 

@@ -1,6 +1,8 @@
 package com.connectCo.domain.member.client;
 
 import com.connectCo.domain.member.dto.client.GoogleMemberResponse;
+import com.connectCo.global.exception.CustomApiException;
+import com.connectCo.global.exception.ErrorCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -24,6 +26,6 @@ public class GoogleMemberClient {
         if(response != null) {
             return response.getSub();
         }
-        throw new RuntimeException("올바르지 않은 액세스 토큰입니다.");
+        throw new CustomApiException(ErrorCode.INVALID_GOOGLE_TOKEN);
     }
 }

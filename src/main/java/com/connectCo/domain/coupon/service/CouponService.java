@@ -1,11 +1,13 @@
 package com.connectCo.domain.coupon.service;
 
+import com.connectCo.config.security.auth.PrincipalDetails;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.request.CouponUpdateRequest;
 import com.connectCo.domain.coupon.dto.response.CouponDetailInquiryResponse;
 import com.connectCo.domain.coupon.dto.response.CouponIdResponse;
 import com.connectCo.domain.coupon.dto.response.CouponPagingResponse;
 import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
+import com.connectCo.domain.coupon.entity.CouponSearchType;
 import com.connectCo.domain.member.entity.ProfileType;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,5 +28,7 @@ public interface CouponService {
     CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponsByLike(Long profileId, int page, int size);
     CouponPagingResponse<CouponSummaryInquiryResponse> inquiryMyCoupons(Long profileId, int page, int size);
     CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponsByStore(Long storeId, int page, int size);
-    CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponsByRecent(int page, int size);
+    CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCoupons(
+        PrincipalDetails principal, CouponSearchType type, Double latitude, Double longitude, int page, int size
+    );
 }

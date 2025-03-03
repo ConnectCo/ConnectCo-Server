@@ -31,10 +31,21 @@ public enum  ErrorCode {
     INVALID_LOCATION(HttpStatus.BAD_REQUEST, "MAP01", "잘못된 위치 정보입니다."),
     INVALID_RADIUS(HttpStatus.BAD_REQUEST, "MAP02", "반경은 양의 정수 값이어야 합니다."),
 
+    // Auth
+    INVALID_GOOGLE_TOKEN(HttpStatus.BAD_REQUEST, "AUTH401", "잘못된 구글 토큰입니다."),
+    INVALID_KAKAO_TOKEN(HttpStatus.BAD_REQUEST, "AUTH402", "잘못된 카카오 토큰입니다."),
+    INVALID_NAVER_TOKEN(HttpStatus.BAD_REQUEST, "AUTH403", "잘못된 네이버 토큰입니다."),
+
     // Member
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER401", "사용자를 찾을 수 없습니다."),
     DUPLICATED_USER_NAME(HttpStatus.CONFLICT, "MEMBER402", "이미 존재하는 사용자입니다."),
     INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "MEMBER403", "권한이 존재하지 않습니다."),
+
+    // Address
+    INVALID_LATITUDE(HttpStatus.BAD_REQUEST, "ADDRESS401", "잘못된 위도 값입니다."),
+    INVALID_LONGITUDE(HttpStatus.BAD_REQUEST, "ADDRESS402", "잘못된 경도 값입니다."),
+    IS_MUST_INPUT_LOCATION(HttpStatus.BAD_REQUEST, "ADDRESS403", "비로그인 시 위치 정보를 입력해주세요."),
+    ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "ADDRESS404", "주소를 찾을 수 없습니다."),
 
     // Store
     STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE401", "가게를 찾을 수 없습니다."),
@@ -51,6 +62,7 @@ public enum  ErrorCode {
 
     //Coupon
     COUPON_NOT_FOUND(HttpStatus.NOT_FOUND,"COUPON401","해당 쿠폰을 찾을 수 없습니다."),
+    COUPON_SEARCH_TYPE_INVALID(HttpStatus.BAD_REQUEST,"COUPON402","잘못된 쿠폰 검색 타입입니다."),
 
     //Chat
     CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND,"CHATROOM401","해당 채팅방을 찾을 수 없습니다."),
