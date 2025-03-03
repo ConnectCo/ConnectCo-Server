@@ -1,6 +1,8 @@
 package com.connectCo.domain.member.client;
 
 import com.connectCo.domain.member.dto.client.NaverMemberResponse;
+import com.connectCo.global.exception.CustomApiException;
+import com.connectCo.global.exception.ErrorCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -24,7 +26,7 @@ public class NaverMemberClient {
          if(response != null) {
              return response.getResponse().getId();
          }
-         throw new RuntimeException("올바르지 않은 액세스 토큰입니다.");
+         throw new CustomApiException(ErrorCode.INVALID_NAVER_TOKEN);
     }
 
 }
