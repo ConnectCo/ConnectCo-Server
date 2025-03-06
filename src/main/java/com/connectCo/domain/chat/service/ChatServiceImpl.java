@@ -41,7 +41,10 @@ public class ChatServiceImpl implements ChatService {
 
     private ChatRoom findOrCreateChatRoom(CreateChatRequest request) {
         return chatRoomRepository.findById(request.getChatRoomId())
-                .orElseGet(() -> chatRoomService.createChatRoom(request.getSenderId(), request.getReceiverId()));
+                .orElseGet(() -> chatRoomService.createChatRoom(
+                        request.getSenderId(), request.getReceiverId(),
+                        request.getSenderProfileType(), request.getReceiverProfileType()
+                ));
     }
 
     private Chat saveChat(CreateChatRequest request, ChatRoom chatRoom) {

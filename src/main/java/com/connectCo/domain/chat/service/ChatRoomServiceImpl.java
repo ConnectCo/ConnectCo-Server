@@ -1,12 +1,9 @@
 package com.connectCo.domain.chat.service;
 
-import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.member.entity.Profile;
 import com.connectCo.domain.member.entity.ProfileType;
-import com.connectCo.domain.member.repository.MemberRepository;
 import com.connectCo.domain.chat.dto.response.ChatResponse;
-import com.connectCo.domain.chat.dto.response.ChatRoomSummaryResponse;
-import com.connectCo.domain.chat.entity.Chat;
+import com.connectCo.domain.chat.dto.response.ChatRoomResponse;
 import com.connectCo.domain.chat.entity.ChatRoom;
 import com.connectCo.domain.chat.mapper.ChatMapper;
 import com.connectCo.domain.chat.mapper.ChatRoomMapper;
@@ -45,11 +42,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public List<ChatRoomSummaryResponse> getChatRoomsByMember(Long memberId){
-        List<ChatRoom> chatRooms = chatRoomRepository.findChatRoomsByMember(memberId);
+    public List<ChatRoomResponse> getChatRoomsByMember(Long profileId){
+        List<ChatRoom> chatRooms = chatRoomRepository.findChatRoomsByProfile(profileId);
 
         return chatRooms.stream()
-                .map(chatRoom -> chatRoomMapper.toChatRoomSummaryResponse(chatRoom, memberId))
+                .map(chatRoom -> chatRoomMapper.toChatRoomSummaryResponse(chatRoom, profileId))
                 .toList();
     }
 
