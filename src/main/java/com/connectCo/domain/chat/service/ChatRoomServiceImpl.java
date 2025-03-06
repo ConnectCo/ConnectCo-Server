@@ -1,6 +1,8 @@
 package com.connectCo.domain.chat.service;
 
 import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.entity.Profile;
+import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.member.repository.MemberRepository;
 import com.connectCo.domain.chat.dto.response.ChatResponse;
 import com.connectCo.domain.chat.dto.response.ChatRoomSummaryResponse;
@@ -9,6 +11,7 @@ import com.connectCo.domain.chat.entity.ChatRoom;
 import com.connectCo.domain.chat.mapper.ChatMapper;
 import com.connectCo.domain.chat.mapper.ChatRoomMapper;
 import com.connectCo.domain.chat.repository.ChatRoomRepository;
+import com.connectCo.domain.member.repository.ProfileRepository;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 import jakarta.transaction.Transactional;
@@ -24,16 +27,17 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMapper chatRoomMapper;
-    private final MemberRepository memberRepository;
+    private final ProfileRepository profileRepository;
     private final ChatMapper chatMapper;
 
     /*
      * 채팅방 생성
      */
     @Override
-    public ChatRoom createChatRoom(Long senderId, Long receiverId) {
-        Member sender = memberRepository.findById(senderId).orElseThrow(()->new CustomApiException(ErrorCode.USER_NOT_FOUND));
-        Member receiver = memberRepository.findById(receiverId).orElseThrow(()->new CustomApiException(ErrorCode.USER_NOT_FOUND));
+    public ChatRoom createChatRoom(Long senderId, Long receiverId, ProfileType senderProfileType, ProfileType receiverProfileType) {
+
+        Profile sender = profileRepository.getProfile(senderId, senderProfileType);
+        Profile receiver = profileRepository.getProfile(receiverId, receiverProfileType);
 
         ChatRoom chatRoom = chatRoomMapper.toChatRoom(sender, receiver);
 

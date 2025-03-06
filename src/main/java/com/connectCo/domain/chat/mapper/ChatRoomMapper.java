@@ -3,12 +3,13 @@ package com.connectCo.domain.chat.mapper;
 import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.chat.dto.response.ChatRoomSummaryResponse;
 import com.connectCo.domain.chat.entity.ChatRoom;
+import com.connectCo.domain.member.entity.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ChatRoomMapper {
 
-    public ChatRoom toChatRoom(Member sender, Member receiver) {
+    public ChatRoom toChatRoom(Profile sender, Profile receiver) {
         return ChatRoom.builder()
                 .sender(sender)
                 .receiver(receiver)
