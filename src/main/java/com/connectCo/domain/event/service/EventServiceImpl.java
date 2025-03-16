@@ -1,6 +1,12 @@
 package com.connectCo.domain.event.service;
 
-import com.connectCo.domain.member.entity.Member;
+import com.connectCo.config.security.auth.PrincipalDetails;
+import com.connectCo.domain.coupon.dto.response.CouponPagingResponse;
+import com.connectCo.domain.coupon.dto.response.CouponSummaryInquiryResponse;
+import com.connectCo.domain.coupon.entity.Coupon;
+import com.connectCo.domain.coupon.entity.CouponSearchType;
+import com.connectCo.domain.event.entity.EventSearchType;
+import com.connectCo.domain.member.entity.Profile;
 import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.address.service.AddressService;
@@ -11,11 +17,15 @@ import com.connectCo.domain.event.entity.Event;
 import com.connectCo.domain.event.entity.EventImage;
 import com.connectCo.domain.event.mapper.EventMapper;
 import com.connectCo.domain.event.repository.EventRepository;
+import com.connectCo.domain.member.repository.ProfileRepository;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.domain.store.entity.Store;
 import com.connectCo.domain.store.service.StoreService;
+import com.connectCo.global.exception.CustomApiException;
+import com.connectCo.global.exception.ErrorCode;
 import com.connectCo.global.validation.ParamValidator;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +44,7 @@ public class EventServiceImpl implements EventService{
     private final EventMapper eventMapper;
     private final EventImageService eventImageService;
     private final EventLikeService eventLikeService;
+    private final ProfileRepository profileRepository;
 
     private final AddressService addressService;
     private final StoreService storeService;
@@ -174,7 +185,76 @@ public class EventServiceImpl implements EventService{
             eventPage.map(eventMapper::toEventSummaryInquiryResponse)
         );
     }
-//
+
+    /*
+     * 이벤트 목록 조회
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEvents(
+        PrincipalDetails principal, EventSearchType type, Double latitude, Double longitude, int page, int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        // 비로그인 시에는 latitude, longitude가 반드시 존재해야 함.
+        if (principal == null) {
+            if (latitude == null || longitude == null) {
+                throw new CustomApiException(ErrorCode.IS_MUST_INPUT_LOCATION);
+            }
+            ParamValidator.validLocation(latitude, longitude);
+            return getEventsByLocation(latitude, longitude, type, pageable);
+        }
+
+        // 로그인한 경우
+        Optional<Profile> profileOptional =
+            profileRepository.findByIdAndProfileType(principal.profileId(), principal.profileType());
+
+        // latitude, longitude가 주어지면 해당 위치 기준으로 조회
+        if (latitude != null && longitude != null) {
+            ParamValidator.validLocation(latitude, longitude);
+            return getEventsByLocation(latitude, longitude, type, pageable);
+        }
+
+        // latitude, longitude가 없는 경우, profile에서 address 정보 가져오기
+        Address address = getAddressFromProfile(profileOptional.orElse(null));
+        if (address == null) {
+            throw new CustomApiException(ErrorCode.ADDRESS_NOT_FOUND);
+        }
+
+        return getEventsByLocation(address.getLatitude(), address.getLongitude(), type, pageable);
+
+    }
+
+    private Address getAddressFromProfile(Profile profile) {
+        if (profile == null) {
+            return null;
+        }
+
+        if (profile instanceof Store store) {
+            return store.getAddress();
+        } else if (profile instanceof Organization organization) {
+            return organization.getAddress();
+        }
+        return null;
+    }
+
+    private EventPagingResponse<EventSummaryInquiryResponse> getEventsByLocation(
+        double latitude, double longitude, EventSearchType type, Pageable pageable) {
+
+        Page<Event> eventPage = switch (type) {
+            case RECENCY -> eventRepository.findAllByOrderByCreatedAtDesc(pageable);
+            case DISTANCE -> eventRepository.findByDistance(latitude, longitude, pageable);
+            case DEADLINE -> eventRepository.findAllByOrderByExpiredAtAsc(pageable);
+            default -> throw new CustomApiException(ErrorCode.COUPON_SEARCH_TYPE_INVALID);
+        };
+
+        return eventMapper.toEventPagingResponse(
+            eventPage.map(eventMapper::toEventSummaryInquiryResponse)
+        );
+    }
+
+
+    //
 //    /*
 //     * 이벤트 검색
 //     */
@@ -186,63 +266,6 @@ public class EventServiceImpl implements EventService{
 //        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
 //    }
 //
-//    /*
-//     * 조건에 따른 이벤트 조회
-//     */
-//    @Override
-//    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEvents(InquiryType type, Long organizationId, double latitude, double longitude, int page, int size){
-//        LocalDate currentDate = LocalDate.now();
-//        Pageable pageable = PageRequest.of(page, size);
-//
-//        return switch (type) {
-//            case RECOMMEND -> inquiryEventByRecommend(organizationId, currentDate, pageable);
-//            case RECENT -> inquiryEventByCreateAt(organizationId, currentDate, pageable);
-//            case DISTANCE -> {
-//                // 위도, 경도 데이터 유효성 검사
-//                ParamValidator.validLocation(latitude, longitude);
-//                yield inquiryEventByDistance(organizationId, latitude, longitude, currentDate, pageable);
-//            }
-//            default -> throw new CustomApiException(ErrorCode.UNKNOWN_INQUIRY_TYPE);
-//        };
-//    }
-//    private EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByRecommend(Long organizationId, LocalDate currentDate, Pageable pageable){
-//        Page<Event> eventPage = organizationId != null ?
-//                eventRepository.findAllByRecommendAndOrganization(organizationId, currentDate, pageable) :
-//                eventRepository.findAllByRecommend(currentDate, pageable);
-//        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
-//    }
-//
-//    private EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByCreateAt(Long organizationId, LocalDate currentDate, Pageable pageable){
-//        Page<Event> eventPage = organizationId != null ?
-//                eventRepository.findAllByCreatedAtAndOrganization(organizationId, currentDate, pageable) :
-//                eventRepository.findAllByCreatedAt(currentDate, pageable);
-//        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
-//    }
-//
-//    private EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByDistance(Long organizationId, double latitude, double longitude, LocalDate currentDate, Pageable pageable) {
-//        Page<Event> eventPage = organizationId != null ?
-//                eventRepository.findAllByDistanceAndOrganization(organizationId,latitude, longitude, currentDate, pageable) :
-//                eventRepository.findAllByDistance(latitude, longitude, currentDate, pageable);
-//        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
-//    }
-//
-//    /*
-//     * 내 주변 이벤트 목록 조회
-//     */
-//    @Override
-//    public EventPagingResponse<EventLocationInquiryResponse> inquiryEventByLocation(double latitude, double longitude, int radius, int page, int size) {
-//        // 위도, 경도, 반경 값 유효성 검사
-//        ParamValidator.validLocation(latitude, longitude);
-//        ParamValidator.validRadius(radius);
-//
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Object[]> eventPage = eventRepository.findAllByLocationWithinRadius(latitude, longitude, radius, pageable);
-//        Page<EventLocationInquiryResponse> mappedPage = eventPage.map(eventMapper::toEventLocationInquiryResponse);
-//        return eventMapper.toEventPagingResponse(mappedPage);
-//    }
-//
-
-    // TODO: 추천 이벤트 조회 추가
 
     @Override
     public Event loadEvent(Long eventId) {

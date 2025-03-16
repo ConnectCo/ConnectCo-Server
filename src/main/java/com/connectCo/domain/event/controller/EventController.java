@@ -4,6 +4,7 @@ import com.connectCo.config.security.auth.PrincipalDetails;
 import com.connectCo.domain.event.dto.request.EventCreateRequest;
 import com.connectCo.domain.event.dto.request.EventUpdateRequest;
 import com.connectCo.domain.event.dto.response.*;
+import com.connectCo.domain.event.entity.EventSearchType;
 import com.connectCo.domain.event.service.EventService;
 import com.connectCo.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -112,56 +113,41 @@ public class EventController {
     ) {
         return BaseResponse.onSuccess(eventService.inquiryMyEvents(principal.profileId(), page, size));
     }
-//
+
+    @Operation(summary = "이벤트 목록 조회 API", description = "비로그인 시도 가능(비로그인 시 현재 위치 기준)")
+    @Parameters(value = {
+        @Parameter(name = "type", description = "이벤트 조회 타입(생성순, 거리순, 신청마감일 임박순)"),
+        @Parameter(name = "latitude", description = "위도, 비로그인 시 필수"),
+        @Parameter(name = "longitude", description = "경도, 비로그인 시 핋수"),
+        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping
+    public BaseResponse<EventPagingResponse<EventSummaryInquiryResponse>> inquiryEvents(
+        @AuthenticationPrincipal PrincipalDetails principal,
+        @RequestParam EventSearchType type,
+        @RequestParam(required = false) Double latitude,
+        @RequestParam(required = false) Double longitude,
+        @RequestParam int page,
+        @RequestParam int size
+    ) {
+        return BaseResponse.onSuccess(eventService.inquiryEvents(
+            principal, type, latitude, longitude, page, size
+        ));
+    }
+
 //    @Operation(summary = "이벤트 검색 API", description = "학교 이름, 이벤트 이름, 세부 설명에서 키워드 검색")
 //    @Parameters(value = {
-//            @Parameter(name = "keyword", description = "검색할 키워드로 한글자 이상 입력"),
-//            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
-//            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+//        @Parameter(name = "keyword", description = "검색할 키워드로 한글자 이상 입력"),
+//        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+//        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
 //    })
 //    @GetMapping("/search")
 //    public BaseResponse<EventPagingResponse<EventSummaryInquiryResponse>> inquiryEventByName(
-//            @RequestParam(name = "keyword") String keyword,
-//            @RequestParam(name = "page") int page,
-//            @RequestParam(name = "size") int size) {
+//        @RequestParam(name = "keyword") String keyword,
+//        @RequestParam(name = "page") int page,
+//        @RequestParam(name = "size") int size) {
 //        return BaseResponse.onSuccess(eventService.inquiryEventByKeyword(keyword, page, size));
 //    }
-//
-//    @Operation(summary = "이벤트 조회 API(추천순, 거리순, 최근순)")
-//    @Parameters(value = {
-//            @Parameter(name = "type", description = "조회 타입 지정(추천순: RECOMMEND, 거리순: DISTANCE, 최근순: RECENT"),
-//            @Parameter(name = "organizationId", description = "조직 ID (필터링에 사용)"),
-//            @Parameter(name = "latitude", description = "거리순일 경우 유저의 현재 위치의 위도(추천순, 최근순의 경우 사용 X)"),
-//            @Parameter(name = "longitude", description = "거리순일 경우 유저의 현재 위치의 경도(추천순, 최근순의 경우 사용 X)"),
-//            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
-//            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
-//    })
-//    @GetMapping
-//    public BaseResponse<EventPagingResponse<EventSummaryInquiryResponse>> inquiryEvents(
-//            @RequestParam(name = "type") InquiryType type,
-//            @RequestParam(name = "organizationId", required = false) Long organizationId,
-//            @RequestParam(name = "latitude", required = false) double latitude,
-//            @RequestParam(name = "longitude", required = false) double longitude,
-//            @RequestParam(name = "page") int page,
-//            @RequestParam(name = "size") int size) {
-//        return BaseResponse.onSuccess(eventService.inquiryEvents(type, organizationId, latitude, longitude, page, size));
-//    }
-//
-//    @Operation(summary = "내 주변 이벤트 조회 API")
-//    @Parameters(value = {
-//            @Parameter(name = "latitude", description = "현재 유저 위도 위치입니다. (-90 ~ 90)"),
-//            @Parameter(name = "longitude", description = "현재 유저의 경도 위치입니다. (-180 ~ 180)"),
-//            @Parameter(name = "radius", description = "조회할 위치 반경입니다. (0보다 큰 정수)"),
-//            @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
-//            @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
-//    })
-//    @GetMapping("/location")
-//    public BaseResponse<EventPagingResponse<EventLocationInquiryResponse>> inquiryEventByLocation(
-//            @RequestParam(value = "latitude") double latitude,
-//            @RequestParam(value = "longitude") double longitude,
-//            @RequestParam(value = "radius") int radius,
-//            @RequestParam(name = "page") int page,
-//            @RequestParam(name = "size") int size) {
-//        return BaseResponse.onSuccess(eventService.inquiryEventByLocation(latitude, longitude, radius, page, size));
-//    }
+
 }
