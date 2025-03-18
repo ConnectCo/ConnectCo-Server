@@ -36,7 +36,8 @@ public class SecurityConstant {
     public static final String[] ORGANIZATION_URLS = {
         "/events", "/events/*", "/events/mine",
         "/stores/*/like", "/stores/like",
-        "/coupons/*/like", "/coupons/like"
+        "/coupons/*/like", "/coupons/like",
+        "/organizations/*/university-verify", "/organizations/*/university-verify-code", "/organizations/*/university-status"
     };
 
     // 관리자 전용 API

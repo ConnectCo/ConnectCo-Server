@@ -61,6 +61,12 @@ public enum  ErrorCode {
     ORGANIZATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "ORGANIZATION401", "조직을 찾을 수 없습니다."),
     ORGANIZATION_NAME_DUPLICATION(HttpStatus.BAD_REQUEST, "ORGANIZATION402", "이미 존재하는 조직명입니다."),
     ORGANIZATION_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "ORGANIZATION403", "조직 등록 제한을 초과하였씁니다."),
+    
+    // University Verification
+    UNIVERSITY_ALREADY_VERIFIED(HttpStatus.BAD_REQUEST, "UNIVERSITY401", "이미 인증이 완료된 조직입니다."),
+    UNIVERSITY_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "UNIVERSITY402", "대학 인증 API 오류가 발생했습니다."),
+    UNIVERSITY_CODE_INVALID(HttpStatus.BAD_REQUEST, "UNIVERSITY403", "유효하지 않은 인증 코드입니다."),
+    UNIVERSITY_VERIFICATION_FAILED(HttpStatus.BAD_REQUEST, "UNIVERSITY404", "대학 인증에 실패했습니다."),
 
     //Coupon
     COUPON_NOT_FOUND(HttpStatus.NOT_FOUND,"COUPON401","해당 쿠폰을 찾을 수 없습니다."),

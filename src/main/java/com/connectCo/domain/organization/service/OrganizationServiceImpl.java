@@ -33,6 +33,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     private final OrganizationMapper organizationMapper;
     private final AddressService addressService;
     private final S3FileComponent s3FileComponent;
+    private final UnivCertClient univCertClient;
 
     @Override
     @Transactional
@@ -150,6 +151,75 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public Organization loadOrganization(Long organizationId) {
         return organizationRepository.getOrganization(organizationId);
+    }
+
+    @Override
+    @Transactional
+    public boolean requestUniversityVerification(Long organizationId, String email) {
+        Organization organization = loadOrganization(organizationId);
+        
+        // 이미 인증된 경우 예외 처리
+        if (organization.isVerified()) {
+            throw new CustomApiException(ErrorCode.UNIVERSITY_ALREADY_VERIFIED);
+        }
+        
+        // UnivCert API 호출하여 인증 코드 발송
+        boolean success = univCertClient.requestVerification(email, organization.getUniversityName());
+        
+        if (success) {
+            // 이메일 업데이트 및 상태 변경
+            organization.setEmail(email);
+            organization.setPendingVerification(organization.getUniversityName());
+        } else {
+            throw new CustomApiException(ErrorCode.UNIVERSITY_API_ERROR);
+        }
+        
+        return success;
+    }
+    
+    @Override
+    @Transactional
+    public boolean verifyUniversityCode(Long organizationId, int code) {
+        Organization organization = loadOrganization(organizationId);
+        
+        // 인증 코드 확인
+        boolean success = univCertClient.verifyCode(
+                organization.getEmail(), 
+                organization.getUniversityName(), 
+                code
+        );
+        
+        if (!success) {
+            throw new CustomApiException(ErrorCode.UNIVERSITY_CODE_INVALID);
+        }
+        
+        // 인증 상태 확인
+        UnivCertClient.VerificationResult result = 
+                univCertClient.checkVerificationStatus(organization.getEmail());
+        
+        if (result.isVerified()) {
+            organization.setVerified(result.getCertifiedDate());
+            return true;
+        } else {
+            throw new CustomApiException(ErrorCode.UNIVERSITY_VERIFICATION_FAILED);
+        }
+    }
+    
+    @Override
+    public UniversityVerificationStatus getVerificationStatus(Long organizationId) {
+        Organization organization = loadOrganization(organizationId);
+        
+        // 이미 인증된 경우 API를 통해 재확인
+        if (organization.getVerificationStatus() == UniversityVerificationStatus.VERIFIED) {
+            UnivCertClient.VerificationResult result = 
+                    univCertClient.checkVerificationStatus(organization.getEmail());
+            
+            if (!result.isVerified()) {
+                organization.setPendingVerification(organization.getUniversityName());
+            }
+        }
+        
+        return organization.getVerificationStatus();
     }
 
     private Organization createAndSaveOrganization(Member member, OrganizationCreateRequest request, Address address) {

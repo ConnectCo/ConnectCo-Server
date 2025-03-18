@@ -102,4 +102,48 @@ public class OrganizationController {
         );
     }
 
+    @Operation(summary = "대학 인증 요청 API (인증코드 발송)", description = "조직 프로필만 가능")
+    @PostMapping("/{organizationId}/university-verify")
+    public BaseResponse<Boolean> requestUniversityVerification(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @PathVariable Long organizationId,
+            @Valid @RequestBody UniversityVerificationRequest request) {
+        
+        // 권한 검증 - 본인의 조직만 인증 가능
+        ParamValidator.validModify(principal.profileId(), organizationId);
+        
+        return BaseResponse.onSuccess(
+                organizationService.requestUniversityVerification(organizationId, request.getEmail())
+        );
+    }
+
+    @Operation(summary = "대학 인증 코드 확인 API", description = "조직 프로필만 가능")
+    @PostMapping("/{organizationId}/university-verify-code")
+    public BaseResponse<Boolean> verifyUniversityCode(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @PathVariable Long organizationId,
+            @Valid @RequestBody VerificationCodeRequest request) {
+            
+        // 권한 검증 - 본인의 조직만 인증 가능
+        ParamValidator.validModify(principal.profileId(), organizationId);
+        
+        return BaseResponse.onSuccess(
+                organizationService.verifyUniversityCode(organizationId, request.getCode())
+        );
+    }
+
+    @Operation(summary = "대학 인증 상태 조회 API", description = "조직 프로필만 가능")
+    @GetMapping("/{organizationId}/university-status")
+    public BaseResponse<UniversityVerificationStatus> getUniversityVerificationStatus(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @PathVariable Long organizationId) {
+            
+        // 권한 검증 - 본인의 조직만 확인 가능
+        ParamValidator.validModify(principal.profileId(), organizationId);
+        
+        return BaseResponse.onSuccess(
+                organizationService.getVerificationStatus(organizationId)
+        );
+    }
+
 }

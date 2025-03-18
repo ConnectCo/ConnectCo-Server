@@ -6,6 +6,7 @@ import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.member.entity.Profile;
 import com.connectCo.domain.organization.dto.request.OrganizationUpdateRequest;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -45,6 +46,12 @@ public class Organization extends Profile {
     @Builder.Default
     private int appliedCouponCount = 0;
 
+    @Enumerated(EnumType.STRING)
+    private UniversityVerificationStatus verificationStatus;
+
+    private LocalDateTime verifiedAt;
+
+    private String universityName;
 
     public void updateOrganizationInfo(OrganizationUpdateRequest request) {
         this.name = request.getName();
@@ -58,5 +65,23 @@ public class Organization extends Profile {
 
     public void removeEvent(Event event) {
         this.events.remove(event);
+    }
+
+    public void setPendingVerification(String universityName) {
+        this.universityName = universityName;
+        this.verificationStatus = UniversityVerificationStatus.PENDING;
+    }
+
+    public void setVerified(LocalDateTime verifiedAt) {
+        this.verificationStatus = UniversityVerificationStatus.VERIFIED;
+        this.verifiedAt = verifiedAt;
+    }
+
+    public boolean isVerified() {
+        return this.verificationStatus == UniversityVerificationStatus.VERIFIED;
+    }
+    
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

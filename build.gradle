@@ -19,6 +19,9 @@ configurations {
 
 repositories {
 	mavenCentral()
+
+	maven { url 'https://jitpack.io' }
+
 }
 
 dependencies {
@@ -63,6 +66,8 @@ dependencies {
 	// FCM 의존성 추가
 	implementation 'com.google.firebase:firebase-admin:9.1.1'
 
+	// UnivCert
+	implementation 'com.github.in-seo:univcert:master-SNAPSHOT'
 }
 
 
