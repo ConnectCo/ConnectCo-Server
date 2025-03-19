@@ -11,6 +11,7 @@ import com.connectCo.domain.chat.repository.ChatRoomRepository;
 import com.connectCo.domain.member.repository.ProfileRepository;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
+import com.connectCo.global.validation.ParamValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
      */
     @Override
     public ChatRoom createChatRoom(Long senderId, Long receiverId, ProfileType senderProfileType, ProfileType receiverProfileType) {
+        //프로필 타입 유효성 검사
+        ParamValidator.validChatProfileType(senderProfileType, receiverProfileType);
 
         Profile sender = profileRepository.getProfile(senderId, senderProfileType);
         Profile receiver = profileRepository.getProfile(receiverId, receiverProfileType);
