@@ -1,5 +1,6 @@
 package com.connectCo.global.validation;
 
+import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
 
@@ -33,6 +34,12 @@ public class ParamValidator {
         if (!memberId1.equals(memberId2))
             throw new CustomApiException(ErrorCode.UNAUTHORIZED_MODIFY);
     }
-
+    
+    //채팅 가게-조직 프로필 타입 유효성 검사
+    public static void validChatProfileType(ProfileType senderProfileType, ProfileType receiverProfileType) {
+        if ((senderProfileType == ProfileType.STORE && receiverProfileType == ProfileType.ORGANIZATION) ||
+                (senderProfileType == ProfileType.ORGANIZATION && receiverProfileType == ProfileType.STORE))
+            throw new CustomApiException(ErrorCode.INVALID_PROFILE_TYPE);
+    }
 
 }

@@ -1,29 +1,29 @@
 package com.connectCo.domain.chat.mapper;
 
-import com.connectCo.domain.member.entity.Member;
-import com.connectCo.domain.chat.dto.response.ChatRoomSummaryResponse;
+import com.connectCo.domain.chat.dto.response.ChatRoomResponse;
 import com.connectCo.domain.chat.entity.ChatRoom;
+import com.connectCo.domain.member.entity.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ChatRoomMapper {
 
-    public ChatRoom toChatRoom(Member sender, Member receiver) {
+    public ChatRoom toChatRoom(Profile sender, Profile receiver) {
         return ChatRoom.builder()
                 .sender(sender)
                 .receiver(receiver)
                 .build();
     }
 
-    public ChatRoomSummaryResponse toChatRoomSummaryResponse(ChatRoom chatRoom, Long loginMemberId) {
-        return ChatRoomSummaryResponse.builder()
+    public ChatRoomResponse toChatRoomSummaryResponse(ChatRoom chatRoom, Long loginMemberId) {
+        return ChatRoomResponse.builder()
                 .chatRoomId(chatRoom.getId())
-                .otherMemberId(chatRoom.getSender().getId().equals(loginMemberId)
+                .otherProfileId(chatRoom.getSender().getId().equals(loginMemberId)
                         ? chatRoom.getReceiver().getId()
                         : chatRoom.getSender().getId())
-                .otherMemberName(chatRoom.getSender().getId().equals(loginMemberId)
-                        ? chatRoom.getReceiver().getClientId()
-                        : chatRoom.getSender().getClientId())
+                .otherProfileName(chatRoom.getSender().getId().equals(loginMemberId)
+                        ? chatRoom.getReceiver().getName()
+                        : chatRoom.getSender().getName())
                 .recentMessage(chatRoom.getRecentMessage())
                 .recentMessageTime(chatRoom.getRecentMessageTime())
                 .build();

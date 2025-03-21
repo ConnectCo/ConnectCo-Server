@@ -2,7 +2,7 @@ package com.connectCo.domain.chat.controller;
 
 import com.connectCo.domain.chat.dto.request.CreateChatRequest;
 import com.connectCo.domain.chat.dto.response.ChatResponse;
-import com.connectCo.domain.chat.dto.response.ChatRoomSummaryResponse;
+import com.connectCo.domain.chat.dto.response.ChatRoomResponse;
 import com.connectCo.domain.chat.service.ChatRoomService;
 import com.connectCo.domain.chat.service.ChatService;
 import com.connectCo.global.common.BaseResponse;
@@ -34,8 +34,8 @@ public class ChatController {
 
     @Operation(summary = "내 채팅방 목록 조회 API")
     @GetMapping("/rooms")
-    public BaseResponse<List<ChatRoomSummaryResponse>> getChatRoomsByMember(@RequestParam Long memberId) {
-        return BaseResponse.onSuccess(chatRoomService.getChatRoomsByMember(memberId));
+    public BaseResponse<List<ChatRoomResponse>> getChatRoomsByMember(@RequestParam Long profileId) {
+        return BaseResponse.onSuccess(chatRoomService.getChatRoomsByMember(profileId));
     }
 
     @Operation(summary = "채팅방 메시지 조회 API")

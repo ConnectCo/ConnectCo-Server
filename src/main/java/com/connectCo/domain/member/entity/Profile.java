@@ -41,10 +41,15 @@ public class Profile extends BaseEntity {
 
     protected String profileImage;
 
+    private String fcmToken;
+
     @Enumerated(EnumType.STRING)
     private ProfileType profileType;
 
     public void updateProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
+
+    public void saveFcmToken(String fcmToken) { this.fcmToken = fcmToken; }
+
 }
