@@ -7,10 +7,10 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class ChatRoomSummaryResponse {
+public class ChatRoomResponse {
     private Long chatRoomId;
-    private Long otherMemberId;
-    private String otherMemberName;
+    private Long otherProfileId;
+    private String otherProfileName;
     private String recentMessage;
     private LocalDateTime recentMessageTime;
 }

@@ -2,6 +2,7 @@ package com.connectCo.domain.chat.entity;
 
 
 import com.connectCo.domain.member.entity.Member;
+import com.connectCo.domain.member.entity.Profile;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,11 +28,11 @@ public class ChatRoom extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", nullable = false)
-    private Member sender;
+    private Profile sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", nullable = false)
-    private Member receiver;
+    private Profile receiver;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chat> chats = new ArrayList<>();
