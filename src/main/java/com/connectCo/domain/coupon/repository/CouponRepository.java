@@ -29,4 +29,12 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     Page<Coupon> findByDistance(
         @Param("latitude") double latitude, @Param("longitude") double longitude, Pageable pageable
     );
+    @Query("""
+        SELECT c FROM Coupon c
+        JOIN c.store s
+        WHERE LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+           OR LOWER(c.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
+           OR LOWER(s.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    """)
+    Page<Coupon> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }

@@ -31,4 +31,5 @@ public interface CouponService {
     CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCoupons(
         PrincipalDetails principal, CouponSearchType type, Double latitude, Double longitude, int page, int size
     );
+    CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByKeyword(String keyword, int page, int size);
 }

@@ -22,7 +22,6 @@ import com.connectCo.domain.member.repository.ProfileRepository;
 import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.organization.service.OrganizationService;
 import com.connectCo.domain.store.entity.Store;
-import com.connectCo.domain.store.repository.StoreLikeRepository;
 import com.connectCo.domain.store.service.StoreService;
 import com.connectCo.global.exception.CustomApiException;
 import com.connectCo.global.exception.ErrorCode;
@@ -220,6 +219,17 @@ public class CouponServiceImpl implements CouponService {
 
         return getCouponsByLocation(address.getLatitude(), address.getLongitude(), type, pageable);
 
+    }
+
+    @Override
+    public CouponPagingResponse<CouponSummaryInquiryResponse> inquiryCouponByKeyword(
+        String keyword, int page, int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Coupon> couponPage = couponRepository.searchByKeyword(keyword, pageable);
+        return couponMapper.toCouponPagingResponse(
+            couponPage.map(couponMapper::toCouponSummaryInquiryResponse)
+        );
     }
 
     private Address getAddressFromProfile(Profile profile) {
