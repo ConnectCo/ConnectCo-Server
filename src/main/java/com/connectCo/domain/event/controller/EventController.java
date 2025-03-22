@@ -114,6 +114,20 @@ public class EventController {
         return BaseResponse.onSuccess(eventService.inquiryMyEvents(principal.profileId(), page, size));
     }
 
+    @Operation(summary = "특정 조직의 이벤트 조회 API", description = "비로그인 시도 가능")
+    @Parameters(value = {
+        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping("/organization/{organizationId}")
+    public BaseResponse<EventPagingResponse<EventSummaryInquiryResponse>> inquiryEventsByOrganization(
+        @PathVariable Long organizationId,
+        @RequestParam int page,
+        @RequestParam int size
+    ) {
+        return BaseResponse.onSuccess(eventService.inquiryEventsByOrganization(organizationId, page, size));
+    }
+
     @Operation(summary = "이벤트 목록 조회 API", description = "비로그인 시도 가능(비로그인 시 현재 위치 기준)")
     @Parameters(value = {
         @Parameter(name = "type", description = "이벤트 조회 타입(생성순, 거리순, 신청마감일 임박순)"),
@@ -136,18 +150,18 @@ public class EventController {
         ));
     }
 
-//    @Operation(summary = "이벤트 검색 API", description = "학교 이름, 이벤트 이름, 세부 설명에서 키워드 검색")
-//    @Parameters(value = {
-//        @Parameter(name = "keyword", description = "검색할 키워드로 한글자 이상 입력"),
-//        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
-//        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
-//    })
-//    @GetMapping("/search")
-//    public BaseResponse<EventPagingResponse<EventSummaryInquiryResponse>> inquiryEventByName(
-//        @RequestParam(name = "keyword") String keyword,
-//        @RequestParam(name = "page") int page,
-//        @RequestParam(name = "size") int size) {
-//        return BaseResponse.onSuccess(eventService.inquiryEventByKeyword(keyword, page, size));
-//    }
-
+    @Operation(summary = "이벤트 검색 API", description = "조직명, 이벤트명, 이벤트 설명 내의 키워드 검색")
+    @Parameters(value = {
+        @Parameter(name = "keyword", description = "검색할 키워드로 한글자 이상 입력"),
+        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    @GetMapping("/search")
+    public BaseResponse<EventPagingResponse<EventSummaryInquiryResponse>> inquiryEventByName(
+        @RequestParam(name = "keyword") String keyword,
+        @RequestParam(name = "page", defaultValue = "0") int page,
+        @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        return BaseResponse.onSuccess(eventService.inquiryEventByKeyword(keyword, page, size));
+    }
 }

@@ -27,9 +27,10 @@ public interface EventService {
     );
     EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByLike(Long profileId, int page, int size);
     EventPagingResponse<EventSummaryInquiryResponse> inquiryMyEvents(Long profileId, int page, int size);
+    EventPagingResponse<EventSummaryInquiryResponse> inquiryEventsByOrganization(Long organizationId, int page, int size);
     EventPagingResponse<EventSummaryInquiryResponse> inquiryEvents(
         PrincipalDetails principal, EventSearchType type, Double latitude, Double longitude, int page, int size
     );
-    //    EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword, int page, int size);
+    EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword, int page, int size);
     Event loadEvent(Long eventId);
 }

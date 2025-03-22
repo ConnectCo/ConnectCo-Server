@@ -175,6 +175,7 @@ public class EventServiceImpl implements EventService{
     /*
      * 나의 이벤트 조회
      */
+    @Override
     public EventPagingResponse<EventSummaryInquiryResponse> inquiryMyEvents(
         Long profileId, int page, int size
     ) {
@@ -183,6 +184,21 @@ public class EventServiceImpl implements EventService{
 
         return eventMapper.toEventPagingResponse(
             eventPage.map(eventMapper::toEventSummaryInquiryResponse)
+        );
+    }
+
+    /*
+     * 특정 조직의 이벤트 조회
+     */
+    @Override
+    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEventsByOrganization(
+        Long organizationId, int page, int size
+    ) {
+        Organization organization = organizationService.loadOrganization(organizationId);
+
+        return eventMapper.toEventPagingResponse(
+            inquiryEventByOrganization(organization, PageRequest.of(page, size))
+                .map(eventMapper::toEventSummaryInquiryResponse)
         );
     }
 
@@ -225,6 +241,24 @@ public class EventServiceImpl implements EventService{
 
     }
 
+    /*
+     * 이벤트 검색
+     */
+    @Override
+    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByKeyword(
+        String keyword, int page, int size
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Event> eventPage = eventRepository.searchByKeyword(keyword, pageable);
+        return eventMapper.toEventPagingResponse(
+            eventPage.map(eventMapper::toEventSummaryInquiryResponse)
+        );
+    }
+
+    private Page<Event> inquiryEventByOrganization(Organization organization, Pageable pageable) {
+        return eventRepository.findAllByOrganization(organization, pageable);
+    }
+
     private Address getAddressFromProfile(Profile profile) {
         if (profile == null) {
             return null;
@@ -253,27 +287,13 @@ public class EventServiceImpl implements EventService{
         );
     }
 
-
-    //
-//    /*
-//     * 이벤트 검색
-//     */
-//    @Override
-//    public EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword, int page, int size){
-//        LocalDate currentDate = LocalDate.now();
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Event> eventPage = eventRepository.findAllBySearch(keyword, currentDate, pageable);
-//        return eventMapper.toEventPagingResponse(eventPage.map(eventMapper::toEventSummaryInquiryResponse));
-//    }
-//
+    private Event createAndSaveEvent(Organization organization, EventCreateRequest request, Address address) {
+        Event event = eventMapper.toEvent(organization, request, address);
+        return eventRepository.save(event);
+    }
 
     @Override
     public Event loadEvent(Long eventId) {
         return eventRepository.getEvent(eventId);
-    }
-
-    private Event createAndSaveEvent(Organization organization, EventCreateRequest request, Address address) {
-        Event event = eventMapper.toEvent(organization, request, address);
-        return eventRepository.save(event);
     }
 }

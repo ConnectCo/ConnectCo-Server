@@ -33,4 +33,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
         @Param("latitude") double latitude, @Param("longitude") double longitude, Pageable pageable
     );
 
+    @Query("""
+        SELECT e FROM Event e
+        JOIN e.organization o
+        WHERE LOWER(e.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+           OR LOWER(e.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
+           OR LOWER(o.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    """)
+    Page<Event> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }
