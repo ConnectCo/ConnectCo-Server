@@ -1,9 +1,11 @@
 package com.connectCo.domain.event.service;
 
+import com.connectCo.config.security.auth.PrincipalDetails;
 import com.connectCo.domain.event.dto.request.EventCreateRequest;
 import com.connectCo.domain.event.dto.request.EventUpdateRequest;
 import com.connectCo.domain.event.dto.response.*;
 import com.connectCo.domain.event.entity.Event;
+import com.connectCo.domain.event.entity.EventSearchType;
 import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.global.common.enums.InquiryType;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,8 +27,10 @@ public interface EventService {
     );
     EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByLike(Long profileId, int page, int size);
     EventPagingResponse<EventSummaryInquiryResponse> inquiryMyEvents(Long profileId, int page, int size);
-    //    EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword, int page, int size);
-//    EventPagingResponse<EventSummaryInquiryResponse> inquiryEvents(InquiryType type, Long organizationId, double latitude, double longitude, int page, int size);
-//    EventPagingResponse<EventLocationInquiryResponse> inquiryEventByLocation(double latitude, double longitude, int radius, int page, int size);
+    EventPagingResponse<EventSummaryInquiryResponse> inquiryEventsByOrganization(Long organizationId, int page, int size);
+    EventPagingResponse<EventSummaryInquiryResponse> inquiryEvents(
+        PrincipalDetails principal, EventSearchType type, Double latitude, Double longitude, int page, int size
+    );
+    EventPagingResponse<EventSummaryInquiryResponse> inquiryEventByKeyword(String keyword, int page, int size);
     Event loadEvent(Long eventId);
 }

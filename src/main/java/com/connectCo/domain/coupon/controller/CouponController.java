@@ -153,7 +153,20 @@ public class CouponController {
         ));
     }
 
-    // TODO: 쿠폰 추천 조회 추가
+    @Operation(summary = "쿠폰 검색 API", description = "비로그인 시도 가능")
+    @GetMapping("/search")
+    @Parameters(value = {
+        @Parameter(name = "keyword", description = "검색어("),
+        @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
+        @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
+    })
+    public BaseResponse<CouponPagingResponse<CouponSummaryInquiryResponse>> searchCoupon(
+        @RequestParam(name = "keyword") String keyword,
+        @RequestParam(name = "page", defaultValue = "0") int page,
+        @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        return BaseResponse.onSuccess(couponService.inquiryCouponByKeyword(keyword, page, size));
+    }
 
-    // TODO: 쿠폰 검색 추가
+    // TODO: 최근 검색어 10개 조회
 }
