@@ -27,14 +27,14 @@ public class SecurityConstant {
 
     // 가게 프로필 전용 API
     public static final String[] STORE_URLS = {
-        "/coupons/create", "/coupons/*", "/coupons/mine",
+        "/coupons", "/coupons/*", "/coupons/mine",
         "/organization/*/like", "/organization/like",
         "/events/*/like", "/events/like"
     };
 
     // 조직 프로필 전용 API
     public static final String[] ORGANIZATION_URLS = {
-        "/events/create", "/events/*", "/events/mine",
+        "/events", "/events/*", "/events/mine",
         "/stores/*/like", "/stores/like",
         "/coupons/*/like", "/coupons/like"
     };
