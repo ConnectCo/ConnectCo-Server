@@ -132,7 +132,7 @@ public class CouponController {
     }
 
     @Operation(summary = "쿠폰 목록 조회 API", description = "비로그인 시도 가능(비로그인 시 현재 위치 기준)")
-    @GetMapping
+    @GetMapping("/list")
     @Parameters(value = {
         @Parameter(name = "type", description = "쿠폰 조회 타입(생성순, 거리순, 신청마감일 임박순)"),
         @Parameter(name = "latitude", description = "위도, 비로그인 시 필수"),
