@@ -11,12 +11,11 @@ public class SecurityConstant {
     public static final String[] PUBLIC_URLS = {
         "/auth/login", "/auth/refresh",
         "/stores/*/detail", "/organizations/*/detail",
-        "/coupons/*/detail", "/coupons/store/*", "/coupons",
-        "/events/*/detail",
+        "/coupons/*/detail", "/coupons/store/*", "/coupons/list", "/coupons/search",
+        "/events/*/detail", "/events/organization/*", "/events/list", "/events/search",
         "/v3/**", "/swagger-ui/**",
         "/test/**",
         "/ws/**", "members/fcm-token",
-        "/events/search", "/coupons/search"
     };
 
     // 로그인 필요 API

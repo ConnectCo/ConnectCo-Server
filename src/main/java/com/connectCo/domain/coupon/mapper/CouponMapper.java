@@ -1,5 +1,6 @@
 package com.connectCo.domain.coupon.mapper;
 
+import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.response.CouponDetailInquiryResponse;
 import com.connectCo.domain.coupon.dto.response.CouponPagingResponse;
@@ -11,6 +12,8 @@ import com.connectCo.domain.organization.entity.Organization;
 import com.connectCo.domain.store.entity.Store;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 public class CouponMapper {
@@ -59,12 +62,16 @@ public class CouponMapper {
                 .map(CouponImage::getUrl)
                 .orElse(null);
 
+        Address address = coupon.getStore().getAddress();
+
         return CouponSummaryInquiryResponse.builder()
                 .id(coupon.getId())
                 .name(coupon.getStore().getName())
                 .title(coupon.getName())
                 .expiredAt(coupon.getExpiredAt())
                 .thumbnail(thumbnail)
+                .latitude(Optional.ofNullable(address).map(Address::getLatitude).orElse(null))
+                .longitude(Optional.ofNullable(address).map(Address::getLongitude).orElse(null))
                 .build();
     }
 

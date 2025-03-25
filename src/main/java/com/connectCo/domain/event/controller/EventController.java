@@ -136,7 +136,7 @@ public class EventController {
         @Parameter(name = "page", description = "페이지 번호(0부터 시작)"),
         @Parameter(name = "size", description = "한 페이지 당 이벤트 개수"),
     })
-    @GetMapping
+    @GetMapping("/list")
     public BaseResponse<EventPagingResponse<EventSummaryInquiryResponse>> inquiryEvents(
         @AuthenticationPrincipal PrincipalDetails principal,
         @RequestParam EventSearchType type,

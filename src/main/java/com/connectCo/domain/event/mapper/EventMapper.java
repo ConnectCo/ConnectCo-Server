@@ -1,11 +1,9 @@
 package com.connectCo.domain.event.mapper;
 
 import com.connectCo.domain.event.entity.EventLike;
-import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.event.dto.request.EventCreateRequest;
 import com.connectCo.domain.event.dto.response.EventDetailInquiryResponse;
-import com.connectCo.domain.event.dto.response.EventLocationInquiryResponse;
 import com.connectCo.domain.event.dto.response.EventPagingResponse;
 import com.connectCo.domain.event.dto.response.EventSummaryInquiryResponse;
 import com.connectCo.domain.event.entity.Event;
@@ -100,22 +98,8 @@ public class EventMapper {
             .title(event.getName())
             .expiredAt(event.getExpiredAt())
             .thumbnail(event.getThumbnail())
-            .build();
-    }
-
-    public EventLocationInquiryResponse toEventLocationInquiryResponse(Object[] eventWithDistance) {
-        Event event = (Event) eventWithDistance[0];
-        Double distance = (Double) eventWithDistance[1];
-        return EventLocationInquiryResponse.builder()
-            .eventId(event.getId())
-            .organizationName(event.getOrganization().getName())
-            .name(event.getName())
-            .startAt(event.getStartAt())
-            .endAt(event.getEndAt())
-            .thumbnail(event.getThumbnail())
             .latitude(event.getAddress().getLatitude())
             .longitude(event.getAddress().getLongitude())
-            .distance(distance)
             .build();
     }
 

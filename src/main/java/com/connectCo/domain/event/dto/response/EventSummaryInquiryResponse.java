@@ -24,4 +24,9 @@ public class EventSummaryInquiryResponse {
     @Schema(description = "이벤트 썸네일 URL", example = "thumbnail-url")
     private String thumbnail;
 
+    @Schema(description = "위도", example = "36.123")
+    private Double latitude;
+
+    @Schema(description = "경도", example = "127.111")
+    private Double longitude;
 }
