@@ -66,6 +66,9 @@ public enum  ErrorCode {
     COUPON_NOT_FOUND(HttpStatus.NOT_FOUND,"COUPON401","해당 쿠폰을 찾을 수 없습니다."),
     COUPON_SEARCH_TYPE_INVALID(HttpStatus.BAD_REQUEST,"COUPON402","잘못된 쿠폰 검색 타입입니다."),
 
+    //Sponsorship
+    INVALID_Sponsor(HttpStatus.BAD_REQUEST, "Sponsorship401", "잘못된 스폰서 입니다."),
+
     //Chat
     CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND,"CHATROOM401","해당 채팅방을 찾을 수 없습니다."),
 
