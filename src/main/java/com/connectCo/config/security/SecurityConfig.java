@@ -36,10 +36,10 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(SecurityConstant.PUBLIC_URLS).permitAll() // 비로그인 허용 API
                 .requestMatchers(SecurityConstant.AUTHENTICATED_URLS).authenticated() // 로그인 필요
                 .requestMatchers(SecurityConstant.STORE_URLS).hasAuthority("TYPE_STORE") // 가게 프로필 권한
                 .requestMatchers(SecurityConstant.ORGANIZATION_URLS).hasAuthority("TYPE_ORGANIZATION") // 조직 프로필 권한
+                                                   .requestMatchers(SecurityConstant.PUBLIC_URLS).permitAll() // 비로그인 허용 API
                 .requestMatchers(SecurityConstant.ADMIN_URLS).hasRole("ADMIN") // 관리자 권한
                 .anyRequest().authenticated() // 기타 모든 요청은 인증 필요
             )
