@@ -21,7 +21,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
-public class Coupon extends BaseEntity {
+public class    Coupon extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

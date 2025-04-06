@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
 
-    private final ChatRoomService chatRoomService;
     private final ChatRepository chatRepository;
     private final ChatMapper chatMapper;
     private final ChatRoomRepository chatRoomRepository;
@@ -31,7 +30,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     @Transactional
     public ChatResponse createChat(CreateChatRequest request) {
-        ChatRoom chatRoom = findOrCreateChatRoom(request);
+        ChatRoom chatRoom = findChatRoom(request);
         Chat chat = saveChat(request, chatRoom);
         updateChatRoomRecentMessage(chatRoom, chat);
         sendPushNotificationToReceiver(request);
@@ -39,12 +38,10 @@ public class ChatServiceImpl implements ChatService {
         return chatMapper.toChatResponse(chat);
     }
 
-    private ChatRoom findOrCreateChatRoom(CreateChatRequest request) {
+    private ChatRoom findChatRoom(CreateChatRequest request) {
         return chatRoomRepository.findById(request.getChatRoomId())
-                .orElseGet(() -> chatRoomService.createChatRoom(
-                        request.getSenderId(), request.getReceiverId(),
-                        request.getSenderProfileType(), request.getReceiverProfileType()
-                ));
+                .orElseThrow(()->new CustomApiException(ErrorCode.CHATROOM_NOT_FOUND)
+                );
     }
 
     private Chat saveChat(CreateChatRequest request, ChatRoom chatRoom) {
