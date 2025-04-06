@@ -1,5 +1,6 @@
 package com.connectCo.domain.chat.service;
 
+import com.connectCo.domain.chat.dto.response.EnterChatRoomResponse;
 import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.member.entity.Profile;
 import com.connectCo.domain.member.entity.ProfileType;
@@ -40,8 +41,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         Profile sender = profileRepository.getProfile(senderId, senderProfileType);
         Profile receiver = profileRepository.getProfile(receiverId, receiverProfileType);
 
-        ChatRoom chatRoom = chatRoomMapper.toChatRoom(sender, receiver);
-        chatRoomRepository.save(chatRoom);
+        ChatRoom chatRoom = createAndSaveChatRoom(sender, receiver);
 
         return chatRoomMapper.toChatRoomSummaryResponse(chatRoom, senderId);
     }
@@ -64,5 +64,30 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatRoom.getChats().stream()
                 .map(chatMapper::toChatResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public EnterChatRoomResponse enterChatRoom(Long loginProfileId, ProfileType loginProfileType,Long otherProfileId, ProfileType otherProfileType){
+        //프로필 타입 유효성 검사
+        ParamValidator.validChatProfileType(loginProfileType, otherProfileType);
+
+
+        Profile sender = profileRepository.getProfile(loginProfileId, loginProfileType);
+        Profile receiver = profileRepository.getProfile(otherProfileId, otherProfileType);
+
+        ChatRoom chatRoom = chatRoomRepository.findBySenderAndReceiver(sender, receiver)
+                .orElseGet(() -> createAndSaveChatRoom(sender, receiver));
+
+        List<ChatResponse> chatResponses = chatRoom.getChats().stream()
+                .map(chatMapper::toChatResponse)
+                .collect(Collectors.toList());
+
+        return chatRoomMapper.toEnterChatRoomResponse(chatRoom.getId(),chatResponses);
+    }
+
+    public ChatRoom createAndSaveChatRoom(Profile sender, Profile receiver) {
+        ChatRoom chatRoom = chatRoomMapper.toChatRoom(sender, receiver);
+        return chatRoomRepository.save(chatRoom);
     }
 }

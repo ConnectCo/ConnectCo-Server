@@ -4,6 +4,7 @@ import com.connectCo.config.security.auth.PrincipalDetails;
 import com.connectCo.domain.chat.dto.request.CreateChatRequest;
 import com.connectCo.domain.chat.dto.response.ChatResponse;
 import com.connectCo.domain.chat.dto.response.ChatRoomResponse;
+import com.connectCo.domain.chat.dto.response.EnterChatRoomResponse;
 import com.connectCo.domain.chat.service.ChatRoomService;
 import com.connectCo.domain.chat.service.ChatService;
 import com.connectCo.domain.member.entity.ProfileType;
@@ -17,6 +18,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Tag(name = "채팅 API", description = "채팅 관련 API")
@@ -56,5 +58,15 @@ public class ChatController {
             @RequestParam ProfileType receiverProfileType
     ){
         return BaseResponse.onSuccess(chatRoomService.createChatRoom(senderId, receiverId, senderProfileType, receiverProfileType));
+    }
+
+    @Operation(summary = "채팅방 입장 API")
+    @PostMapping("/rooms/enter")
+    public BaseResponse<EnterChatRoomResponse> enterChatRoom(
+                @AuthenticationPrincipal PrincipalDetails principal,
+                @RequestParam Long otherProfileId,
+                @RequestParam ProfileType otherProfileType
+            ){
+        return BaseResponse.onSuccess(chatRoomService.enterChatRoom(principal.profileId(), principal.profileType(), otherProfileId, otherProfileType));
     }
 }
