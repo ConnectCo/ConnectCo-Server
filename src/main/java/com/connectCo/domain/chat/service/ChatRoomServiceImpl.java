@@ -1,5 +1,6 @@
 package com.connectCo.domain.chat.service;
 
+import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.member.entity.Profile;
 import com.connectCo.domain.member.entity.ProfileType;
 import com.connectCo.domain.chat.dto.response.ChatResponse;
@@ -32,7 +33,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
      * 채팅방 생성
      */
     @Override
-    public ChatRoom createChatRoom(Long senderId, Long receiverId, ProfileType senderProfileType, ProfileType receiverProfileType) {
+    public ChatRoomResponse createChatRoom(Long senderId, Long receiverId, ProfileType senderProfileType, ProfileType receiverProfileType) {
         //프로필 타입 유효성 검사
         ParamValidator.validChatProfileType(senderProfileType, receiverProfileType);
 
@@ -40,8 +41,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         Profile receiver = profileRepository.getProfile(receiverId, receiverProfileType);
 
         ChatRoom chatRoom = chatRoomMapper.toChatRoom(sender, receiver);
+        chatRoomRepository.save(chatRoom);
 
-        return chatRoomRepository.save(chatRoom);
+        return chatRoomMapper.toChatRoomSummaryResponse(chatRoom, senderId);
     }
 
     @Override
