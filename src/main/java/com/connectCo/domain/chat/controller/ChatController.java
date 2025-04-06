@@ -48,9 +48,8 @@ public class ChatController {
     }
 
     @Operation(summary = "채팅방 생성 API")
-    @PostMapping("/rooms/{chatRoomId}")
+    @PostMapping("/rooms")
     public BaseResponse<ChatRoomResponse> createChatRoom(
-            @AuthenticationPrincipal PrincipalDetails principal,
             @RequestParam Long senderId,
             @RequestParam Long receiverId,
             @RequestParam ProfileType senderProfileType,
