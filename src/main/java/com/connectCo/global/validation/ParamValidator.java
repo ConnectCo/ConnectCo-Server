@@ -37,8 +37,8 @@ public class ParamValidator {
     
     //채팅 가게-조직 프로필 타입 유효성 검사
     public static void validChatProfileType(ProfileType senderProfileType, ProfileType receiverProfileType) {
-        if ((senderProfileType == ProfileType.STORE && receiverProfileType == ProfileType.ORGANIZATION) ||
-                (senderProfileType == ProfileType.ORGANIZATION && receiverProfileType == ProfileType.STORE))
+        if ((senderProfileType == ProfileType.ORGANIZATION && receiverProfileType == ProfileType.ORGANIZATION) ||
+                (senderProfileType == ProfileType.STORE && receiverProfileType == ProfileType.STORE))
             throw new CustomApiException(ErrorCode.INVALID_PROFILE_TYPE);
     }
 
