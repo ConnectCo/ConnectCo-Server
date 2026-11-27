@@ -71,6 +71,8 @@ public enum  ErrorCode {
 
     //Chat
     CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND,"CHATROOM401","해당 채팅방을 찾을 수 없습니다."),
+    CHATROOM_FORBIDDEN(HttpStatus.FORBIDDEN,"CHATROOM402","참여하지 않은 채팅방입니다."),
+    INVALID_CHAT_PAGE_SIZE(HttpStatus.BAD_REQUEST,"CHATROOM403","메시지 조회 개수는 1~100 사이여야 합니다."),
 
     //firebase
     FIREBASE_INIT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FIREBASE500", "Firebase 초기화에 실패했습니다."),

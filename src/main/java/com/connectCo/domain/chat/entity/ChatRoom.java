@@ -34,8 +34,18 @@ public class ChatRoom extends BaseEntity {
     @JoinColumn(name = "receiver_id", nullable = false)
     private Profile receiver;
 
+    // 메시지 조회에는 쓰지 않는다(방의 메시지 전체를 불러오게 되므로). 채팅방 삭제 시 함께 지우는 용도.
+    @Builder.Default
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chat> chats = new ArrayList<>();
+
+    public boolean isParticipant(Long profileId) {
+        return sender.getId().equals(profileId) || receiver.getId().equals(profileId);
+    }
+
+    public Profile getOther(Long profileId) {
+        return sender.getId().equals(profileId) ? receiver : sender;
+    }
 
     public void updateRecentMessage(String recentMessage, LocalDateTime recentMessageTime) {
         this.recentMessage = recentMessage;
