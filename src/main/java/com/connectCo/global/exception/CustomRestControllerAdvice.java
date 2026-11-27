@@ -4,6 +4,7 @@ import com.connectCo.global.common.BaseResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -65,6 +66,19 @@ public class CustomRestControllerAdvice extends ResponseEntityExceptionHandler {
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
                 .body(BaseResponse.onFailure(errorCode.getCode(), errorMessage, null));
+    }
+
+    /*
+     * 유니크 제약 위반(예: 좋아요를 동시에 두 번 눌러 같은 행을 두 번 넣으려 한 경우)
+     * 500 대신 409로 응답하고, 클라이언트는 다시 시도하면 기존 행을 기준으로 처리된다.
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+        log.warn("데이터 무결성 위반 cause={}", e.getMostSpecificCause().getClass().getSimpleName());
+        ErrorCode errorCode = ErrorCode.DUPLICATE_REQUEST;
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(BaseResponse.onFailure(errorCode.getCode(), errorCode.getMessage(), null));
     }
 
     /*

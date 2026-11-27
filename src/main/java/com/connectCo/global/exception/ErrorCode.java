@@ -14,6 +14,7 @@ public enum  ErrorCode {
     UNAUTHORIZED_MODIFY(HttpStatus.BAD_REQUEST, "COMMON403", "수정, 삭제 권한이 없습니다."),
     USER_NOT_ADMIN(HttpStatus.UNAUTHORIZED, "COMMON404", "관리자만 사용 가능한 API입니다."),
     UNKNOWN_INQUIRY_TYPE(HttpStatus.BAD_REQUEST, "COMMON405", "알 수 없는 조회 타입입니다."),
+    DUPLICATE_REQUEST(HttpStatus.CONFLICT, "COMMON409", "같은 요청이 동시에 처리되었습니다. 다시 시도해주세요."),
 
     // JWT Token
     INVALID_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "JWT401", "잘못된 JWT 토큰입니다."),
@@ -71,6 +72,8 @@ public enum  ErrorCode {
 
     //Chat
     CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND,"CHATROOM401","해당 채팅방을 찾을 수 없습니다."),
+    CHATROOM_FORBIDDEN(HttpStatus.FORBIDDEN,"CHATROOM402","참여하지 않은 채팅방입니다."),
+    INVALID_CHAT_PAGE_SIZE(HttpStatus.BAD_REQUEST,"CHATROOM403","메시지 조회 개수는 1~100 사이여야 합니다."),
 
     //firebase
     FIREBASE_INIT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FIREBASE500", "Firebase 초기화에 실패했습니다."),

@@ -39,7 +39,7 @@ public class EventImageServiceImpl implements EventImageService {
     @Override
     public void deleteExistingImages(List<EventImage> imagesToRemove) {
         for (EventImage image : imagesToRemove) {
-            s3FileComponent.deleteFile(image.getUrl());
+            s3FileComponent.deleteFileAfterCommit(image.getUrl());
             eventImageRepository.delete(image);
         }
     }

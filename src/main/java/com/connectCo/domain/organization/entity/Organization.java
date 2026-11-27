@@ -1,5 +1,6 @@
 package com.connectCo.domain.organization.entity;
 
+import org.hibernate.annotations.BatchSize;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.event.entity.Event;
 import com.connectCo.domain.member.entity.Member;
@@ -22,6 +23,8 @@ import org.hibernate.annotations.DynamicInsert;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @DynamicInsert
+// 상속 엔티티는 부모(Profile)의 배치 설정이 적용되지 않아 따로 지정한다
+@BatchSize(size = 100)
 public class Organization extends Profile {
 
     @Column(nullable = false)

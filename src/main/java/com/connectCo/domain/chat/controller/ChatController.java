@@ -1,7 +1,9 @@
 package com.connectCo.domain.chat.controller;
 
+import com.connectCo.config.security.StompAuthChannelInterceptor;
 import com.connectCo.config.security.auth.PrincipalDetails;
 import com.connectCo.domain.chat.dto.request.CreateChatRequest;
+import com.connectCo.domain.chat.dto.response.ChatPageResponse;
 import com.connectCo.domain.chat.dto.response.ChatResponse;
 import com.connectCo.domain.chat.dto.response.ChatRoomResponse;
 import com.connectCo.domain.chat.dto.response.EnterChatRoomResponse;
@@ -33,8 +35,10 @@ public class ChatController {
     @Operation(summary = "채팅 메세지 보내기 API")
     @MessageMapping("/{roomId}")
     @SendTo("/topic/{roomId}")
-    public BaseResponse<ChatResponse> createChat(@DestinationVariable String roomId, CreateChatRequest request){
-        return BaseResponse.onSuccess(chatService.createChat(request));
+    public BaseResponse<ChatResponse> createChat(@DestinationVariable Long roomId, CreateChatRequest request, Principal user){
+        // 보낸 사람과 채팅방은 요청 본문이 아니라 STOMP 세션 사용자와 구독 경로로 정한다.
+        Long senderProfileId = StompAuthChannelInterceptor.requireProfileId(user);
+        return BaseResponse.onSuccess(chatService.createChat(senderProfileId, roomId, request.getMessage()));
     }
 
     @Operation(summary = "내 채팅방 목록 조회 API")
@@ -43,10 +47,14 @@ public class ChatController {
         return BaseResponse.onSuccess(chatRoomService.getChatRoomsByMember(principal.profileId()));
     }
 
-    @Operation(summary = "채팅방 메시지 조회 API")
+    @Operation(summary = "채팅방 메시지 조회 API", description = "최신 메시지부터 size개씩 조회합니다. 더 오래된 메시지는 응답의 nextCursor를 cursor로 넘겨 조회합니다.")
     @GetMapping("/rooms/{chatRoomId}/chats")
-    public BaseResponse<List<ChatResponse>> getChatByChatRoom(@PathVariable Long chatRoomId) {
-        return BaseResponse.onSuccess(chatRoomService.getChatsByChatRoom(chatRoomId));
+    public BaseResponse<ChatPageResponse> getChatByChatRoom(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @PathVariable Long chatRoomId,
+            @RequestParam(required = false) Long cursor,
+            @RequestParam(defaultValue = "30") int size) {
+        return BaseResponse.onSuccess(chatRoomService.getChatsByChatRoom(principal.profileId(), chatRoomId, cursor, size));
     }
 
     @Operation(summary = "채팅방 생성 API")
@@ -65,8 +73,9 @@ public class ChatController {
     public BaseResponse<EnterChatRoomResponse> enterChatRoom(
                 @AuthenticationPrincipal PrincipalDetails principal,
                 @RequestParam Long otherProfileId,
-                @RequestParam ProfileType otherProfileType
+                @RequestParam ProfileType otherProfileType,
+                @RequestParam(defaultValue = "30") int size
             ){
-        return BaseResponse.onSuccess(chatRoomService.enterChatRoom(principal.profileId(), principal.profileType(), otherProfileId, otherProfileType));
+        return BaseResponse.onSuccess(chatRoomService.enterChatRoom(principal.profileId(), principal.profileType(), otherProfileId, otherProfileType, size));
     }
 }

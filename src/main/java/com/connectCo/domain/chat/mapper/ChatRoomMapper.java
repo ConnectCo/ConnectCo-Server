@@ -1,13 +1,11 @@
 package com.connectCo.domain.chat.mapper;
 
-import com.connectCo.domain.chat.dto.response.ChatResponse;
+import com.connectCo.domain.chat.dto.response.ChatPageResponse;
 import com.connectCo.domain.chat.dto.response.ChatRoomResponse;
 import com.connectCo.domain.chat.dto.response.EnterChatRoomResponse;
 import com.connectCo.domain.chat.entity.ChatRoom;
 import com.connectCo.domain.member.entity.Profile;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class ChatRoomMapper {
@@ -33,10 +31,12 @@ public class ChatRoomMapper {
                 .build();
     }
 
-    public EnterChatRoomResponse toEnterChatRoomResponse(Long chatRoomId, List<ChatResponse> chatList){
+    public EnterChatRoomResponse toEnterChatRoomResponse(Long chatRoomId, ChatPageResponse page){
         return EnterChatRoomResponse.builder()
                 .chatRoomId(chatRoomId)
-                .chatList(chatList)
+                .chatList(page.getChatList())
+                .nextCursor(page.getNextCursor())
+                .hasNext(page.isHasNext())
                 .build();
     }
 }

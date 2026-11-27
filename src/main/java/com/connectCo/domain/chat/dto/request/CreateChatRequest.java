@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+// 메시지 본문만 사용한다. chatRoomId·senderId·receiverId 등은 기존 클라이언트 호환을 위해 남겨 두었고 서버는 읽지 않는다
+// (채팅방은 전송 경로 /app/{roomId}, 보낸 사람은 STOMP 연결 시 인증한 사용자, 받는 사람은 채팅방에서 정한다).
 public class CreateChatRequest {
     @Schema(description = "채팅방 Id", example = "1")
     private Long chatRoomId;

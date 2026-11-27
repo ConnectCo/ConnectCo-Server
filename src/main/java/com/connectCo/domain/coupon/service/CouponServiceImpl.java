@@ -299,7 +299,7 @@ public class CouponServiceImpl implements CouponService {
 
     private void deleteCouponImages(List<CouponImage> imagesToRemove) {
         for (CouponImage image : imagesToRemove) {
-            s3FileComponent.deleteFile(image.getUrl());
+            s3FileComponent.deleteFileAfterCommit(image.getUrl());
             couponImageRepository.delete(image);
         }
     }

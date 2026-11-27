@@ -1,5 +1,6 @@
 package com.connectCo.domain.event.entity;
 
+import org.hibernate.annotations.BatchSize;
 import com.connectCo.domain.member.entity.Member;
 import com.connectCo.domain.address.entity.Address;
 import com.connectCo.domain.event.dto.request.EventUpdateRequest;
@@ -20,6 +21,8 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
+// 목록에서 연관 엔티티를 건마다 조회하지 않고 IN으로 묶어 조회한다
+@BatchSize(size = 100)
 public class Event extends BaseEntity {
 
     @Id
@@ -58,6 +61,8 @@ public class Event extends BaseEntity {
     @JoinColumn
     private Organization organization;
 
+    @Builder.Default
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private List<EventImage> images = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package com.connectCo.domain.address.entity;
 
+import org.hibernate.annotations.BatchSize;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,6 +16,8 @@ import org.locationtech.jts.geom.Point;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
+// 목록에서 연관 엔티티를 건마다 조회하지 않고 IN으로 묶어 조회한다
+@BatchSize(size = 100)
 public class Address extends BaseEntity {
 
     @Id
