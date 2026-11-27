@@ -1,5 +1,6 @@
 package com.connectCo.domain.member.entity;
 
+import org.hibernate.annotations.BatchSize;
 import com.connectCo.global.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,6 +27,8 @@ import org.hibernate.annotations.Where;
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
 @Inheritance(strategy = InheritanceType.JOINED)
+// 목록에서 연관 엔티티를 건마다 조회하지 않고 IN으로 묶어 조회한다
+@BatchSize(size = 100)
 public class Profile extends BaseEntity {
 
     @Id

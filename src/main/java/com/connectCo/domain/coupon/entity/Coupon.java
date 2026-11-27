@@ -1,5 +1,6 @@
 package com.connectCo.domain.coupon.entity;
 
+import org.hibernate.annotations.BatchSize;
 
 import com.connectCo.domain.coupon.dto.request.CouponCreateRequest;
 import com.connectCo.domain.coupon.dto.request.CouponUpdateRequest;
@@ -21,6 +22,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Where(clause = "deleted_at is null")
+// 목록에서 연관 엔티티를 건마다 조회하지 않고 IN으로 묶어 조회한다
+@BatchSize(size = 100)
 public class    Coupon extends BaseEntity {
 
     @Id
@@ -45,7 +48,7 @@ public class    Coupon extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Store store;
-
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "coupon")
     @Builder.Default
     private List<CouponImage> images = new ArrayList<>();
