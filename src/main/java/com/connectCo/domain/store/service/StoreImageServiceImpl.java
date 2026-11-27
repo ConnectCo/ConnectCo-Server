@@ -50,7 +50,7 @@ public class StoreImageServiceImpl implements StoreImageService {
     @Transactional
     public void deleteExistingImages(List<StoreImage> imagesToRemove) {
         for (StoreImage image : imagesToRemove) {
-            s3FileComponent.deleteFile(image.getUrl());
+            s3FileComponent.deleteFileAfterCommit(image.getUrl());
             storeImageRepository.delete(image);
         }
     }

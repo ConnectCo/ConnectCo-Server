@@ -84,7 +84,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         // 프로필 이미지 업데이트(이미지가 있을 경우)
         if (profileImage != null) {
             if (organization.getProfileImage() != null) {
-                s3FileComponent.deleteFile(organization.getProfileImage());
+                s3FileComponent.deleteFileAfterCommit(organization.getProfileImage());
             }
             String profileUrl = s3FileComponent.uploadFile("organization", profileImage);
             organization.updateProfileImage(profileUrl);
@@ -103,7 +103,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         // TODO 관련된 이벤트, 찜 기록, 협찬 기록, 채팅 기록 등 삭제 로직 추가
 
         organization.delete();
-        s3FileComponent.deleteFile(organization.getProfileImage());
+        s3FileComponent.deleteFileAfterCommit(organization.getProfileImage());
         organization.updateProfileImage(null);
 
         return new OrganizationIdResponse(organizationId);
