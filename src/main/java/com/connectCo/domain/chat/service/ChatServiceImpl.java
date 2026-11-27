@@ -1,6 +1,5 @@
 package com.connectCo.domain.chat.service;
 
-import com.connectCo.domain.chat.dto.request.CreateChatRequest;
 import com.connectCo.domain.chat.dto.response.ChatResponse;
 import com.connectCo.domain.chat.entity.Chat;
 import com.connectCo.domain.chat.entity.ChatRoom;
@@ -26,17 +25,17 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public ChatResponse createChat(CreateChatRequest request) {
-        ChatRoom chatRoom = chatRoomRepository.findById(request.getChatRoomId())
+    public ChatResponse createChat(Long senderProfileId, Long chatRoomId, String message) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new CustomApiException(ErrorCode.CHATROOM_NOT_FOUND));
 
         // 보낸 사람이 이 방의 참여자인지 확인하고, 받는 사람은 요청 값이 아니라 방에서 정한다.
-        if (!chatRoom.isParticipant(request.getSenderId())) {
+        if (!chatRoom.isParticipant(senderProfileId)) {
             throw new CustomApiException(ErrorCode.CHATROOM_FORBIDDEN);
         }
-        Long receiverId = chatRoom.getOther(request.getSenderId()).getId();
+        Long receiverId = chatRoom.getOther(senderProfileId).getId();
 
-        Chat chat = chatRepository.save(chatMapper.toChat(request, chatRoom));
+        Chat chat = chatRepository.save(chatMapper.toChat(senderProfileId, message, chatRoom));
         chatRoom.updateRecentMessage(chat.getMessage(), chat.getCreatedAt());
 
         eventPublisher.publishEvent(new ChatCreatedEvent(chat.getId(), receiverId, chat.getMessage()));

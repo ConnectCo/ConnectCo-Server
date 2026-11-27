@@ -1,5 +1,6 @@
 package com.connectCo.domain.chat.controller;
 
+import com.connectCo.config.security.StompAuthChannelInterceptor;
 import com.connectCo.config.security.auth.PrincipalDetails;
 import com.connectCo.domain.chat.dto.request.CreateChatRequest;
 import com.connectCo.domain.chat.dto.response.ChatPageResponse;
@@ -34,8 +35,10 @@ public class ChatController {
     @Operation(summary = "채팅 메세지 보내기 API")
     @MessageMapping("/{roomId}")
     @SendTo("/topic/{roomId}")
-    public BaseResponse<ChatResponse> createChat(@DestinationVariable String roomId, CreateChatRequest request){
-        return BaseResponse.onSuccess(chatService.createChat(request));
+    public BaseResponse<ChatResponse> createChat(@DestinationVariable Long roomId, CreateChatRequest request, Principal user){
+        // 보낸 사람과 채팅방은 요청 본문이 아니라 STOMP 세션 사용자와 구독 경로로 정한다.
+        Long senderProfileId = StompAuthChannelInterceptor.requireProfileId(user);
+        return BaseResponse.onSuccess(chatService.createChat(senderProfileId, roomId, request.getMessage()));
     }
 
     @Operation(summary = "내 채팅방 목록 조회 API")

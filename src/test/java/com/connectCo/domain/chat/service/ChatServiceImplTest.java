@@ -1,6 +1,5 @@
 package com.connectCo.domain.chat.service;
 
-import com.connectCo.domain.chat.dto.request.CreateChatRequest;
 import com.connectCo.domain.chat.entity.Chat;
 import com.connectCo.domain.chat.entity.ChatRoom;
 import com.connectCo.domain.chat.event.ChatCreatedEvent;
@@ -44,8 +43,7 @@ class ChatServiceImplTest {
 
     @Test
     void 받는_사람은_요청값이_아니라_채팅방에서_정하고_푸시는_이벤트로_넘긴다() {
-        // 요청의 receiverId(999)는 무시된다
-        service.createChat(new CreateChatRequest(7L, 2L, 999L, null, null, "안녕하세요"));
+        service.createChat(2L, 7L, "안녕하세요");
 
         ArgumentCaptor<ChatCreatedEvent> captor = ArgumentCaptor.forClass(ChatCreatedEvent.class);
         verify(publisher).publishEvent(captor.capture());
@@ -56,7 +54,7 @@ class ChatServiceImplTest {
 
     @Test
     void 방에_참여하지_않은_사람은_메시지를_보낼_수_없다() {
-        assertThatThrownBy(() -> service.createChat(new CreateChatRequest(7L, 3L, 1L, null, null, "x")))
+        assertThatThrownBy(() -> service.createChat(3L, 7L, "x"))
                 .isInstanceOf(CustomApiException.class);
         verify(chatRepository, never()).save(any());
         verifyNoInteractions(publisher);
